@@ -7,13 +7,13 @@ It allows you to easily target html & erb elements as the hooks for customizatio
 
 Demo & Testing
 ---------------
-You can play with Deface and see it's parsing in action at [deface.heroku.com](http://deface.heroku.com)
+You can play with Deface and see its parsing in action at [deface.heroku.com](http://deface.heroku.com)
 
 
 Deface::Override
 =======
 
-A new instance of the Deface::Override class is initialized for each customization you wish to define. When initializing a new override you must supply only one Target, Action & Source parameter and any number of Optional parameters. Note, the source parameter is not required when the "remove" action is specified.
+A new instance of the Deface::Override class is initialized for each customization you wish to define. When initializing a new override you must supply only one Target, Action & Source parameter and any number of Optional parameters. Note: the source parameter is not required when the "remove" action is specified.
 
 Target
 ------
@@ -117,7 +117,7 @@ Deface uses the amazing Nokogiri library (and in turn libxml) for parsing HTML /
 
 1. Ensure that your layout views include doctype, html, head and body tags in a single file, as Nokogiri will create such elements if it detects any of these tags have been incorrectly nested.
 
-2. Parsing will fail and result in invalid output if ERB blocks are responsible for closing a HTML tag what was opened normally, i.e. don't do this:
+2. Parsing will fail and result in invalid output if ERB blocks are responsible for closing an HTML tag that was opened normally, i.e. don't do this:
 
 
       <div <%= ">" %>
