@@ -50,6 +50,13 @@ Optional
 
 * <tt>:original</tt> - String containing original markup that is being overridden. If supplied Deface will log when the original markup changes, which helps highlight overrides that need attention when upgrading versions of the source application. Only really warranted for :replace overrides. NB: All whitespace is stripped before comparsion.
 
+* <tt>:sequence</tt> - Used to order the application of an override for a specific virtual path, helpful when an override depends on another override being applied first, supports:
+  * <tt>:sequence => n</tt> - where n is a positive or negative integer (lower numbers get applied first, default 100).
+  * <tt>:sequence => {:before => "*override_name*"}</tt> - where "*override_name*" is the name of an override defined for the 
+                                              same virutal_path, the current override will be appplied before 
+                                              the named override passed.
+  * <tt>:sequence => {:after => "*override_name*")</tt> - the current override will be applied after the named override passed.
+
 Examples
 ========
 

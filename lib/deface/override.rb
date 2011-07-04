@@ -41,8 +41,15 @@ module Deface
     #   If supplied Deface will log when the original markup changes, which helps highlight overrides that need 
     #   attention when upgrading versions of the source application. Only really warranted for :replace overrides.
     #   NB: All whitespace is stripped before comparsion.
-
-
+    # * <tt>:sequence</tt> - Used to order the application of an override for a specific virtual path, helpful when
+    #   an override depends on another override being applied first.
+    #   Supports:
+    #   :sequence => n - where n is a positive or negative integer (lower numbers get applied first, default 100).
+    #   :sequence => {:before => "override_name"} - where "override_name" is the name of an override defined for the 
+    #                                               same virutal_path, the current override will be appplied before 
+    #                                               the named override passed.
+    #   :sequence => {:after => "override_name") - the current override will be applied after the named override passed.
+    #
     def initialize(args)
       @args = args
 
@@ -61,6 +68,43 @@ module Deface
 
     def name
       @args[:name]
+    end
+
+    def sequence
+      return 100 unless @args.key?(:sequence)
+      if @args[:sequence].is_a? Hash
+        key = @args[:virtual_path].to_sym
+
+        if @args[:sequence].key? :before
+          ref_name = @args[:sequence][:before]
+
+          if @@all[key].key? ref_name.to_s
+            return @@all[key][ref_name.to_s].sequence - 1
+          else
+            return 100
+          end
+        elsif @args[:sequence].key? :after
+          ref_name = @args[:sequence][:after]
+
+          if @@all[key].key? ref_name.to_s
+            return @@all[key][ref_name.to_s].sequence + 1
+          else
+            return 100
+          end
+        else
+          #should never happen.. tut tut!
+          return 100
+        end
+
+      else
+        return @args[:sequence].to_i 
+      end
+    rescue SystemStackError
+      if defined?(Rails) 
+        Rails.logger.error "\e[1;32mDeface: [WARNING]\e[0m Circular sequence dependency includes override named: '#{self.name}' on '#{@args[:virtual_path]}'."
+      end
+
+      return 100
     end
 
     def action
@@ -200,7 +244,7 @@ module Deface
       result = []
       result << @@all[virtual_path.to_sym].try(:values)
 
-      result.flatten.compact
+      result.flatten.compact.sort_by &:sequence
     end
 
     private

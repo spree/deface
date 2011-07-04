@@ -125,5 +125,23 @@ module ActionView
       end
     end
 
+
+    describe "with mulitple sequenced overrides defined" do
+      before(:all) do
+        Deface::Override.new(:virtual_path => "posts/index", :name => "third", :insert_after => "li:contains('second')", :text => "<li>third</li>", :sequence => {:after => "second"})
+        Deface::Override.new(:virtual_path => "posts/index", :name => "second", :insert_after => "li", :text => "<li>second</li>", :sequence => {:after => "first"})
+        Deface::Override.new(:virtual_path => "posts/index", :name => "first", :replace => "li", :text => "<li>first</li>")
+
+        @template = ActionView::Template.new("<ul><li>replaced</li></ul>",
+                                             "/path/to/file.erb",
+                                             ActionView::Template::Handlers::ERB,
+                                             {:virtual_path=>"posts/index", :format=>:html})
+      end
+
+      it "should return modified source" do
+        @template.source.gsub("\n", "").should == "<ul><li>first</li><li>second</li><li>third</li></ul>"
+      end
+    end
+
   end
 end

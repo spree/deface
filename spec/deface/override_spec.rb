@@ -140,6 +140,38 @@ module Deface
 
     end
 
+    describe "#sequence" do
+      it "should calculate correct after sequences" do
+        @third = Deface::Override.new(:virtual_path => "posts/index", :name => "third", :insert_after => "li:contains('second')", :text => "<li>third</li>", :sequence => {:after => "second"})
+        @second = Deface::Override.new(:virtual_path => "posts/index", :name => "second", :insert_after => "li", :text => "<li>second</li>", :sequence => {:after => "first"})
+        @first = Deface::Override.new(:virtual_path => "posts/index", :name => "first", :replace => "li", :text => "<li>first</li>")
+
+        @third.sequence.should == 102
+        @second.sequence.should == 101
+        @first.sequence.should == 100
+      end
+
+      it "should calculate correct before sequences" do
+        @second = Deface::Override.new(:virtual_path => "posts/index", :name => "second", :insert_after => "li", :text => "<li>second</li>", :sequence => 99)
+        @first = Deface::Override.new(:virtual_path => "posts/index", :name => "first", :replace => "li", :text => "<li>first</li>", :sequence => {:before => "second"})
+
+        @second.sequence.should == 99
+        @first.sequence.should == 98
+
+      end
+
+      
+      it "should calculate correct sequences with invalid hash" do
+        @second = Deface::Override.new(:virtual_path => "posts/index", :name => "second", :insert_after => "li", :text => "<li>second</li>", :sequence => {})
+        @first = Deface::Override.new(:virtual_path => "posts/show", :name => "first", :replace => "li", :text => "<li>first</li>", :sequence => {:before => "second"})
+
+        @second.sequence.should == 100
+        @first.sequence.should == 100
+
+      end
+
+    end
+
   end
 
 end

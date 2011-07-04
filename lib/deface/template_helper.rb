@@ -4,12 +4,12 @@ module Deface
     # used to find source for a partial or template using virutal_path
     def load_template_source(virtual_path, partial)
       parts = virtual_path.split("/")
-
+      prefix = []
       if parts.size == 2
-        prefix = ""
+        prefix << ""
         name = virtual_path
       else
-        prefix = parts.shift
+        prefix << parts.shift
         name = parts.join("/")
       end
 
