@@ -15,7 +15,7 @@ module Deface
 
       @lookup_context ||= ActionView::LookupContext.new(ActionController::Base.view_paths, {:formats => [:html]})
 
-      @lookup_context.find(name, prefix, partial).source
+      @lookup_context.find(name, [prefix], partial).source
     end
 
     #gets source erb for an element
