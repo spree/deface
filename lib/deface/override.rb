@@ -6,7 +6,7 @@ module Deface
     attr_accessor :args
 
     @@_early = []
-    @@actions = [:remove, :replace, :replace_contents, :insert_after, :insert_before, :insert_top, :insert_bottom, :set_attributes]
+    @@actions = [:remove, :replace, :replace_contents, :insert_after, :insert_before, :insert_top, :insert_bottom, :set_attributes, :surround_contents]
     @@sources = [:text, :partial, :template]
 
     # Initializes new override, you must supply only one Target, Action & Source
@@ -236,6 +236,13 @@ module Deface
                 when :replace_contents
                   match.children.remove 
                   match.add_child(override.source_element)
+                when :surround_contents
+                  children = match.children
+                  match.children.remove
+                  match.add_child(override.source_element)
+                  children.each do |child|
+                    match.children.first.add_child(child)
+                  end
                 when :insert_before
                   match.before override.source_element
                 when :insert_after
