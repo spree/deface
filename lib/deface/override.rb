@@ -6,7 +6,7 @@ module Deface
     attr_accessor :args
 
     @@_early = []
-    @@actions = [:remove, :replace, :replace_contents, :insert_after, :insert_before, :insert_top, :insert_bottom, :set_attributes, :surround_contents]
+    @@actions = [:remove, :replace, :replace_contents, :surround, :surround_contents, :insert_after, :insert_before, :insert_top, :insert_bottom, :set_attributes]
     @@sources = [:text, :partial, :template]
 
     # Initializes new override, you must supply only one Target, Action & Source
@@ -23,6 +23,8 @@ module Deface
     # * <tt>:remove</tt> - Removes all elements that match the supplied selector
     # * <tt>:replace</tt> - Replaces all elements that match the supplied selector
     # * <tt>:replace_contents</tt> - Replaces the contents of all elements that match the supplied selector
+    # * <tt>:surround</tt> - Surrounds all elements that match the supplied selector
+    # * <tt>:surround_contents</tt> - Surrounds the contents of all elements that match the supplied selector
     # * <tt>:insert_after</tt> - Inserts after all elements that match the supplied selector
     # * <tt>:insert_before</tt> - Inserts before all elements that match the supplied selector
     # * <tt>:insert_top</tt> - Inserts inside all elements that match the supplied selector, before all existing child
@@ -236,6 +238,12 @@ module Deface
                 when :replace_contents
                   match.children.remove 
                   match.add_child(override.source_element)
+                when :surround
+                  element = match.clone(1)
+                  element.unlink
+                  ore = override.source_element.children.first.clone(1)
+                  ore.add_child element
+                  match.replace ore
                 when :surround_contents
                   children = match.children
                   match.children.remove
