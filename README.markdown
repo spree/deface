@@ -140,7 +140,7 @@ Deface includes a couple of rake tasks that can be helpful when defining or debu
 
     rake deface:get_result['admin/products/index']
 
-**deface:test_selector** - Applies a given CSS selector against a parital or template and outputs the markup for each match (if any). *test_selector* requires two arguments, the first is the virtual_path for the partial / template, the second is the CSS selector to apply:
+**deface:test_selector** - Applies a given CSS selector against a partial or template and outputs the markup for each match (if any). *test_selector* requires two arguments, the first is the virtual_path for the partial / template, the second is the CSS selector to apply:
 
     rake deface:test_selector[shared/_head,title]
 
