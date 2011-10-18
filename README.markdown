@@ -111,8 +111,8 @@ Remove an entire ERB if statement (and all it's contents) in the 'admin/products
 
     Deface::Override.new(:virtual_path => 'admin/products/index',
                          :name => "remove_if_statement",
-                         :remove => "code[:erb-silent]:contains('if @product.sold?')",
-                         :closing_selector => "code[:erb-silent]:contains('end')"
+                         :remove => "code[erb-silent]:contains('if @product.sold?')",
+                         :closing_selector => "code[erb-silent]:contains('end')"
 
 Scope
 =====
