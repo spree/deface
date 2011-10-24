@@ -209,6 +209,29 @@ module ActionView
       end
     end
 
+
+    describe "with a single surround override defined" do
+      before(:each) do
+        Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :surround => "p", :text => "<div></div>")
+        @template = ActionView::Template.new("<p>test</p>", "/some/path/to/file.erb", ActionView::Template::Handlers::ERB, {:virtual_path=>"posts/index", :format=>:html})
+      end
+
+      it "should return modified source" do
+        @template.source.should == "<div><p>test</p></div>"
+      end
+    end
+
+    describe "with a single surround_contents override defined" do
+      before(:each) do
+        Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :surround_contents => "p", :text => "<span></span>")
+        @template = ActionView::Template.new("<p>test</p>", "/some/path/to/file.erb", ActionView::Template::Handlers::ERB, {:virtual_path=>"posts/index", :format=>:html})
+      end
+
+      it "should return modified source" do
+        @template.source.should == "<p><span>test</span></p>"
+      end
+    end
+
     describe "with a single disabled override defined" do
       before(:each) do
         Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :remove => "p", :text => "<h1>Argh!</h1>", :disabled => true)
