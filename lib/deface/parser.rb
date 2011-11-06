@@ -77,11 +77,11 @@ module Deface
       erb_markup!(source)
 
       if source =~ /<html.*?(?:(?!>)[\s\S])*>/
-        Nokogiri::HTML::Document.parse(source)
+        Nokogiri::HTML::Document.parse(source, nil, 'UTF-8')
       elsif source =~ /<body.*?(?:(?!>)[\s\S])*>/
-        Nokogiri::HTML::Document.parse(source).css('body').first
+        Nokogiri::HTML::Document.parse(source, nil, 'UTF-8').css('body').first
       else
-        Nokogiri::HTML::DocumentFragment.parse(source)
+        Nokogiri::HTML::DocumentFragment.parse(source, 'UTF-8')
       end
     end
 
