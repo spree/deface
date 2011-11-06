@@ -99,6 +99,14 @@ Replaces all instances of `h1` in the `posts/_form.html.erb` partial with `<h1>N
                           :replace => "h1", 
                           :text => "<h1>New Post</h1>")
 
+Alternatively pass it a block of code to run:
+
+     Deface::Override.new(:virtual_path => "posts/_form",
+                          :name => "example-1",
+                          :replace => "h1") do
+       "<h1>New Post</h1>"
+     end
+
 Inserts `<%= link_to "List Comments", comments_url(post) %>` before all instances of `p` with css class `comment` in `posts/index.html.erb`
 
      Deface::Override.new(:virtual_path => "posts/index", 

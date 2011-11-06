@@ -60,7 +60,7 @@ module Deface
     #   :sequence => {:after => "override_name") - the current override will be applied after the named override passed.
     # * <tt>:attributes</tt> - A hash containing all the attributes to be set on the matched elements, eg: :attributes => {:class => "green", :title => "some string"}
     #
-    def initialize(args)
+    def initialize(args, &content)
       unless Rails.application.try(:config).respond_to?(:deface) and Rails.application.try(:config).deface.try(:overrides)
         @@_early << args
         warn "[WARNING] Deface railtie has not initialized yet, override '#{args[:name]}' is being declared too early."
@@ -69,6 +69,8 @@ module Deface
 
       raise(ArgumentError, ":name must be defined") unless args.key? :name
       raise(ArgumentError, ":virtual_path must be defined") if args[:virtual_path].blank?
+
+      args[:text] = content.call if block_given?
 
       virtual_key = args[:virtual_path].to_sym
       name_key = args[:name].to_s.parameterize 

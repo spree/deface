@@ -118,6 +118,21 @@ module Deface
 
     end
 
+    describe "with block" do
+      before(:each) do
+        #stub view paths to be local spec/assets directory
+        ActionController::Base.stub(:view_paths).and_return([File.join(File.dirname(__FILE__), '..', "assets")])
+
+        @override = Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :replace => "h1") do
+          "This is replacement text for the h1"
+        end
+      end
+
+      it "should set source to block content" do
+        @override.source.should == "This is replacement text for the h1"
+      end
+    end
+
     describe "#source_element" do
       before(:each) do
         @override = Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :replace => "h1", :text => "<%= method :opt => 'x' & 'y' %>")
