@@ -336,14 +336,13 @@ module Deface
       virtual_path = details[:virtual_path]
       return [] if virtual_path.nil?
 
-      virtual_path = virtual_path[1..-1] if virtual_path.first == '/'
+      virtual_path = virtual_path[1..-1] if virtual_path[0] == '/'
 
       result = []
       result << self.all[virtual_path.to_sym].try(:values)
 
       result.flatten.compact.sort_by &:sequence
     end
-
 
     def self.all
       Rails.application.config.deface.overrides.all
