@@ -346,7 +346,6 @@ module Deface
       result.flatten.compact.sort_by &:sequence
     end
 
-
     def self.all
       Rails.application.config.deface.overrides.all
     end
