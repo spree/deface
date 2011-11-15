@@ -96,6 +96,7 @@ module Deface
       elsif source =~ /<body.*?(?:(?!>)[\s\S])*>/
         Nokogiri::HTML::Document.parse(source).css('body').first
       else
+        source = source.force_encoding('utf-8') if source.respond_to?(:force_encoding)
         Nokogiri::HTML::DocumentFragment.parse(source)
       end
     end
