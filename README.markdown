@@ -85,7 +85,7 @@ Optional
   * <tt>:sequence => {:before => "*override_name*"}</tt> - where "*override_name*" is the name of an override defined for the 
                                               same virutal_path, the current override will be appplied before 
                                               the named override passed.
-  * <tt>:sequence => {:after => "*override_name*")</tt> - the current override will be applied after the named override passed.
+  * <tt>:sequence => {:after => "*override_name*"}</tt> - the current override will be applied after the named override passed.
 
 * <tt>:attributes</tt> - A hash containing all the attributes to be set on the matched elements, eg: :attributes => {:class => "green", :title => "some string"}
 
