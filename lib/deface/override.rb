@@ -161,7 +161,7 @@ module Deface
       elsif @args.key? :text
         @args[:text]
       end
-      erb.nil? ? @template_source : erb
+      erb || @template_source
     end
 
     def source_element
