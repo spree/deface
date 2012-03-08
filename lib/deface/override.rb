@@ -96,6 +96,7 @@ module Deface
       else
         #initializing new override
         @args = args
+        @template_source = source
 
         raise(ArgumentError, ":action is invalid") if self.action.nil?
       end
@@ -160,6 +161,7 @@ module Deface
       elsif @args.key? :text
         @args[:text]
       end
+      erb.nil? ? @template_source : erb
     end
 
     def source_element
