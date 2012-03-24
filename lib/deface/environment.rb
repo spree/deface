@@ -23,6 +23,7 @@ module Deface
     def load_all(app)
       #clear overrides before reloading them
       app.config.deface.overrides.all.clear
+      Deface::DSL::Loader.register
 
       # check application for specified overrides paths
       override_paths = app.paths["app/overrides"]
@@ -50,11 +51,13 @@ module Deface
         paths ||= ["app/overrides"]
 
         paths.each do |path|
-          Dir.glob(root.join path, "*.rb") do |c|
+          Dir.glob(root.join path, "**/*.rb") do |c|
             Rails.application.config.cache_classes ? require(c) : load(c)
           end
+          Dir.glob(root.join path, "**/*.deface") do |c|
+            Rails.application.config.cache_classes ? require(c) : Deface::DSL::Loader.load(c)
+          end
         end
-
       end
   end
 end

@@ -5,7 +5,7 @@ module Deface
     extend Applicator::ClassMethods
     extend Search::ClassMethods
 
-    cattr_accessor :actions, :_early
+    cattr_accessor :actions, :sources, :_early
     attr_accessor :args
 
     @@_early = []

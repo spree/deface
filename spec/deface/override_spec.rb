@@ -16,6 +16,10 @@ module Deface
       end
     end
 
+    it "should have a sources method" do
+      Deface::Override.sources.should include(:text)
+    end
+
     it "should return correct selector" do
       @override.selector.should == "h1"
     end

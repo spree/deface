@@ -35,7 +35,9 @@ module Deface
         before do
           Rails.application.stub :root => Pathname.new(File.join(File.dirname(__FILE__), '..', "assets"))
           Rails.application.stub :paths => {}
-          Rails.application.stub_chain :railties, :all => []
+          Rails.application.stub_chain :railties, :all => [] 
+          
+          Deface::DSL::Loader.should_receive(:register)
         end
 
         it "should enumerate_and_load nil when app has no app/overrides path set" do
@@ -85,18 +87,22 @@ module Deface
         let(:root) { Pathname.new("/some/path") }
 
         it "should be enumerate default path when none supplied" do
-          Dir.should_receive(:glob).with(root.join "app/overrides", "*.rb")
+          Dir.should_receive(:glob).with(root.join "app/overrides", "**", "*.rb")
+          Dir.should_receive(:glob).with(root.join "app/overrides", "**", "*.deface")
           Rails.application.config.deface.overrides.send(:enumerate_and_load, nil, root)
         end
 
         it "should be enumerate supplied path" do
-          Dir.should_receive(:glob).with(root.join "app/junk", "*.rb")
+          Dir.should_receive(:glob).with(root.join "app/junk", "**", "*.rb")
+          Dir.should_receive(:glob).with(root.join "app/junk", "**", "*.deface")
           Rails.application.config.deface.overrides.send(:enumerate_and_load, ["app/junk"], root)
         end
 
         it "should be enumerate supplied paths" do
-          Dir.should_receive(:glob).with(root.join "app/junk", "*.rb" )
-          Dir.should_receive(:glob).with(root.join "app/gold", "*.rb" )
+          Dir.should_receive(:glob).with(root.join "app/junk", "**", "*.rb" )
+          Dir.should_receive(:glob).with(root.join "app/junk", "**", "*.deface" )
+          Dir.should_receive(:glob).with(root.join "app/gold", "**", "*.rb" )
+          Dir.should_receive(:glob).with(root.join "app/gold", "**", "*.deface" )
           Rails.application.config.deface.overrides.send(:enumerate_and_load, ["app/junk", "app/gold"], root)
         end
 
