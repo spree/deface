@@ -10,7 +10,7 @@ namespace :deface do
       source = load_template_source(args[:virtual_path], false)
       output = element_source(source, args[:selector])
     rescue
-      puts "Failed to find tempalte/partial"
+      puts "Failed to find template/partial"
 
       output = []
     end
