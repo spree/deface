@@ -48,20 +48,36 @@ module ActionView
       end
     end
 
-    describe "method_name" do
-      let(:template) { ActionView::Template.new("<p>test</p>", "/some/path/to/file.erb", ActionView::Template::Handlers::ERB, {:virtual_path=>"posts/index", :format=>:html, :updated_at => (Time.now - 100)}) }
+    if ActionView::Template.method_defined?(:method_name)
+      describe "method_name" do
+        let(:template) { ActionView::Template.new("<p>test</p>", "/some/path/to/file.erb", ActionView::Template::Handlers::ERB, {:virtual_path=>"posts/index", :format=>:html, :updated_at => (Time.now - 100)}) }
 
-      it "should return hash of overrides plus original method_name " do
-        deface_hash = Deface::Override.digest(:virtual_path => 'posts/index')
+        it "should return hash of overrides plus original method_name " do
+          deface_hash = Deface::Override.digest(:virtual_path => 'posts/index')
 
-        template.send(:method_name).should == "_#{Digest::MD5.new.update("#{deface_hash}_#{template.send(:method_name_without_deface)}").hexdigest}"
+          template.send(:method_name).should == "_#{Digest::MD5.new.update("#{deface_hash}_#{template.send(:method_name_without_deface)}").hexdigest}"
+        end
+
+        it "should alias original method_name method" do
+          template.send(:method_name_without_deface).should match /\A__some_path_to_file_erb_+[0-9]+_[0-9]+\z/
+        end
       end
+    else
+      describe "build_method_name" do
+        let(:template) { ActionView::Template.new("<p>test</p>", "/some/path/to/file.erb", ActionView::Template::Handlers::ERB, {:virtual_path=>"posts/index", :format=>:html, :updated_at => (Time.now - 100)}) }
 
-      it "should alias original method_name method" do
-        template.send(:method_name_without_deface).should match /\A__some_path_to_file_erb_+[0-9]+_[0-9]+\z/
-      end
+        it "should return hash of overrides plus original method_name " do
+          deface_hash = Deface::Override.digest(:virtual_path => 'posts/index')
+
+          template.send(:build_method_name, {}).should == "_#{Digest::MD5.new.update("#{deface_hash}_#{template.send(:build_method_name_without_deface, {})}").hexdigest}"
+        end
+
+        it "should alias original method_name method" do
+          template.send(:build_method_name_without_deface, {}).should match /\A__some_path_to_file_erb_+[0-9]+_[0-9]+_+[0-9]+\z/
+        end
+
+      end      
     end
-
   end
 end
 

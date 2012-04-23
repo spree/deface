@@ -51,6 +51,18 @@ ActionView::Template.class_eval do
       #we digest the whole method name as if it gets too long there's problems
       "_#{Digest::MD5.new.update("#{deface_hash}_#{method_name_without_deface}").hexdigest}"
     end
+  else
+    alias_method :build_method_name_without_deface, :build_method_name
+
+    # inject deface hash into compiled view method name
+    # used to determine if recompilation is needed
+    #
+    def build_method_name(locals)
+      deface_hash = Deface::Override.digest(:virtual_path => @virtual_path)
+
+      #we digest the whole method name as if it gets too long there's problems
+      "_#{Digest::MD5.new.update("#{deface_hash}_#{build_method_name_without_deface(locals)}").hexdigest}"
+    end    
   end
 end
 
