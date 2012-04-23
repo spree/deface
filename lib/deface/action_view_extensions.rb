@@ -39,6 +39,7 @@ ActionView::Template.class_eval do
 
   protected
 
+  if method_defined?(:method_name)
     alias_method :method_name_without_deface, :method_name
 
     # inject deface hash into compiled view method name
@@ -50,6 +51,7 @@ ActionView::Template.class_eval do
       #we digest the whole method name as if it gets too long there's problems
       "_#{Digest::MD5.new.update("#{deface_hash}_#{method_name_without_deface}").hexdigest}"
     end
+  end
 end
 
 #fix for Rails 3.1 not setting virutal_path anymore (BOO!)
