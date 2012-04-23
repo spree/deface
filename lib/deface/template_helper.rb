@@ -16,8 +16,12 @@ module Deface
       #this needs to be reviewed for production mode, overrides not present
       Rails.application.config.deface.enabled = apply_overrides
       @lookup_context ||= ActionView::LookupContext.new(ActionController::Base.view_paths, {:formats => [:html]})
-      view = @lookup_context.disable_cache do
-        @lookup_context.find(name, prefix, partial)
+      if @lookup_context.respond_to?(:disable_cache)
+        view = @lookup_context.disable_cache do
+          @lookup_context.find(name, prefix, partial)
+        end
+      else
+        view = @lookup_context.find(name, prefix, partial)
       end
 
       if view.handler.to_s == "Haml::Plugin"
