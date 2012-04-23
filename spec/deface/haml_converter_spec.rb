@@ -54,7 +54,7 @@ module Deface
        it "should handle blocks passed to erb silent" do
         haml_to_erb("- @posts.each do |post|
   %p
-    = post.name").should == "<% @posts.each do |post| %><p>  <%= post.name %></p><% end %>"
+    = post.name").should match("<% @posts.each do |post| %><p>  <%= post.name %></p><% end %>")
 
       end
     end
