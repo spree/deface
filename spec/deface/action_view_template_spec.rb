@@ -59,7 +59,7 @@ module ActionView
         end
 
         it "should alias original method_name method" do
-          template.send(:method_name_without_deface).should match /\A__some_path_to_file_erb_+[0-9]+_[0-9]+\z/
+          template.send(:method_name_without_deface).should match /\A__some_path_to_file_erb_+[0-9]+_+[0-9]+\z/
         end
       end
     else
@@ -73,7 +73,7 @@ module ActionView
         end
 
         it "should alias original method_name method" do
-          template.send(:build_method_name_without_deface, {}).should match /\A__some_path_to_file_erb_+[0-9]+_[0-9]+_+[0-9]+\z/
+          template.send(:build_method_name_without_deface, {}).should match /\A__some_path_to_file_erb_+[0-9]+_+[0-9]+_+[0-9]+\z/
         end
 
       end      
