@@ -6,8 +6,8 @@ module Deface
   module DSL
     class Loader
       def self.load(filename, options = nil, &block)
-        unless filename =~ /html.(erb|haml).deface\z/
-          raise "Deface::DSL does not know how to read '#{filename}'. Override files should end with .html.erb.deface or .html.haml.deface"
+        unless File.basename(filename) =~ /^[^\.]+(.html.(erb|haml)){0,1}.deface$/
+          raise "Deface::DSL does not know how to read '#{filename}'. Override files should end with just .deface, .html.erb.deface, or .html.haml.deface"
         end
 
         unless file_in_dir_below_overrides?(filename)
@@ -24,19 +24,24 @@ module Deface
 
             context_name = context_name.gsub('.html.erb', '')
             context = Context.new(context_name)
+            context.virtual_path(determine_virtual_path(filename))
             context.instance_eval(dsl_commands)
             context.erb(the_rest)
-            context.virtual_path(determine_virtual_path(filename))
             context.create_override
           elsif context_name.end_with?('.html.haml')
             dsl_commands, the_rest = extract_dsl_commands_from_haml(file_contents)
 
             context_name = context_name.gsub('.html.haml', '')
             context = Context.new(context_name)
+            context.virtual_path(determine_virtual_path(filename))
             context.instance_eval(dsl_commands)
             context.haml(the_rest)
-            context.virtual_path(determine_virtual_path(filename))
             context.create_override            
+          else
+            context = Context.new(context_name)
+            context.virtual_path(determine_virtual_path(filename))
+            context.instance_eval(file_contents)
+            context.create_override
           end
         end
       end
