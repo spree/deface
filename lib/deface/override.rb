@@ -9,7 +9,7 @@ module Deface
     attr_accessor :args
 
     @@_early = []
-    @@actions = [:remove, :replace, :replace_contents, :surround, :surround_contents, :insert_after, :insert_before, :insert_top, :insert_bottom, :set_attributes, :add_to_attributes, :remove_from_attributes]
+    @@actions = [:remove, :replace, :replace_contents, :surround, :surround_contents, :insert_after, :insert_before, :insert_top, :insert_bottom, :set_attributes, :add_to_attributes, :remove_from_attributes, :move_top, :move_bottom]
     @@sources = [:text, :erb, :haml, :partial, :template]
 
     # Initializes new override, you must supply only one Target, Action & Source
@@ -123,6 +123,10 @@ module Deface
 
     def name
       @args[:name]
+    end
+
+    def destination
+      @args[:to]
     end
 
     def sequence

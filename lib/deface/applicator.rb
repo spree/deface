@@ -113,7 +113,14 @@ module Deface
                         match.set_attribute "data-erb-#{name}", match.attributes["data-erb-#{name}"].value.gsub(value.to_s, '').strip
                       end
                     end
-
+                  when :move_bottom
+                    destination = doc.css(override.destination)
+                    destination.children.after(match.clone(1))
+                    match.replace ""
+                  when :move_top
+                  destination = doc.css(override.destination)
+                  destination.children.before(match.clone(1))
+                  match.replace ""
                 end
 
               end
