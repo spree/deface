@@ -15,10 +15,10 @@ It allows you to easily target html & erb elements as the hooks for customizatio
 Usage
 -----
 
-There is 2 ways of using Deface, you can either 
+There are 2 ways of using Deface:
 
 - use the `Deface::Override` ruby class directly
-- add `.deface` files containing a to the app/overrides folder of your app.
+- add specially formatted `.deface` files to the app/overrides folder of your app.
 
 
 Using Deface::Override
