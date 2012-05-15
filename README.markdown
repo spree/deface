@@ -13,9 +13,12 @@ It allows you to easily target html & erb elements as the hooks for customizatio
 
 
 Usage
-=====
+-----
 
-There is 2 ways of using Deface, you can either directly use the `Deface::Override` ruby class or
+There is 2 ways of using Deface, you can either 
+
+- use the `Deface::Override` ruby class directly
+- add `.deface` files containing a to the app/overrides folder of your app.
 
 
 Using Deface::Override
@@ -23,7 +26,7 @@ Using Deface::Override
 
 A new instance of the Deface::Override class is initialized for each customization you wish to define. When initializing a new override you must supply only one Target, Action & Source parameter and any number of Optional parameters. Note: the source parameter is not required when the "remove" action is specified.
 
-### Target
+#### Target
 
 * <tt>:virtual_path</tt> - The template / partial / layout where the override should take effect eg: *"shared/_person"*, *"admin/posts/new"* this will apply to all controller actions that use the specified template.
 
@@ -161,24 +164,32 @@ You do not need to resupply all the values originally used, just the ones you wa
                         :disabled => true)
 
 
-Using app/overrides
+Using .deface files
 -------------------
 
-Instead of using Deface::Override directly, you can alternatively add .deface files to the app/overrides folder and Deface will automatically them pick up. 
+Instead of using Deface::Override directly, you can alternatively add `.deface` files to the `app/overrides` folder and Deface will automatically them pick up. 
 The path of each override should match the path of the view template you want to modify, say for example if you have a template at:
     
     app/views/posts/_post.html.erb
     
-Then you can override it by adding a .deface file at
+Then you can override it by adding a .deface file at:
 
     app/overrides/posts/_post/my_override.html.erb.deface
     
+The format of a .deface file is a comment showing the action to be performed, followed by any text to be inserted:
 
+    <!-- insert_after 'h1' -->
+    <h2>These robots are awesome.</h2>
+    
+The same effect can also be achieved with haml:
 
+    /
+      insert_after 'h1'
+    %h2 These robots are awesome.
 
 
 Rake Tasks
-==========
+----------
 
 Deface includes a couple of rake tasks that can be helpful when defining or debugging overrides.
 
@@ -194,16 +205,9 @@ Deface includes a couple of rake tasks that can be helpful when defining or debu
 
     rake deface:test_selector['admin/products/index','div.toolbar']
 
-**deface:precompile** - Generates compiled views that contain all overrides applied. See `Production & Precompiling` section above for more.
+**deface:precompile** - Generates compiled views that contain all overrides applied. See `Production & Precompiling` section below for more.
 
     rake deface:precompile
-
-
-
-Demo & Testing
---------------
-You can play with Deface and see its parsing in action at [deface.heroku.com](http://deface.heroku.com)
-
 
 Production & Precompiling
 ------------------------
@@ -217,6 +221,11 @@ It's important to disable Deface once precompiling is used to prevent overrides 
      config.deface.enabled = false
 
 NOTE: You can also use precompiling in development mode.
+
+
+Demo & Testing
+==============
+You can play with Deface and see its parsing in action at [deface.heroku.com](http://deface.heroku.com)
 
 
 Implementation
