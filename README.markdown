@@ -11,36 +11,24 @@ Deface is a library that allows you to customize HTML ERB views in a Rails appli
 
 It allows you to easily target html & erb elements as the hooks for customization using CSS selectors as supported by Nokogiri.
 
-Demo & Testing
---------------
-You can play with Deface and see its parsing in action at [deface.heroku.com](http://deface.heroku.com)
+
+Usage
+=====
+
+There is 2 ways of using Deface, you can either directly use the `Deface::Override` ruby class or
 
 
-Production & Precompiling
-------------------------
-
-Deface now supports precompiling where all overrides are loaded and applied to the original views and the resulting templates are then saved to your application's `app/compiled_views` directory. To precompile run:
-
-     bundle exec rake deface:precompile
-
-It's important to disable Deface once precompiling is used to prevent overrides getting applied twice. To disable add the following line to your application's `production.rb` file:
-
-     config.deface.enabled = false
-
-NOTE: You can also use precompiling in development mode.
-
-
-Deface::Override
-================
+Using Deface::Override
+----------------------
 
 A new instance of the Deface::Override class is initialized for each customization you wish to define. When initializing a new override you must supply only one Target, Action & Source parameter and any number of Optional parameters. Note: the source parameter is not required when the "remove" action is specified.
 
-Target
-------
+### Target
+
 * <tt>:virtual_path</tt> - The template / partial / layout where the override should take effect eg: *"shared/_person"*, *"admin/posts/new"* this will apply to all controller actions that use the specified template.
 
-Action
-------
+### Action
+
 * <tt>:remove</tt> - Removes all elements that match the supplied selector
 
 * <tt>:replace</tt> - Replaces all elements that match the supplied selector
@@ -65,8 +53,8 @@ Action
 
 * <tt>:remove_from_attributes</tt> - Removes value from attributes on all elements that match the supplied selector. Expects :attributes option to be passed.
 
-Source
-------
+### Source
+
 * <tt>:text</tt> - String containing markup
 
 * <tt>:partial</tt> - Relative path to a partial
@@ -81,8 +69,8 @@ Source
   * <tt>selector</tt> -  A single string css selector (first match is used).
   * <tt>{:start => 'selector_a', :end => 'selector_b'}</tt> - select a range of elements using :start and :end css selectors. The end element must be a sibling of the first/starting element.
 
-Optional
---------
+### Optional
+
 * <tt>:name</tt> - Unique name for override so it can be identified and modified later. This needs to be unique within the same `:virtual_path`
 
 * <tt>:disabled</tt> - When set to true the override will not be applied.
@@ -100,8 +88,7 @@ Optional
 
 * <tt>:attributes</tt> - A hash containing all the attributes to be set on the matched elements, eg: :attributes => {:class => "green", :title => "some string"}
 
-Examples
-========
+### Examples
 
 Replaces all instances of `h1` in the `posts/_form.html.erb` partial with `<h1>New Post</h1>`
 
@@ -160,20 +147,35 @@ Remove an entire ERB if statement (and all it's contents) in the 'admin/products
                          :remove => "code[erb-silent]:contains('if @product.sold?')",
                          :closing_selector => "code[erb-silent]:contains('end')"
 
-Scope
-=====
+### Scope
 
 Deface scopes overrides by virtual_path (or partial / template file), that means all override names only need to be unique within that single file.
 
-Redefining Overrides
-====================
+### Redefining Overrides
 
 You can redefine an existing override by simply declaring a new override with the same <tt>:virtual_path</tt> and <tt>:name</tt> that was originally used.
 You do not need to resupply all the values originally used, just the ones you want to change:
 
-   Deface::Override.new(:virtual_path => 'posts/index',
+    Deface::Override.new(:virtual_path => 'posts/index',
                         :name => 'add_attrs_to_a_link',
                         :disabled => true)
+
+
+Using app/overrides
+-------------------
+
+Instead of using Deface::Override directly, you can alternatively add .deface files to the app/overrides folder and Deface will automatically them pick up. 
+The path of each override should match the path of the view template you want to modify, say for example if you have a template at:
+    
+    app/views/posts/_post.html.erb
+    
+Then you can override it by adding a .deface file at
+
+    app/overrides/posts/_post/my_override.html.erb.deface
+    
+
+
+
 
 Rake Tasks
 ==========
@@ -195,6 +197,26 @@ Deface includes a couple of rake tasks that can be helpful when defining or debu
 **deface:precompile** - Generates compiled views that contain all overrides applied. See `Production & Precompiling` section above for more.
 
     rake deface:precompile
+
+
+
+Demo & Testing
+--------------
+You can play with Deface and see its parsing in action at [deface.heroku.com](http://deface.heroku.com)
+
+
+Production & Precompiling
+------------------------
+
+Deface now supports precompiling where all overrides are loaded and applied to the original views and the resulting templates are then saved to your application's `app/compiled_views` directory. To precompile run:
+
+     bundle exec rake deface:precompile
+
+It's important to disable Deface once precompiling is used to prevent overrides getting applied twice. To disable add the following line to your application's `production.rb` file:
+
+     config.deface.enabled = false
+
+NOTE: You can also use precompiling in development mode.
 
 
 Implementation
@@ -225,6 +247,7 @@ ERB that is contained inside a HTML tag definition is converted slightly differe
     <p data-erb-id="&lt;%= dom_id @product %&gt;"  data-erb-0="&lt;%= &quot;style='display:block';&quot; %&gt;">
 
 Deface overrides have full access to all variables accessible to the view being customized.
+
 
 Caveats
 ======
