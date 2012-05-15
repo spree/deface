@@ -363,5 +363,23 @@ module Deface
       end
     end
 
+    describe "with a single move_bottom override" do
+      before { Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :move_bottom => "child", :to => "parent") }
+      let(:source) { '<child>move me</child><parent>destination</parent>' }
+
+      it "should return modified source, with element moved" do
+        Dummy.apply(source, {:virtual_path => "posts/index"}).should == "<parent>destination<child>move me</child></parent>"
+      end
+    end
+
+    describe "with a single move_top override" do
+      before { Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :move_top => "child", :to => "parent") }
+      let(:source) { '<child>move me</child><parent>destination</parent>' }
+
+      it "should return modified source, with element moved" do
+        Dummy.apply(source, {:virtual_path => "posts/index"}).should == "<parent><child>move me</child>destination</parent>"
+      end
+    end
+
   end
 end
