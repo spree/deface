@@ -26,7 +26,7 @@ Using Deface::Override
 
 A new instance of the Deface::Override class is initialized for each customization you wish to define. When initializing a new override you must supply only one Target, Action & Source parameter and any number of Optional parameters. Note: the source parameter is not required when the "remove" action is specified.
 
-#### Target
+### Target
 
 * <tt>:virtual_path</tt> - The template / partial / layout where the override should take effect eg: *"shared/_person"*, *"admin/posts/new"* this will apply to all controller actions that use the specified template.
 
@@ -210,7 +210,7 @@ Deface includes a couple of rake tasks that can be helpful when defining or debu
     rake deface:precompile
 
 Production & Precompiling
-------------------------
+-------------------------
 
 Deface now supports precompiling where all overrides are loaded and applied to the original views and the resulting templates are then saved to your application's `app/compiled_views` directory. To precompile run:
 
@@ -224,7 +224,7 @@ NOTE: You can also use precompiling in development mode.
 
 
 Demo & Testing
-==============
+--------------
 You can play with Deface and see its parsing in action at [deface.heroku.com](http://deface.heroku.com)
 
 
