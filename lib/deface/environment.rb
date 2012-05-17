@@ -6,6 +6,17 @@ module Deface
       @overrides    = Overrides.new
       @enabled      = true
       @haml_support = false
+      @actions = [ Actions::Remove, Actions::Replace, Actions::ReplaceContents, Actions::Surround, 
+        Actions::SurroundContents, Actions::InsertBefore, Actions::InsertAfter, Actions::InsertTop, 
+        Actions::InsertBottom, Actions::SetAttributes, Actions::AddToAttributes, Actions::RemoveFromAttributes ]
+    end
+
+    def register_action action
+      @actions << action
+    end
+
+    def actions
+      @actions.dup
     end
   end
 

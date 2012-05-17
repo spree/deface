@@ -180,6 +180,11 @@ module Deface
       Deface::Parser.convert(source.clone)
     end
 
+    def safe_source_element
+      return unless source_argument
+      source_element
+    end
+
     def disabled?
       @args.key?(:disabled) ? @args[:disabled] : false
     end
@@ -220,6 +225,18 @@ module Deface
 
     def self.all
       Rails.application.config.deface.overrides.all
+    end
+
+    def execute_action target_element
+      validate_original target_element
+      create_action_command.execute target_element
+    end
+
+    def create_action_command
+      commands = Rails.application.config.deface.actions
+      command = commands.find { |command| command.desired_action? action }
+      raise(DefaceError, "Action #{action} not found") unless command
+      command.new(source_element: safe_source_element, attributes: attributes)
     end
 
     private
