@@ -19,6 +19,10 @@ module Deface
         target_range.first.before(source_element)
         target_range.map(&:remove)
       end
+
+      def range_compatible?
+        true
+      end
     end
   end
 end

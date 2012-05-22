@@ -10,6 +10,10 @@ module Deface
           class_name == name.to_s
         end
       end
+
+      def range_compatible?
+        false
+      end
     end
   end
 end

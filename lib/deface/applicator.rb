@@ -40,7 +40,7 @@ module Deface
               end
             else
 
-              unless [:remove, :replace, :replace_contents, :surround, :surround_contents].include? override.action
+              unless override.compatible_with_end_selector?
                 raise Deface::NotSupportedError, ":#{override.action} action does not support :closing_selector"
               end
               # targeting range of elements as end_selector is present

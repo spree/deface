@@ -20,6 +20,10 @@ module Deface
         target_range.first.after(source_element)
         target_range[1...-1].map(&:remove)
       end
+
+      def range_compatible?
+        true
+      end
     end
   end
 end

@@ -2,11 +2,15 @@ module Deface
   module Actions
     class Remove < Action
       def execute target_element
-        target_element.replace ""
+        execute_on_range([target_element])
       end
 
       def execute_on_range target_range
         target_range.map(&:remove)
+      end
+
+      def range_compatible?
+        true
       end
     end
   end
