@@ -39,6 +39,7 @@ module Deface
                 override.execute_action match
               end
             else
+
               unless [:remove, :replace, :replace_contents, :surround, :surround_contents].include? override.action
                 raise Deface::NotSupportedError, ":#{override.action} action does not support :closing_selector"
               end
@@ -51,54 +52,7 @@ module Deface
                 end
 
                 elements = select_range(starting, ending)
-
-                case override.action
-                  when :remove
-                    elements.map &:remove
-                  when :replace
-                    starting.before(override.source_element)
-                    elements.map &:remove
-                  when :replace_contents
-                    elements[1..-2].map &:remove
-                    starting.after(override.source_element)
-                  when :surround, :surround_contents
-
-                    new_source = override.source_element.clone(1)
-
-                    if original = new_source.css("code:contains('render_original')").first
-
-                      if override.action == :surround
-                        start = elements[0].clone(1)
-                        original.replace start
-
-                        elements[1..-1].each do |element|
-                          element = element.clone(1)
-                          start.after element
-                          start = element
-                        end
-
-                        starting.before(new_source)
-                        elements.map &:remove
-
-
-                      elsif override.action == :surround_contents
-
-                        start = elements[1].clone(1)
-                        original.replace start
-
-                        elements[2...-1].each do |element|
-                          element = element.clone(1)
-                          start.after element
-                          start = element
-                        end
-
-                        starting.after(new_source)
-                        elements[1...-1].map &:remove
-                      end
-                    else
-                      #maybe we should log that the original wasn't found.
-                    end
-                end
+                override.execute_action_on_range elements
               else
                 if starting.nil?
                   Rails.logger.info("\e[1;32mDeface:\e[0m '#{override.name}' failed to match with starting selector '#{override.selector}'")
