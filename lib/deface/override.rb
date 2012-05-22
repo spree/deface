@@ -5,7 +5,7 @@ module Deface
     extend Applicator::ClassMethods
     extend Search::ClassMethods
 
-    cattr_accessor :actions, :sources, :_early
+    cattr_accessor :actions, :sources, :_early, :current_railtie
     attr_accessor :args, :parsed_document
 
     @@_early = []
@@ -63,6 +63,7 @@ module Deface
 
       #set loaded time (if not already present) for hash invalidation
       @args[:updated_at] ||= Time.zone.now.to_f
+      @args[:railtie] = self.class.current_railtie
 
       self.class.all[virtual_key][name_key] = self
 
@@ -77,6 +78,10 @@ module Deface
 
     def name
       @args[:name]
+    end
+
+    def railtie
+      @args[:railtie]
     end
 
     def sequence

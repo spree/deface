@@ -89,6 +89,21 @@ module Deface
           Rails.application.config.deface.overrides.load_all(Rails.application)
         end
 
+
+      end
+
+      describe 'load_overrides' do
+        let(:assets_path) { Pathname.new(File.join(File.dirname(__FILE__), '..', "assets")) }
+        let(:engine) { mock('railtie', :root => assets_path, :paths => {"app/overrides" => ["dummy_engine"]}) }
+
+        it "should keep a reference to which railtie/app defined the override" do
+          Rails.application.stub :root => assets_path, :paths => {"app/overrides" => ["dummy_app"] }
+          Rails.application.stub_chain :railties, :all => [ engine ]
+
+          Rails.application.config.deface.overrides.load_all(Rails.application)
+
+          Deface::Override.all.values.map(&:values).flatten.map(&:railtie).should include(Rails.application, engine)
+        end
       end
 
       describe "enumerate_and_load" do

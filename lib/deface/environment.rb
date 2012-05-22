@@ -25,17 +25,11 @@ module Deface
       app.config.deface.overrides.all.clear
       Deface::DSL::Loader.register
 
-      # check all railties / engines / extensions for overrides
-      app.railties.all.each do |railtie|
+      # check all railties / engines / extensions / application for overrides
+      app.railties.all.dup.push(app).each do |railtie|
         next unless railtie.respond_to? :root
-
-        override_paths = railtie.respond_to?(:paths) ? railtie.paths["app/overrides"] : nil
-        enumerate_and_load(override_paths, railtie.root)
+        load_overrides(railtie)
       end
-
-      # check application for specified overrides paths
-      override_paths = app.paths["app/overrides"]
-      enumerate_and_load(override_paths, app.root)
 
     end
 
@@ -48,6 +42,13 @@ module Deface
     end
 
     private
+
+      def load_overrides(railtie)
+        Override.current_railtie = railtie
+        paths = railtie.respond_to?(:paths) ? railtie.paths["app/overrides"] : nil
+        enumerate_and_load(paths, railtie.root)
+      end
+
       def enumerate_and_load(paths, root)
         paths ||= ["app/overrides"]
 
