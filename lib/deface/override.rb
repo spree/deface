@@ -180,6 +180,11 @@ module Deface
       Deface::Parser.convert(source.clone)
     end
 
+    def safe_source_element
+      return unless source_argument
+      source_element
+    end
+
     def disabled?
       @args.key?(:disabled) ? @args[:disabled] : false
     end
@@ -220,6 +225,38 @@ module Deface
 
     def self.all
       Rails.application.config.deface.overrides.all
+    end
+
+    def execute_action target_element
+      validate_original target_element
+      create_action_command.execute target_element
+    end
+
+    def execute_action_on_range target_range
+      create_action_command.execute_on_range target_range
+    end
+
+    def create_action_command
+      commands = Rails.application.config.deface.actions
+      command = commands.find { |command| command.desired_action? action }
+      raise(DefaceError, "Action #{action} not found") unless command
+      command.new(source_element: safe_source_element, attributes: attributes)
+    end
+
+    def compatible_with_end_selector?
+      create_action_command.range_compatible?
+    end
+
+    def matcher
+      if end_selector.blank?
+        Deface::Matchers::Element.new(selector) # single css selector
+      else
+        unless compatible_with_end_selector?
+          raise Deface::NotSupportedError, ":#{action} action does not support :closing_selector"
+        end
+        # targeting range of elements as end_selector is present
+        Deface::Matchers::Range.new(name, selector, end_selector)
+      end
     end
 
     private
