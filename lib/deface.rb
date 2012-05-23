@@ -24,6 +24,8 @@ require "deface/actions/attribute_action"
 require "deface/actions/set_attributes"
 require "deface/actions/add_to_attributes"
 require "deface/actions/remove_from_attributes"
+require "deface/matchers/element"
+require "deface/matchers/range"
 
 module Deface
   if defined?(Rails)

@@ -10,6 +10,7 @@ module Deface
       end
 
       def execute target_element
+        target_element = target_element.first
         attributes.each do |name, value|
           execute_for_attribute target_element, normalize_attribute_name(name), value          
         end

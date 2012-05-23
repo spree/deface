@@ -247,6 +247,18 @@ module Deface
       create_action_command.range_compatible?
     end
 
+    def matcher
+      if end_selector.blank?
+        Deface::Matchers::Element.new(selector) # single css selector
+      else
+        unless compatible_with_end_selector?
+          raise Deface::NotSupportedError, ":#{action} action does not support :closing_selector"
+        end
+        # targeting range of elements as end_selector is present
+        Deface::Matchers::Range.new(name, selector, end_selector)
+      end
+    end
+
     private
 
       # check if method is compiled for the current virtual path

@@ -25,44 +25,13 @@ module Deface
             end
 
             override.parsed_document = doc
+            matches = override.matcher.matches(doc, log)
 
-            if override.end_selector.blank?
-              # single css selector
-
-              matches = doc.css(override.selector)
-
-              if log
-                Rails.logger.send(matches.size == 0 ? :error : :info, "\e[1;32mDeface:\e[0m '#{override.name}' matched #{matches.size} times with '#{override.selector}'")
-              end
-
-              matches.each do |match|
-                override.execute_action match
-              end
-            else
-
-              unless override.compatible_with_end_selector?
-                raise Deface::NotSupportedError, ":#{override.action} action does not support :closing_selector"
-              end
-              # targeting range of elements as end_selector is present
-              starting, ending = select_endpoints(doc, override.selector, override.end_selector)
-
-              if starting && ending
-                if log
-                  Rails.logger.info("\e[1;32mDeface:\e[0m '#{override.name}' matched starting with '#{override.selector}' and ending with '#{override.end_selector}'")
-                end
-
-                elements = select_range(starting, ending)
-                override.execute_action_on_range elements
-              else
-                if starting.nil?
-                  Rails.logger.info("\e[1;32mDeface:\e[0m '#{override.name}' failed to match with starting selector '#{override.selector}'")
-                else
-                  Rails.logger.info("\e[1;32mDeface:\e[0m '#{override.name}' failed to match with end selector '#{override.end_selector}'")
-                end
-
-              end
+            if log
+              Rails.logger.send(matches.size == 0 ? :error : :info, "\e[1;32mDeface:\e[0m '#{override.name}' matched #{matches.size} times with '#{override.selector}'")
             end
 
+            matches.each {|match| override.execute_action match } unless matches.empty?
           end
 
           #prevents any caching by rails in development mode
