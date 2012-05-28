@@ -1,7 +1,7 @@
 module Deface
   module Actions
     class Remove < Action
-      def execute target_range
+      def execute(target_range)
         target_range.map(&:remove)
       end
 

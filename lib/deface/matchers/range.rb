@@ -7,7 +7,7 @@ module Deface
         @end_selector = end_selector
       end
 
-      def matches document, log=true
+      def matches(document, log=true)
         starting, ending = select_endpoints(document, @selector, @end_selector)
 
         if starting && ending

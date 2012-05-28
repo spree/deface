@@ -11,7 +11,7 @@ module Deface
         Actions::InsertBottom, Actions::SetAttributes, Actions::AddToAttributes, Actions::RemoveFromAttributes ]
     end
 
-    def register_action action
+    def register_action(action)
       @actions << action
     end
 

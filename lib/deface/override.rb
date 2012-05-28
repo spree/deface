@@ -139,9 +139,7 @@ module Deface
         cut = @args[:cut]
 
         if cut.is_a? Hash
-          starting, ending = self.class.select_endpoints(self.parsed_document, cut[:start], cut[:end])
-
-          range = self.class.select_range(starting, ending)
+          range = Deface::Matchers::Range.new('Cut', cut[:start], cut[:end]).matches(self.parsed_document).first
           range.map &:remove
 
           Deface::Parser.undo_erb_markup! range.map(&:to_s).join
@@ -154,10 +152,7 @@ module Deface
         copy = @args[:copy]
 
         if copy.is_a? Hash
-          starting, ending = self.class.select_endpoints(self.parsed_document, copy[:start], copy[:end])
-
-          range = self.class.select_range(starting, ending)
-
+          range = Deface::Matchers::Range.new('Copy', copy[:start], copy[:end]).matches(self.parsed_document).first
           Deface::Parser.undo_erb_markup! range.map(&:to_s).join
         else
          Deface::Parser.undo_erb_markup! parsed_document.css(copy).first.to_s.clone
@@ -232,13 +227,13 @@ module Deface
       Rails.application.config.deface.overrides.all
     end
 
-    def execute_action target_element
-      validate_original target_element
-      create_action_command.execute target_element
+    def execute_action(target_element)
+      validate_original(target_element)
+      create_action_command.execute(target_element)
     end
 
-    def execute_action_on_range target_range
-      create_action_command.execute_on_range target_range
+    def execute_action_on_range(target_range)
+      create_action_command.execute_on_range(target_range)
     end
 
     def create_action_command

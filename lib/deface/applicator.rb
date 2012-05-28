@@ -44,41 +44,6 @@ module Deface
 
         source
       end
-
-
-        def select_endpoints(doc, start, finish)
-          # targeting range of elements as end_selector is present
-          #
-          finish = "#{start} ~ #{finish}"
-          starting    = doc.css(start).first
-
-          ending = if starting && starting.parent
-            starting.parent.css(finish).first
-          else
-            doc.css(finish).first
-          end
-
-          return starting, ending
-
-        end
-
-        # finds all elements upto closing sibling in nokgiri document
-        #
-        def select_range(first, last)
-          first == last ? [first] : [first, *select_range(first.next, last)]
-        end
-
-        private
-
-        def normalize_attribute_name(name)
-          name = name.to_s.gsub /"|'/, ''
-
-          if /\Adata-erb-/ =~ name
-            name.gsub! /\Adata-erb-/, ''
-          end
-
-          name
-        end
     end
   end
 end
