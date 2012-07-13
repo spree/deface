@@ -122,7 +122,7 @@ Inserts `<%= link_to "List Comments", comments_url(post) %>` before all instance
      Deface::Override.new(:virtual_path => "posts/index", 
                           :name => "example-2", 
                           :insert_before => "p.comment",
-                          :text => "<%= link_to "List Comments", comments_url(post) %>")
+                          :text => "<%= link_to 'List Comments', comments_url(post) %>")
 
 Inserts the contents of `shared/_comment.html.erb` after all instances of `div` with an id of `comment_21` in `posts/show.html.erb`
 
