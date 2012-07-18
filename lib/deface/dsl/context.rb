@@ -62,6 +62,10 @@ module Deface
       def disabled
         @options[:disabled] = true
       end
+
+      def namespaced
+        @name = "#{Override.current_railtie.underscore}_#{@name}"
+      end
     end
   end
 end
