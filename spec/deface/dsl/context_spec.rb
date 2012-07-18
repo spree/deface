@@ -9,9 +9,7 @@ describe Deface::DSL::Context do
     subject { context = Deface::DSL::Context.new('sample_name') }
 
     def override_should_be_created_with(expected_hash)
-      Deface::Override.should_receive(:new).with(hash_including(
-        :name => 'sample_name'
-      ))
+      Deface::Override.should_receive(:new).with hash_including(expected_hash.reverse_merge(:name => 'sample_name'))
 
       subject.create_override
     end
