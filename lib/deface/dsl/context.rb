@@ -7,6 +7,7 @@ module Deface
       end
 
       def create_override
+        namespaced if Rails.application.try(:config).try(:deface).try(:namespaced)
         options = {
           :name => @name, 
           :virtual_path => @virtual_path,
