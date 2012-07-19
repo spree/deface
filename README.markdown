@@ -205,9 +205,7 @@ and including haml source:
 
 You can include all the additional options you can normally use when defining a Deface::Override manually, a more complex example:
 
-    <!-- replace_contents 'h1'
-         closing_selector 'div#intro'
-         disabled -->
+    <!-- replace_contents 'h1' closing_selector 'div#intro' disabled -->
     <p>This is a complicated example</p>
 
 #### Disabled / Enabled

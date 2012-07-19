@@ -138,14 +138,14 @@ describe Deface::DSL::Loader do
     it 'should work in the simplest case' do
       example = "<!-- test 'command' --><h1>Wow!</h1>"
       dsl_commands, the_rest = Deface::DSL::Loader.extract_dsl_commands_from_erb(example)
-      dsl_commands.should == "test 'command'\n"
+      dsl_commands.should == "\ntest 'command'"
       the_rest.should == "<h1>Wow!</h1>"
     end
 
     it 'should combine multiple comments' do
       example = "<!-- test 'command' --><!-- another 'command' --><h1>Wow!</h1>"
       dsl_commands, the_rest = Deface::DSL::Loader.extract_dsl_commands_from_erb(example)
-      dsl_commands.should == "test 'command'\nanother 'command'\n"
+      dsl_commands.should == "\ntest 'command'\nanother 'command'"
       the_rest.should == "<h1>Wow!</h1>"
     end
 
@@ -159,16 +159,24 @@ describe Deface::DSL::Loader do
     it 'should work with comments on own lines' do
       example = "<!-- test 'command' -->\n<!-- another 'command' -->\n<h1>Wow!</h1>"
       dsl_commands, the_rest = Deface::DSL::Loader.extract_dsl_commands_from_erb(example)
-      dsl_commands.should == "test 'command'\nanother 'command'\n"
+      dsl_commands.should == "\ntest 'command'\nanother 'command'"
       the_rest.should == "\n<h1>Wow!</h1>"
     end
 
     it 'should work with newlines inside the comment' do
       example = "<!--\n test 'command'\nanother 'command'\n -->\n<h1>Wow!</h1>"
       dsl_commands, the_rest = Deface::DSL::Loader.extract_dsl_commands_from_erb(example)
-      dsl_commands.should == "test 'command'\nanother 'command'\n"
+      dsl_commands.should == "\ntest 'command'\nanother 'command'"
       the_rest.should == "\n<h1>Wow!</h1>"
     end
+
+    it 'should work with multiple commands on one line' do
+      example = %q{<!-- replace_contents 'h1 .title' closing_selector "div#intro" disabled namespaced --><h1>Wow!</h1>}
+      dsl_commands, the_rest = Deface::DSL::Loader.extract_dsl_commands_from_erb(example)
+      dsl_commands.should == "\nreplace_contents 'h1 .title'\nclosing_selector \"div#intro\"\ndisabled\nnamespaced"
+      the_rest.should == "<h1>Wow!</h1>"
+    end
+
   end
 
   context '.extract_dsl_commands_from_haml' do
