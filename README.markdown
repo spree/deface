@@ -176,7 +176,7 @@ You do not need to resupply all the values originally used, just the ones you wa
 Using the Deface DSL (.deface files)
 ------------------------------------
 
-Instead of defining Deface::Override instances directly, you can alternatively add `.deface` files to the `app/overrides` folder and Deface will automatically them pick up.
+Instead of defining Deface::Override instances directly, you can alternatively add `.deface` files to the `app/overrides` folder and Deface will automatically pick them up.
 The path of each override should match the path of the view template you want to modify, say for example if you have a template at:
 
     app/views/posts/_post.html.erb
