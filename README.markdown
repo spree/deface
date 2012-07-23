@@ -218,6 +218,27 @@ or
 
     <!-- disabled -->
 
+#### Naming
+
+When using the DSL, overrides automatically take their name from the filename of the file in which they are defined 
+(ie `my_override.html.erb.deface` becomes `my_override`) so overrides with the same filename will replace each other, 
+even if they are defined in separate engines.
+
+If you want to avoid this, you can have Deface automatically namespace individual overrides by using the `namespaced` option:
+
+```erb
+<!-- insert_bottom 'head' namespaced-->
+```
+or by activating it globally for all DSL overrides in your app's `application.rb` file:
+
+```ruby
+config.deface.namespaced = true # default is false
+```
+
+Each override will then have its name namespaced to the engine in which it was defined 
+(ie `my_override.html.erb.deface` defined in `MyEngine` becomes `my_engine_my_override`), 
+allowing overrides in different engines with identical filenames to co-exist.
+
 ### DSL usage for overrides that do not include markup
 
 If your override does not require any markup, for example actions including ````:remove, :set_attributes, :remove_from_attributes, :add_to_attrbiutes```` you can exclude the "html.erb" or "html.haml" from the file name and you do not need to wrap the arguments in a comment.
