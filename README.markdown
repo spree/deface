@@ -104,60 +104,76 @@ You should save your overrides in the ````app/overrides````, normally one overri
 
 Replaces all instances of `h1` in the `posts/_form.html.erb` partial with `<h1>New Post</h1>`
 
-     Deface::Override.new(:virtual_path => "posts/_form", 
-                          :name => "example-1", 
-                          :replace => "h1", 
-                          :text => "<h1>New Post</h1>")
+```ruby
+Deface::Override.new(:virtual_path => "posts/_form", 
+                     :name => "example-1", 
+                     :replace => "h1", 
+                     :text => "<h1>New Post</h1>")
+```
 
 Alternatively pass it a block of code to run:
 
-     Deface::Override.new(:virtual_path => "posts/_form",
-                          :name => "example-1",
-                          :replace => "h1") do
-       "<h1>New Post</h1>"
-     end
+```ruby
+Deface::Override.new(:virtual_path => "posts/_form",
+                     :name => "example-1",
+                     :replace => "h1") do
+  "<h1>New Post</h1>"
+end
+```
 
 Inserts `<%= link_to "List Comments", comments_url(post) %>` before all instances of `p` with css class `comment` in `posts/index.html.erb`
 
-     Deface::Override.new(:virtual_path => "posts/index", 
-                          :name => "example-2", 
-                          :insert_before => "p.comment",
-                          :text => "<%= link_to 'List Comments', comments_url(post) %>")
+```ruby
+Deface::Override.new(:virtual_path => "posts/index", 
+                     :name => "example-2", 
+                     :insert_before => "p.comment",
+                     :text => "<%= link_to 'List Comments', comments_url(post) %>")
+```
 
 Inserts the contents of `shared/_comment.html.erb` after all instances of `div` with an id of `comment_21` in `posts/show.html.erb`
 
-     Deface::Override.new(:virtual_path => "posts/show", 
-                          :name => "example-3",
-                          :insert_after => "div#comment_21", 
-                          :partial => "shared/comment")
+```ruby
+Deface::Override.new(:virtual_path => "posts/show", 
+                     :name => "example-3",
+                     :insert_after => "div#comment_21", 
+                     :partial => "shared/comment")
+```
 
 Removes any ERB block containing the string `helper_method` in the `posts/new.html.erb` template, will also log if markup being removed does not exactly match `<%= helper_method %>`
 
-     Deface::Override.new(:virtual_path => "posts/new", 
-                          :name => "example-4", 
-                          :remove => "code[erb-loud]:contains('helper_method')",
-                          :original => "<%= helper_method %>")
+```ruby
+Deface::Override.new(:virtual_path => "posts/new", 
+                     :name => "example-4", 
+                     :remove => "code[erb-loud]:contains('helper_method')",
+                     :original => "<%= helper_method %>")
+```
 
 Wraps the `div` with id of `products` in ruby if statement, the <%= render_original %> in the `text` indicates where the matching content should be re-included.
 
-     Deface::Override.new(:virtual_path => "posts/new", 
-                          :name => "example-5", 
-                          :surround => "div#products",
-                          :text => "<% if @product.present? %><%= render_original %><% end %>")
+```ruby
+Deface::Override.new(:virtual_path => "posts/new", 
+                     :name => "example-5", 
+                     :surround => "div#products",
+                     :text => "<% if @product.present? %><%= render_original %><% end %>")
+```
 
 Sets (or adds if not present) the `class` and `title` attributes to all instances of `a` with an id of `link` in `posts/index.html.erb` 
 
-    Deface::Override.new(:virtual_path => 'posts/index',
-                        :name => 'add_attrs_to_a_link',
-                        :set_attributes => 'a#link',
-                        :attributes => {:class => 'pretty', :title => 'This is a link'})
+```ruby
+Deface::Override.new(:virtual_path => 'posts/index',
+                     :name => 'add_attrs_to_a_link',
+                     :set_attributes => 'a#link',
+                     :attributes => {:class => 'pretty', :title => 'This is a link'})
+```
 
 Remove an entire ERB if statement (and all it's contents) in the 'admin/products/index.html.erb' template, using the :closing_selector.
 
-    Deface::Override.new(:virtual_path => 'admin/products/index',
-                         :name => "remove_if_statement",
-                         :remove => "code[erb-silent]:contains('if @product.sold?')",
-                         :closing_selector => "code[erb-silent]:contains('end')"
+```ruby
+Deface::Override.new(:virtual_path => 'admin/products/index',
+                     :name => "remove_if_statement",
+                     :remove => "code[erb-silent]:contains('if @product.sold?')",
+                     :closing_selector => "code[erb-silent]:contains('end')"
+```
 
 ### Scope
 
@@ -168,10 +184,11 @@ Deface scopes overrides by virtual_path (or partial / template file), that means
 You can redefine an existing override by simply declaring a new override with the same <tt>:virtual_path</tt> and <tt>:name</tt> that was originally used.
 You do not need to resupply all the values originally used, just the ones you want to change:
 
-    Deface::Override.new(:virtual_path => 'posts/index',
-                        :name => 'add_attrs_to_a_link',
-                        :disabled => true)
-
+```ruby
+Deface::Override.new(:virtual_path => 'posts/index',
+                     :name => 'add_attrs_to_a_link',
+                     :disabled => true)
+```
 
 Using the Deface DSL (.deface files)
 ------------------------------------
@@ -187,8 +204,10 @@ Then you can override it by adding a .deface file at:
 
 The format of a .deface file is a comment showing the action to be performed, followed by any markup that would be normally passed to the :erb, :text, :haml arguments:
 
-    <!-- insert_after 'h1' -->
-    <h2>These robots are awesome.</h2>
+```html
+<!-- insert_after 'h1' -->
+<h2>These robots are awesome.</h2>
+```
 
 The same effect can also be achieved with haml, by changing the overrides filename to:
 
@@ -196,27 +215,34 @@ The same effect can also be achieved with haml, by changing the overrides filena
 
 and including haml source:
 
-    /
-      insert_after 'h1'
-    %h2 These robots are awesome.
-
+```haml
+/
+  insert_after 'h1'
+%h2 These robots are awesome.
+```
 
 #### Additional Options
 
 You can include all the additional options you can normally use when defining a Deface::Override manually, a more complex example:
 
-    <!-- replace_contents 'h1' closing_selector 'div#intro' disabled -->
-    <p>This is a complicated example</p>
+```html
+<!-- replace_contents 'h1' closing_selector 'div#intro' disabled -->
+<p>This is a complicated example</p>
+```
 
 #### Disabled / Enabled
 
 The DSL does not accept the instance style ````:disabled => boolean```` instead you can simply include either:
 
-    <!-- enabled -->
+```html
+<!-- enabled -->
+```
 
 or
 
-    <!-- disabled -->
+```html
+<!-- disabled -->
+```
 
 ### DSL usage for overrides that do not include markup
 
@@ -228,9 +254,10 @@ So the override filename becomes simply:
 
 And the contents:
 
-    add_to_attributes 'a#search'
-    attributes :alt => 'Click here to search'
-
+```ruby
+add_to_attributes 'a#search'
+attributes :alt => 'Click here to search'
+```
 
 
 Rake Tasks
@@ -278,27 +305,39 @@ Implementation
 
 Deface temporarily converts ERB files into a pseudo HTML markup that can be parsed and queired by Nokogiri, using the following approach:
 
-    <%= some ruby code %> 
+```erb
+<%= some ruby code %> 
+```
 
-     becomes 
+becomes:
 
-    <code erb-loud> some ruby code </code>
+```html
+<code erb-loud> some ruby code </code>
+```
 
 and 
   
-    <% other ruby code %>
+```erb
+<% other ruby code %>
+```
 
-      becomes
+becomes:
 
-    <code erb-silent> other ruby code </code>
+```html
+<code erb-silent> other ruby code </code>
+```
 
 ERB that is contained inside a HTML tag definition is converted slightly differently to ensure a valid HTML document that Nokogiri can parse:
 
-    <p id="<%= dom_id @product %>" <%= "style='display:block';" %>>
+```erb
+<p id="<%= dom_id @product %>" <%= "style='display:block';" %>>
+```
    
-      becomes
+becomes:
 
-    <p data-erb-id="&lt;%= dom_id @product %&gt;"  data-erb-0="&lt;%= &quot;style='display:block';&quot; %&gt;">
+```html
+<p data-erb-id="&lt;%= dom_id @product %&gt;"  data-erb-0="&lt;%= &quot;style='display:block';&quot; %&gt;">
+```
 
 Deface overrides have full access to all variables accessible to the view being customized.
 
@@ -311,6 +350,8 @@ Deface uses the amazing Nokogiri library (and in turn libxml) for parsing HTML /
 
 2. Parsing will fail and result in invalid output if ERB blocks are responsible for closing an HTML tag that was opened normally, i.e. don't do this:
 
-      &lt;div <%= ">" %>
+```html
+&lt;div <%= ">" %>
+```
 
 3. Gems or Spree Extensions that add overrides to your application will load them in the order they are added to your Gemfile.
