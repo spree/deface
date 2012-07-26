@@ -145,17 +145,10 @@ describe Deface::DSL::Context do
     end
 
     it "should automatically namespace the override's name when namespaced is called" do
-      Deface::Override.current_railtie = 'SpreeEngine'
       subject.namespaced
 
-      override_should_be_created_with(:name => 'spree_engine_sample_name')
+      override_should_be_created_with(:namespaced => true)
     end
 
-    it "should automatically namespace the override's name when config.namespaced = true" do
-      Deface::Override.current_railtie = 'SpreeEngine'
-      Rails.application.config.deface.namespaced = true
-
-      override_should_be_created_with(:name => 'spree_engine_sample_name')
-    end
   end
 end

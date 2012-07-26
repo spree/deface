@@ -7,7 +7,6 @@ module Deface
       end
 
       def create_override
-        namespaced if Rails.application.try(:config).try(:deface).try(:namespaced)
         options = {
           :name => @name, 
           :virtual_path => @virtual_path,
@@ -65,7 +64,7 @@ module Deface
       end
 
       def namespaced
-        @name = "#{Override.current_railtie.underscore}_#{@name}"
+        @options[:namespaced] = true
       end
     end
   end
