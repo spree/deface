@@ -314,3 +314,5 @@ Deface uses the amazing Nokogiri library (and in turn libxml) for parsing HTML /
       &lt;div <%= ">" %>
 
 3. Gems or Spree Extensions that add overrides to your application will load them in the order they are added to your Gemfile.
+
+4. Applying an override to a view that contains invalid markup (which, occasionally happens in Spree views) can break rendering that would normally pass a browser's own permissive rendering.  This is because the nokogiri library takes it upon itself to correct the issue, which doesn't happen prior to applying deface.  Sometimes that correction changes the rendering of the view in an unintended manner, appearing to break it.  The easiest way to tell if this is the cause of an issue for you is to put your view into http://deface.heroku.com/ and diff the output with the html which rails renders without your override.  If you see a difference in the structure of the html, you may have invalid markup in your view which nokogiri is correcting for you.  See [Spree issue #1789](https://github.com/spree/spree/pull/1789) for an example of what may be wrong in a view.
