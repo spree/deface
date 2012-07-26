@@ -172,6 +172,21 @@ You do not need to resupply all the values originally used, just the ones you wa
                         :name => 'add_attrs_to_a_link',
                         :disabled => true)
 
+### Namespacing
+
+If you want to avoid inadvertently redefining overrides in other engines, you can use the `namespaced` option to have
+an override automatically be namespaced to the engine in which it was defined:
+
+    Deface::Override.new(:virtual_path => 'posts/index',
+                        :name => 'add_link',
+                        :namespaced => true)
+
+So for example if the above override was defined in `MyEngine` it would be automatically named `my_engine_add_link`.
+This can also be activated globally for all DSL overrides in your app's `application.rb` file:
+
+```ruby
+config.deface.namespaced = true # default is false
+```
 
 Using the Deface DSL (.deface files)
 ------------------------------------
@@ -218,18 +233,16 @@ or
 
     <!-- disabled -->
 
-#### Naming
+#### Namespacing
 
 When using the DSL, overrides automatically take their name from the filename of the file in which they are defined 
 (ie `my_override.html.erb.deface` becomes `my_override`) so overrides with the same filename will replace each other, 
-even if they are defined in separate engines.
-
-If you want to avoid this, you can have Deface automatically namespace individual overrides by using the `namespaced` option:
+even if they are defined in separate engines. If you want to avoid this, you can use the `namespaced` option :
 
 ```erb
 <!-- insert_bottom 'head' namespaced-->
 ```
-or by activating it globally for all DSL overrides in your app's `application.rb` file:
+or activate it globally for all DSL overrides in your app's `application.rb` file:
 
 ```ruby
 config.deface.namespaced = true # default is false
