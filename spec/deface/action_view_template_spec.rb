@@ -62,7 +62,33 @@ module ActionView
       end
     end
 
+    describe "non erb or haml template" do
+      before(:each) do
+        Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :remove => "p")
+        @template = ActionView::Template.new("xml.post => :blah", "/some/path/to/file.erb", ActionView::Template::Handlers::Builder, {:virtual_path=>"posts/index", :format=>:xml, :updated_at => (Time.now - 100)})
+      end
+
+      it "should return unmodified source" do
+        #if processed, source would include "=&gt;"
+        @template.source.should == "xml.post => :blah"
+      end
+    end
+
+    describe "#should_be_defaced?(handler) method" do
+      #not so BDD, but it keeps us from making mistakes in the future
+      #for instance, we test ActionView::Template here with a handler == ....::Handlers::ERB,
+      #while in rails it seems it's an instance of ...::Handlers::ERB
+      it "should be truthy only for haml/erb handlers and their instances" do
+        expectations = { Haml::Plugin => true,
+                         ActionView::Template::Handlers::ERB => true,
+                         ActionView::Template::Handlers::ERB.new => true,
+                         ActionView::Template::Handlers::Builder => false }
+        expectations.each do |handler, expected|
+          @template = ActionView::Template.new("xml.post => :blah", "/some/path/to/file.erb", handler, {:virtual_path=>"posts/index", :format=>:xml, :updated_at => (Time.now - 100)})
+          @template.is_a?(ActionView::Template).should == true
+          @template.send(:should_be_defaced?, handler).should eq(expected), "unexpected result for handler "+handler.to_s
+        end
+      end
+    end
   end
 end
-
-

@@ -2,7 +2,7 @@ ActionView::Template.class_eval do
   alias_method :initialize_without_deface, :initialize
 
   def initialize(source, identifier, handler, details)
-    if Rails.application.config.deface.enabled
+    if Rails.application.config.deface.enabled && should_be_defaced?(handler)
       haml = handler.to_s == "Haml::Plugin"
 
       processed_source = Deface::Override.apply(source, details, true, haml )
@@ -49,6 +49,12 @@ ActionView::Template.class_eval do
 
       #we digest the whole method name as if it gets too long there's problems
       "_#{Digest::MD5.new.update("#{deface_hash}_#{method_name_without_deface}").hexdigest}"
+    end
+
+  private
+
+    def should_be_defaced?(handler)
+      handler.to_s.demodulize == "ERB" || handler.class.to_s.demodulize == "ERB" || handler.to_s == "Haml::Plugin"
     end
 end
 
