@@ -1,9 +1,6 @@
 module Deface
-  class HamlConverter < Haml::Engine
-    def result
-      Deface::Parser.undo_erb_markup! String.new(render)
-    end
 
+  module HamlCompilerMethods
     def push_script(text, preserve_script, in_tag = false, preserve_tag = false,
                     escape_html = false, nuke_inner_whitespace = false)
       push_text "<%= #{text.strip} %>"
@@ -17,7 +14,9 @@ module Deface
     def push_silent(text, can_suppress = false)
       push_text "<% #{text.strip} %>"
     end
+  end
 
+  module HamlParserMethods
     def parse_old_attributes(line)
       attributes_hash, rest, last_line = super(line)
 
@@ -34,7 +33,6 @@ module Deface
 
       return attributes, rest, last_line
     end
-
     private
 
       # coverts { attributes into deface compatibily attributes
@@ -72,6 +70,31 @@ module Deface
 
         attrs.join(', ')
       end
+  end
 
+  class HamlConverter < Haml::Engine
+
+    if Haml::VERSION >= "3.2"
+      class Compiler < Haml::Compiler
+        include HamlCompilerMethods
+      end
+
+      class Parser < Haml::Parser
+        include HamlParserMethods
+      end
+
+      def initialize(template, options = {})
+        options[:compiler_class] = Compiler
+        options[:parser_class]   = Parser
+        super(template, options)
+      end
+    else
+      include HamlParserMethods
+      include HamlCompilerMethods
+    end
+
+    def result
+      Deface::Parser.undo_erb_markup! String.new(render)
+    end
   end
 end

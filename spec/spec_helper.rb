@@ -9,7 +9,10 @@ require 'haml'
 require 'deface/haml_converter'
 require 'time'
 
-Haml.init_rails(nil)
+if defined?(Haml::Options)
+  # Haml 3.2 changes the default output format to HTML5
+  Haml::Options.defaults[:format] = :xhtml
+end
 
 RSpec.configure do |config|
   config.mock_framework = :rspec
@@ -47,6 +50,8 @@ shared_context "mock Rails" do
 
     Time.stub :zone => mock('zone')
     Time.zone.stub(:now).and_return Time.parse('1979-05-25')
+
+    require "haml/template/plugin"
   end
 end
 
