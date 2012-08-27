@@ -46,23 +46,19 @@ module Deface
                   when :replace_contents
                     match.children.remove
                     match.add_child(override.source_element)
-                  when :surround, :surround_contents
-
+                  when :surround
                     new_source = override.source_element.clone(1)
-
-                    if original = new_source.css("code:contains('render_original')").first
-                      if override.action == :surround
-                        original.replace match.clone(1)
-                        match.replace new_source
-                      elsif override.action == :surround_contents
-                        original.replace match.children
-                        match.children.remove
-                        match.add_child new_source
-                      end
-                    else
-                      #maybe we should log that the original wasn't found.
+                    new_source.css("code:contains('render_original')").each do |original|
+                      original.replace match.clone(1)
                     end
-
+                    match.replace new_source
+                  when :surround_contents
+                    new_source = override.source_element.clone(1)
+                    new_source.css("code:contains('render_original')").each do |original|
+                      original.replace match.clone(1).children # Must clone match otherwise the children will only be assigned to first iteration.
+                    end
+                    match.children.remove
+                    match.add_child new_source
                   when :insert_before
                     match.before override.source_element
                   when :insert_after
@@ -143,10 +139,8 @@ module Deface
                     elements[1..-2].map &:remove
                     starting.after(override.source_element)
                   when :surround, :surround_contents
-
                     new_source = override.source_element.clone(1)
-
-                    if original = new_source.css("code:contains('render_original')").first
+                    new_source.css("code:contains('render_original')").each do |original|
 
                       if override.action == :surround
                         start = elements[0].clone(1)
@@ -160,7 +154,6 @@ module Deface
 
                         starting.before(new_source)
                         elements.map &:remove
-
 
                       elsif override.action == :surround_contents
 
@@ -176,8 +169,6 @@ module Deface
                         starting.after(new_source)
                         elements[1...-1].map &:remove
                       end
-                    else
-                      #maybe we should log that the original wasn't found.
                     end
                 end
               else
@@ -186,7 +177,6 @@ module Deface
                 else
                   Rails.logger.info("\e[1;32mDeface:\e[0m '#{override.name}' failed to match with end selector '#{override.end_selector}'")
                 end
-
               end
             end
 
@@ -203,30 +193,28 @@ module Deface
         source
       end
 
-
-        def select_endpoints(doc, start, finish)
-          # targeting range of elements as end_selector is present
-          #
-          finish = "#{start} ~ #{finish}"
-          starting    = doc.css(start).first
-
-          ending = if starting && starting.parent
-            starting.parent.css(finish).first
-          else
-            doc.css(finish).first
-          end
-
-          return starting, ending
-
-        end
-
-        # finds all elements upto closing sibling in nokgiri document
+      def select_endpoints(doc, start, finish)
+        # targeting range of elements as end_selector is present
         #
-        def select_range(first, last)
-          first == last ? [first] : [first, *select_range(first.next, last)]
+        finish = "#{start} ~ #{finish}"
+        starting    = doc.css(start).first
+
+        ending = if starting && starting.parent
+          starting.parent.css(finish).first
+        else
+          doc.css(finish).first
         end
 
-        private
+        return starting, ending
+      end
+
+      # finds all elements upto closing sibling in nokgiri document
+      #
+      def select_range(first, last)
+        first == last ? [first] : [first, *select_range(first.next, last)]
+      end
+
+      private
 
         def normalize_attribute_name(name)
           name = name.to_s.gsub /"|'/, ''
@@ -237,6 +225,7 @@ module Deface
 
           name
         end
+
     end
   end
 end
