@@ -333,6 +333,14 @@ module Deface
       end
     end
 
+    describe "with multiple render_original calls defined for surround override" do
+      before { Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :surround => "p", :text => "<div><%= render_original %></div><h1>It's behind you!</h1><div><%= render_original %></div>") }
+      let(:source) { "<p>test</p>" }
+
+      it "should return modified source" do
+        Dummy.apply(source, {:virtual_path => "posts/index"}).should == "<div><p>test</p></div><h1>It's behind you!</h1><div><p>test</p></div>"
+      end
+    end
 
     describe "with a single html surround_contents override defined" do
       before { Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :surround_contents => "div", :text => "<span><%= render_original %></span>") }
@@ -349,6 +357,15 @@ module Deface
 
       it "should return modified source" do
         Dummy.apply(source, {:virtual_path => "posts/index"}).should == "<p><% if 1==1 %>test<% end %></p>"
+      end
+    end
+
+    describe "with multiple render_original calls defined for surround_contents" do
+      before { Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :surround_contents => "p", :text => "<% if 1==1 %><%= render_original %><% else %><%= render_original %><% end %>") }
+      let(:source) { "<p>test</p>" }
+
+      it "should return modified source" do
+        Dummy.apply(source, {:virtual_path => "posts/index"}).should == "<p><% if 1==1 %>test<% else %>test<% end %></p>"
       end
     end
 
