@@ -143,5 +143,12 @@ describe Deface::DSL::Context do
 
       override_should_be_created_with(:disabled => false)
     end
+
+    it "should automatically namespace the override's name when namespaced is called" do
+      subject.namespaced
+
+      override_should_be_created_with(:namespaced => true)
+    end
+
   end
 end

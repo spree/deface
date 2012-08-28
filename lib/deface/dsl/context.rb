@@ -62,6 +62,10 @@ module Deface
       def disabled
         @options[:disabled] = true
       end
+
+      def namespaced
+        @options[:namespaced] = true
+      end
     end
   end
 end

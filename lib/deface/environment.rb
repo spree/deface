@@ -1,11 +1,12 @@
 module Deface
 
   class Environment
-    attr_accessor :overrides, :enabled, :haml_support
+    attr_accessor :overrides, :enabled, :haml_support, :namespaced
     def initialize
       @overrides    = Overrides.new
       @enabled      = true
       @haml_support = false
+      @namespaced   = false
     end
   end
 

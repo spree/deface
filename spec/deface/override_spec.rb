@@ -268,6 +268,29 @@ module Deface
       end
     end
 
+    describe "with :namespaced" do
+      before(:each) do
+        Deface::Override.current_railtie = 'SpreeEngine'
+        @override = Deface::Override.new(:virtual_path => 'sample_path', :name => 'sample_name', :replace => 'h1', :namespaced => true)
+      end
+
+      it "should namespace the override's name" do
+        @override.name.should == 'spree_engine_sample_name'
+      end
+    end
+
+    describe "with global namespaced option set to true" do
+      before(:each) do
+        Deface::Override.current_railtie = 'SpreeEngine'
+        Rails.application.config.deface.namespaced = true
+        @override = Deface::Override.new(:virtual_path => 'sample_path', :name => 'sample_name', :replace => 'h1')
+      end
+
+      it "should namespace the override's name" do
+        @override.name.should == 'spree_engine_sample_name'
+      end
+    end
+
     describe "#source_element" do
       before(:each) do
         @override = Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :replace => "h1", :text => "<%= method :opt => 'x' & 'y' %>")

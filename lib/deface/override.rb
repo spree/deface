@@ -32,6 +32,7 @@ module Deface
       raise(ArgumentError, ":virtual_path must be defined") if args[:virtual_path].blank?
 
       args[:text] = content.call if block_given?
+      args[:name] = "#{current_railtie.underscore}_#{args[:name]}" if Rails.application.try(:config).try(:deface).try(:namespaced) || args.delete(:namespaced)
 
       virtual_key = args[:virtual_path].to_sym
       name_key = args[:name].to_s.parameterize
