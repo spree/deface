@@ -5,10 +5,10 @@ module Deface
         @cloned_source_element ||= super.clone(1)
       end
 
-      def original_placeholder
-        @original_placeholder ||= source_element.css("code:contains('render_original')").first
-        raise(DefaceError, "The surround action couldn't find <%= render_original %> in your template") unless @original_placeholder
-        @original_placeholder
+      def original_placeholders
+        @original_placeholders ||= source_element.css("code:contains('render_original')")
+        raise(DefaceError, "The surround action couldn't find <%= render_original %> in your template") unless @original_placeholders.first
+        @original_placeholders
       end
     end
   end
