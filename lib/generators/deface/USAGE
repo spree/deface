@@ -1,0 +1,8 @@
+Description:
+    Generate a deface override
+
+Example:
+    rails generate deface:override posts/_post add_stars
+
+    This will create:
+        app/overrides/posts/_post/add_stars.html.{erb|haml}.deface
