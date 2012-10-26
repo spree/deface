@@ -1,2 +1,2 @@
-<!-- insert_top 'body' -->
+<!-- insert_after 'h1' -->
 <h2>These robots are awesome.</h2>

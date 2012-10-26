@@ -2,7 +2,7 @@ Description:
     Generate a deface override
 
 Example:
-    rails generate deface:override posts/_post add_stars
+    rails generate deface:override posts/_post add_headline
 
     This will create:
-        app/overrides/posts/_post/add_stars.html.{erb|haml}.deface
+        app/overrides/posts/_post/add_headline.html.{erb|haml}.deface
