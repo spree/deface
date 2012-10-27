@@ -3,7 +3,7 @@ require 'generator_spec/test_case'
 
 describe Deface::Generators::OverrideGenerator do
   include GeneratorSpec::TestCase
-  destination File.expand_path("../../../tmp", __FILE__)
+  destination Dir.tmpdir
 
   before(:all) do
     prepare_destination
