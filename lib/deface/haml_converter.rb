@@ -73,6 +73,11 @@ module Deface
   end
 
   class HamlConverter < Haml::Engine
+    alias_method :initialize_without_encoding, :initialize
+
+    def initialize(source)
+      initialize_without_encoding(encode(source))
+    end
 
     # spec coverage will always be bad on one-side
     # or the other of this if, travis-ci gemfile takes
@@ -100,6 +105,35 @@ module Deface
 
     def result
       Deface::Parser.undo_erb_markup! String.new(render)
+    end
+
+    private
+
+    # original is ActionView::Template.encode!
+    def encode(source)
+      return source unless source && source.encoding_aware? && source.encoding == Encoding::BINARY
+      source = source.dup
+
+      # Look for # encoding: *. If we find one, we'll encode the
+      # String in that encoding, otherwise, we'll use the
+      # default external encoding.
+      if source.sub!(/\A#{ActionView::ENCODING_FLAG}/, '')
+        encoding = magic_encoding = $1
+      else
+        encoding = Encoding.default_external
+      end
+
+      # Tag the source with the default external encoding
+      # or the encoding specified in the file
+      source.force_encoding(encoding)
+
+      if !magic_encoding
+        source
+      elsif source.valid_encoding?
+        source.encode!
+      else
+        raise ActionView::WrongEncodingError.new(source, encoding)
+      end
     end
   end
 end
