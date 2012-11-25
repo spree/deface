@@ -1,6 +1,6 @@
 <p style="float:right;">
-  <a href="http://travis-ci.org/#!/railsdog/deface">
-    <img src="http://travis-ci.org/railsdog/deface.png">
+  <a href="http://secure.travis-ci.org/spree/deface">
+    <img src="https://secure.travis-ci.org/spree/deface.png?branch=master">
   </a>
 </p>
 
