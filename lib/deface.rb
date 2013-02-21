@@ -34,6 +34,7 @@ require "deface/actions/remove_from_attributes"
 require "deface/matchers/element"
 require "deface/matchers/range"
 require "deface/environment"
+require "deface/precompiler"
 require "colorize"
 
 module Deface

@@ -46,6 +46,8 @@ shared_context "mock Rails" do
       Rails.application.config.stub :watchable_dirs => {}
     end
 
+    Rails.stub :root => Pathname.new('spec/dummy')
+
     Rails.stub :logger => mock('logger')
     Rails.logger.stub(:error)
     Rails.logger.stub(:warning)

@@ -1,7 +1,7 @@
 module Deface
   module TemplateHelper
 
-    # used to find source for a partial or template using virutal_path
+    # used to find source for a partial or template using virtual_path
     def load_template_source(virtual_path, partial, apply_overrides=true)
       parts = virtual_path.split("/")
       prefix = []
