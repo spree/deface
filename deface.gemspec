@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency('colorize', '>= 0.5.8')
 
   s.add_development_dependency('rspec', '>= 2.11.0')
-  s.add_development_dependency('haml', '>= 3.1.4')
+  s.add_development_dependency('haml', '~> 3.1.4')
   s.add_development_dependency('simplecov', '>= 0.6.4')
   s.add_development_dependency('generator_spec', '~> 0.8.5')
 end
