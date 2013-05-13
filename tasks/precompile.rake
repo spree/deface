@@ -4,6 +4,7 @@ namespace :deface do
 
   desc "Precompiles overrides into template files"
   task :precompile => [:environment, :clean] do |t, args|
+    require "deface/action_view_extensions"
     Deface::Precompiler.precompile()
   end
 
