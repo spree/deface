@@ -59,7 +59,7 @@ You should save your overrides in the ````app/overrides````, normally one overri
 
 * <tt>:insert_bottom</tt> - Inserts inside all elements that match the supplied selector, as the last child.
 
-* <tt>:set_</tt> - Sets attributes on all elements that match the supplied selector, replacing existing attribute value if present or adding if not. Expects :attributes option to be passed.
+* <tt>:set_attributes</tt> - Sets attributes on all elements that match the supplied selector, replacing existing attribute value if present or adding if not. Expects :attributes option to be passed.
 
 * <tt>:add_to_attributes</tt> - Appends value to attributes on all elements that match the supplied selector, adds attribute if not present. Expects :attributes option to be passed.
 
