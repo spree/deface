@@ -3,7 +3,7 @@ module Deface
     module ClassMethods
       # applies all applicable overrides to given source
       #
-      def apply(source, details, log=true, haml=false)
+      def apply(source, details, log=true, haml=false, slim=false)
         overrides = find(details)
 
         if log && overrides.size > 0
@@ -14,6 +14,10 @@ module Deface
           if haml
             #convert haml to erb before parsing before
             source = Deface::HamlConverter.new(source).result
+          end
+
+          if slim
+            source = Slim::ERBConverter.new.call(source)
           end
 
           doc = Deface::Parser.convert(source)

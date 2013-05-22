@@ -4,10 +4,11 @@ ActionView::Template.class_eval do
   def initialize(source, identifier, handler, details)
     if Rails.application.config.deface.enabled && should_be_defaced?(handler)
       haml = handler.to_s == "Haml::Plugin"
+      slim = handler.class.to_s == "Slim::RailsTemplate"
 
-      processed_source = Deface::Override.apply(source, details, true, haml )
+      processed_source = Deface::Override.apply(source, details, true, haml, slim)
 
-      if haml && processed_source != source
+      if haml && processed_source != source || slim && processed_source != source
         handler = ActionView::Template::Handlers::ERB
       end
     else
@@ -54,7 +55,8 @@ ActionView::Template.class_eval do
   private
 
     def should_be_defaced?(handler)
-      handler.to_s.demodulize == "ERB" || handler.class.to_s.demodulize == "ERB" || handler.to_s == "Haml::Plugin"
+      handler.to_s.demodulize == "ERB" || handler.class.to_s.demodulize == "ERB" ||
+      handler.to_s == "Haml::Plugin" || handler.class.to_s == 'Slim::RailsTemplate'
     end
 end
 

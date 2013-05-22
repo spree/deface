@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency('rspec', '>= 2.11.0')
   s.add_development_dependency('haml', '>= 3.1.4')
+  s.add_development_dependency('slim', '>= 2.0.0.pre.9')
   s.add_development_dependency('simplecov', '>= 0.6.4')
   s.add_development_dependency('generator_spec', '~> 0.8.5')
 end

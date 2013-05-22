@@ -63,6 +63,11 @@ module Deface
           require 'deface/haml_converter'
         end
 
+        if defined?(Slim)
+          app.config.deface.slim_support = true
+          require 'slim/erb_converter'
+        end
+
         # catchs any overrides that we required manually
         app.config.deface.overrides.early_check
 

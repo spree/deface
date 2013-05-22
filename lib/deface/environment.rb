@@ -3,14 +3,15 @@ module Deface
         Actions::SurroundContents, Actions::InsertBefore, Actions::InsertAfter, Actions::InsertTop,
         Actions::InsertBottom, Actions::SetAttributes, Actions::AddToAttributes, Actions::RemoveFromAttributes ]
 
-  DEFAULT_SOURCES = [ Sources::Text, Sources::Erb, Sources::Haml, Sources::Partial, Sources::Template, Sources::Cut, Sources::Copy]
+  DEFAULT_SOURCES = [ Sources::Text, Sources::Erb, Sources::Haml, Sources::Slim, Sources::Partial, Sources::Template, Sources::Cut, Sources::Copy]
 
   class Environment
-    attr_accessor :overrides, :enabled, :haml_support, :namespaced
+    attr_accessor :overrides, :enabled, :haml_support, :namespaced, :slim_support
     def initialize
       @overrides    = Overrides.new
       @enabled      = true
       @haml_support = false
+      @slim_support = false
       @actions      = []
       @sources      = []
       @namespaced   = false
