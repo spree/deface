@@ -22,6 +22,8 @@ module Deface
 
       if view.handler.to_s == "Haml::Plugin"
         Deface::HamlConverter.new(view.source).result
+      elsif view.handler.class.to_s == "Slim::RailsTemplate"
+        Slim::ERBConverter.new.call(view.source)
       else
         view.source
       end

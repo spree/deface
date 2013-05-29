@@ -18,6 +18,7 @@ module Rails
 end
 
 require 'haml'
+require 'slim'
 require 'deface/haml_converter'
 require 'generators/deface/override_generator'
 require 'time'
@@ -68,6 +69,7 @@ shared_context "mock Rails" do
     Time.zone.stub(:now).and_return Time.parse('1979-05-25')
 
     require "haml/template/plugin"
+    require 'slim/erb_converter'
   end
 end
 
@@ -77,6 +79,7 @@ shared_context "mock Rails.application" do
   before(:each) do
     Rails.application.config.stub :deface => Deface::Environment.new
     Rails.application.config.deface.haml_support = true
+    Rails.application.config.deface.slim_support = true
   end
 end
 

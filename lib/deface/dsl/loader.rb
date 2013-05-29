@@ -6,8 +6,8 @@ module Deface
   module DSL
     class Loader
       def self.load(filename, options = nil, &block)
-        unless File.basename(filename) =~ /^[^\.]+(.html.(erb|haml)){0,1}.deface$/
-          raise "Deface::DSL does not know how to read '#{filename}'. Override files should end with just .deface, .html.erb.deface, or .html.haml.deface"
+        unless File.basename(filename) =~ /^[^\.]+(.html.(erb|haml|slim)){0,1}.deface$/
+          raise "Deface::DSL does not know how to read '#{filename}'. Override files should end with just .deface, .html.erb.deface, .html.haml.deface or .html.slim.deface"
         end
 
         unless file_in_dir_below_overrides?(filename)
@@ -36,6 +36,15 @@ module Deface
             context.virtual_path(determine_virtual_path(filename))
             context.instance_eval(dsl_commands)
             context.haml(the_rest)
+            context.create_override
+          elsif context_name.end_with?('.html.slim')
+            dsl_commands, the_rest = extract_dsl_commands_from_slim(file_contents)
+
+            context_name = context_name.gsub('.html.slim', '')
+            context = Context.new(context_name)
+            context.virtual_path(determine_virtual_path(filename))
+            context.instance_eval(dsl_commands)
+            context.slim(the_rest)
             context.create_override
           else
             context = Context.new(context_name)
@@ -99,7 +108,12 @@ module Deface
         [dsl_commands, file_contents]
       end
 
-      private 
+      class << self
+        alias_method :extract_dsl_commands_from_slim, :extract_dsl_commands_from_haml
+      end
+
+
+      private
 
       def self.starts_with_html_comment?(line)
         line.lstrip.index('<!--') == 0

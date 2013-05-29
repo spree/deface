@@ -23,4 +23,11 @@ describe Deface::Generators::OverrideGenerator do
     end
   end
 
+  context 'using slim' do
+    it "should generate a deface override with the correct path" do
+      run_generator %w(posts/_post add_headline -e slim)
+      assert_file 'app/overrides/posts/_post/add_headline.html.slim.deface', "/\n  insert_after 'h1'\nh2 These robots are awesome.\n"
+    end
+  end
+
 end

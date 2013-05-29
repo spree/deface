@@ -127,6 +127,20 @@ module Deface
       end
     end
 
+    describe "with :slim" do
+
+      before(:each) do
+        @override = Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :replace => "h1",
+                                         :slim => %q{strong class="code" id="message"= 'Hello, World!'})
+      end
+
+      it "should return erb converted from slim as source" do
+        @override.source.should == "<strong class=\"code\" id=\"message\"><%= ::Temple::Utils.escape_html_safe(('Hello, World!')) %><%\n%></strong>"
+
+        @override.source_argument.should == :slim
+      end
+    end
+
 
     describe "with :partial containing erb" do
 
@@ -200,7 +214,7 @@ module Deface
       let(:parsed) { Deface::Parser.convert("<h1>World</h1><% if true %><p>True that!</p><% end %><p>Hello</p>") }
 
       before(:each) do
-        @override = Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :insert_after => "h1", 
+        @override = Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :insert_after => "h1",
                                          :copy => {:start => "code:contains('if true')", :end => "code:contains('end')"})
 
         @override.stub(:parsed_document).and_return(parsed)
@@ -259,14 +273,14 @@ module Deface
       let(:parsed) { Deface::Parser.convert("<h1>World</h1><% if true %><p>True that!</p><% end %><%= hello %>") }
 
       before(:each) do
-        @override = Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :insert_after => "h1", 
+        @override = Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :insert_after => "h1",
                                          :cut => {:start => "code:contains('if true')", :end => "code:contains('end')"})
 
         @override.stub(:parsed_document).and_return(parsed)
       end
 
       it "should remove cut element from original parsed source" do
-        @override.source 
+        @override.source
         if RUBY_PLATFORM == 'java'
           parsed.to_s.gsub(/\n/,'').should == "<h1>World</h1><code erb-loud=\"\"> hello </code>"
         else
