@@ -7,7 +7,7 @@
 Deface
 ======
 
-Deface is a library that allows you to customize HTML (ERB and HAML) views in a Rails application without editing the underlying view.
+Deface is a library that allows you to customize HTML (ERB, Haml and Slim) views in a Rails application without editing the underlying view.
 
 It allows you to easily target html & erb elements as the hooks for customization using CSS selectors as supported by Nokogiri.
 

@@ -3,17 +3,17 @@ Gem::Specification.new do |s|
   s.version = "1.0.0.rc2"
 
   s.authors = ["Brian D Quinn"]
-  s.description = "Deface is a library that allows you to customize ERB & HAML views in a Rails application without editing the underlying view."
+  s.description = "Deface is a library that allows you to customize ERB, Haml and Slim views in a Rails application without editing the underlying view."
   s.email = "brian@spreecommerce.com"
   s.extra_rdoc_files = [
     "README.markdown"
   ]
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.homepage = "http://github.com/railsdog/deface"
+  s.homepage = "https://github.com/spree/deface"
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.summary = "Deface is a library that allows you to customize ERB & HAML views in Rails"
+  s.summary = "Deface is a library that allows you to customize ERB, Haml and Slim views in Rails"
 
   s.add_dependency('nokogiri', '~> 1.5.9')
   s.add_dependency('rails', '~> 3.1')
@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency('rspec', '>= 2.11.0')
   s.add_development_dependency('haml', '>= 3.1.4')
-  s.add_development_dependency('slim', '>= 2.0.0.pre.9')
+  s.add_development_dependency('slim', '>= 2.0.0')
   s.add_development_dependency('simplecov', '>= 0.6.4')
   s.add_development_dependency('generator_spec', '~> 0.8.5')
 end
