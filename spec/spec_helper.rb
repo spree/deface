@@ -1,12 +1,24 @@
 require 'simplecov'
 SimpleCov.start 'rails'
 require 'rspec'
+require 'active_support'
 require 'action_view'
 require 'action_controller'
 require 'deface'
 require 'rails/generators'
-#have to manually require following for testing purposes
+# have to manually require following for testing purposes
 require 'deface/action_view_extensions'
+require 'rails/version'
+
+#adding fake class as it's needed by haml 4.0, don't
+#want to have to require the entire rails stack in specs.
+module Rails
+  class Railtie
+    def self.initializer(*args)
+    end
+  end
+end
+
 require 'haml'
 require 'deface/haml_converter'
 require 'generators/deface/override_generator'
@@ -27,7 +39,7 @@ end
 
 shared_context "mock Rails" do
   before(:each) do
-    rails_version = Gem.loaded_specs['rails'].version.to_s
+    rails_version = Rails::VERSION::STRING
 
     # mock rails to keep specs FAST!
     unless defined? Rails
@@ -79,4 +91,3 @@ class Dummy
     Rails.application.config.deface.overrides.all
   end
 end
-

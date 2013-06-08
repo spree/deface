@@ -74,19 +74,17 @@ module Deface
     end
 
     def self.convert(source)
-      if source.encoding_aware?
-        # Look for # encoding: *. If we find one, we'll encode the
-        # String in that encoding, otherwise, we'll use the
-        # default external encoding.
-        encoding = source.scan(/#{ActionView::Template::Handlers::ERB.const_get(:ENCODING_TAG)}/).first.try(:last) || Encoding.default_external
+      # Look for # encoding: *. If we find one, we'll encode the
+      # String in that encoding, otherwise, we'll use the
+      # default external encoding.
+      encoding = source.scan(/#{ActionView::Template::Handlers::ERB.const_get(:ENCODING_TAG)}/).first.try(:last) || Encoding.default_external
 
-        # Tag the source with the default external encoding
-        # or the encoding specified in the file
-        source.force_encoding(encoding)
+      # Tag the source with the default external encoding
+      # or the encoding specified in the file
+      source.force_encoding(encoding)
 
-        unless source.valid_encoding?
-          raise ActionView::WrongEncodingError.new(source, encoding)
-        end
+      unless source.valid_encoding?
+        raise ActionView::WrongEncodingError.new(source, encoding)
       end
 
       erb_markup!(source)
@@ -99,6 +97,5 @@ module Deface
         Nokogiri::HTML::DocumentFragment.parse(source)
       end
     end
-
   end
 end

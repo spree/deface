@@ -51,16 +51,21 @@ module Deface
     end
 
     def load_all(app)
-      #clear overrides before reloading them
+      # clear overrides before reloading them
       app.config.deface.overrides.all.clear
       Deface::DSL::Loader.register
 
       # check all railties / engines / extensions / application for overrides
-      app.railties.all.dup.push(app).each do |railtie|
+      railties = if Rails.version >= "4.0"
+        app.railties._all
+      else
+        app.railties.all
+      end
+
+      railties.dup.push(app).each do |railtie|
         next unless railtie.respond_to? :root
         load_overrides(railtie)
       end
-
     end
 
     def early_check
