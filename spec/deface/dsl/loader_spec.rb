@@ -6,7 +6,7 @@ describe Deface::DSL::Loader do
   context '.load' do
     context 'extension check' do
       it 'should succeed if file ends with .deface' do
-        file = mock('deface file')
+        file = double('deface file')
         filename = 'app/overrides/example_name.deface'
 
         lambda { Deface::DSL::Loader.load(filename) }.should_not raise_error(
@@ -14,7 +14,7 @@ describe Deface::DSL::Loader do
       end
 
       it 'should succeed if file ends with .html.erb.deface' do
-        file = mock('deface file')
+        file = double('deface file')
         filename = 'app/overrides/example_name.html.erb.deface'
 
         lambda { Deface::DSL::Loader.load(filename) }.should_not raise_error(
@@ -22,7 +22,7 @@ describe Deface::DSL::Loader do
       end
 
       it 'should succeed if file ends with .html.haml.deface' do
-        file = mock('deface file')
+        file = double('deface file')
         filename = 'app/overrides/example_name.html.haml.deface'
 
         lambda { Deface::DSL::Loader.load(filename) }.should_not raise_error(
@@ -30,7 +30,7 @@ describe Deface::DSL::Loader do
       end
 
       it 'should succeed if file ends with .html.slim.deface' do
-        file = mock('deface file')
+        file = double('deface file')
         filename = 'app/overrides/example_name.html.slim.deface'
 
         lambda { Deface::DSL::Loader.load(filename) }.should_not raise_error(
@@ -38,7 +38,7 @@ describe Deface::DSL::Loader do
       end
 
       it 'should fail if file ends with .blargh.deface' do
-        file = mock('deface file')
+        file = double('deface file')
         filename = 'app/overrides/example_name.blargh.deface'
 
         lambda { Deface::DSL::Loader.load(filename) }.should raise_error(
@@ -46,7 +46,7 @@ describe Deface::DSL::Loader do
       end
 
       it "should suceed if parent directory has a dot(.) in it's name" do
-        file = mock('deface file')
+        file = double('deface file')
         filename = 'app/overrides/parent.dir.with.dot/example_name.html.haml.deface'
 
         lambda { Deface::DSL::Loader.load(filename) }.should_not raise_error(
@@ -55,7 +55,7 @@ describe Deface::DSL::Loader do
     end
 
     it 'should fail if .html.erb.deface file is in the root of app/overrides' do
-      file = mock('html/erb/deface file')
+      file = double('html/erb/deface file')
       filename = 'app/overrides/example_name.html.erb.deface'
 
       lambda { Deface::DSL::Loader.load(filename) }.should raise_error(
@@ -63,16 +63,16 @@ describe Deface::DSL::Loader do
     end
 
     it 'should set the virtual_path for a .deface file in a directory below overrides' do
-      file = mock('deface file')
+      file = double('deface file')
       filename = 'app/overrides/path/to/view/example_name.deface'
       File.should_receive(:open).with(filename).and_yield(file)
 
       override_name = 'example_name'
-      context = mock('dsl context')
+      context = double('dsl context')
       Deface::DSL::Context.should_receive(:new).with(override_name).
         and_return(context)
 
-      file_contents = mock('file contents')
+      file_contents = double('file contents')
       file.should_receive(:read).and_return(file_contents)
 
       context.should_receive(:virtual_path).with('path/to/view').ordered
@@ -83,16 +83,16 @@ describe Deface::DSL::Loader do
     end
 
     it 'should set the virtual_path for a .html.erb.deface file in a directory below overrides' do
-      file = mock('html/erb/deface file')
+      file = double('html/erb/deface file')
       filename = 'app/overrides/path/to/view/example_name.html.erb.deface'
       File.should_receive(:open).with(filename).and_yield(file)
 
       override_name = 'example_name'
-      context = mock('dsl context')
+      context = double('dsl context')
       Deface::DSL::Context.should_receive(:new).with(override_name).
         and_return(context)
 
-      file_contents = mock('file contents')
+      file_contents = double('file contents')
       file.should_receive(:read).and_return(file_contents)
 
       Deface::DSL::Loader.should_receive(:extract_dsl_commands_from_erb).
@@ -108,16 +108,16 @@ describe Deface::DSL::Loader do
     end
 
     it 'should set the virtual_path for a .html.haml.deface file in a directory below overrides' do
-      file = mock('html/haml/deface file')
+      file = double('html/haml/deface file')
       filename = 'app/overrides/path/to/view/example_name.html.haml.deface'
       File.should_receive(:open).with(filename).and_yield(file)
 
       override_name = 'example_name'
-      context = mock('dsl context')
+      context = double('dsl context')
       Deface::DSL::Context.should_receive(:new).with(override_name).
         and_return(context)
 
-      file_contents = mock('file contents')
+      file_contents = double('file contents')
       file.should_receive(:read).and_return(file_contents)
 
       Deface::DSL::Loader.should_receive(:extract_dsl_commands_from_haml).
@@ -133,16 +133,16 @@ describe Deface::DSL::Loader do
     end
 
     it 'should set the virtual_path for a .html.slim.deface file in a directory below overrides' do
-      file = mock('html/slim/deface file')
+      file = double('html/slim/deface file')
       filename = 'app/overrides/path/to/view/example_name.html.slim.deface'
       File.should_receive(:open).with(filename).and_yield(file)
 
       override_name = 'example_name'
-      context = mock('dsl context')
+      context = double('dsl context')
       Deface::DSL::Context.should_receive(:new).with(override_name).
         and_return(context)
 
-      file_contents = mock('file contents')
+      file_contents = double('file contents')
       file.should_receive(:read).and_return(file_contents)
 
       Deface::DSL::Loader.should_receive(:extract_dsl_commands_from_slim).
