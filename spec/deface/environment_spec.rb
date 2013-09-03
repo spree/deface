@@ -54,7 +54,7 @@ module Deface
         end
 
         it "should enumerate_and_load nil when railtie has no app/overrides path set" do
-          Rails.application.stub_chain :railties, railties_collection_accessor => [mock('railtie', :root => "/some/path")]
+          Rails.application.stub_chain :railties, railties_collection_accessor => [double('railtie', :root => "/some/path")]
 
           Rails.application.config.deface.overrides.should_receive(:enumerate_and_load).with(nil, Rails.application.root)
           Rails.application.config.deface.overrides.should_receive(:enumerate_and_load).with(nil, "/some/path")
@@ -62,7 +62,7 @@ module Deface
         end
 
         it "should enumerate_and_load path when railtie has app/overrides path set" do
-          Rails.application.stub_chain :railties, railties_collection_accessor => [ mock('railtie', :root => "/some/path", :paths => {"app/overrides" => ["app/some_path"] } )]
+          Rails.application.stub_chain :railties, railties_collection_accessor => [ double('railtie', :root => "/some/path", :paths => {"app/overrides" => ["app/some_path"] } )]
 
           Rails.application.config.deface.overrides.should_receive(:enumerate_and_load).with(nil, Rails.application.root)
           Rails.application.config.deface.overrides.should_receive(:enumerate_and_load).with(["app/some_path"] , "/some/path")
@@ -70,7 +70,7 @@ module Deface
         end
 
         it "should enumerate_and_load railties first, followed by the application iteslf" do
-          Rails.application.stub_chain :railties, railties_collection_accessor => [ mock('railtie', :root => "/some/path", :paths => {"app/overrides" => ["app/some_path"] } )]
+          Rails.application.stub_chain :railties, railties_collection_accessor => [ double('railtie', :root => "/some/path", :paths => {"app/overrides" => ["app/some_path"] } )]
 
           Rails.application.config.deface.overrides.should_receive(:enumerate_and_load).with(["app/some_path"] , "/some/path").ordered
           Rails.application.config.deface.overrides.should_receive(:enumerate_and_load).with(nil, Rails.application.root).ordered
@@ -78,7 +78,7 @@ module Deface
         end
 
         it "should ignore railtie with no root" do
-          railtie = mock('railtie')
+          railtie = double('railtie')
           Rails.application.stub_chain :railties, railties_collection_accessor => [railtie]
 
           railtie.should_receive(:respond_to?).with(:root)
@@ -96,7 +96,7 @@ module Deface
 
       describe 'load_overrides' do
         let(:assets_path) { Pathname.new(File.join(File.dirname(__FILE__), '..', "assets")) }
-        let(:engine) { mock('railtie', :root => assets_path, :class => "DummyEngine", :paths => {"app/overrides" => ["dummy_engine"]}) }
+        let(:engine) { double('railtie', :root => assets_path, :class => "DummyEngine", :paths => {"app/overrides" => ["dummy_engine"]}) }
         before { Rails.application.stub(:class => 'RailsAppl') }
 
         it "should keep a reference to which railtie/app defined the override" do

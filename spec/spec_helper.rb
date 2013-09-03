@@ -44,13 +44,13 @@ shared_context "mock Rails" do
 
     # mock rails to keep specs FAST!
     unless defined? Rails
-      Rails = mock 'Rails'
+      Rails = double 'Rails'
     end
 
     Rails.stub :version => rails_version
 
-    Rails.stub :application => mock('application')
-    Rails.application.stub :config => mock('config')
+    Rails.stub :application => double('application')
+    Rails.application.stub :config => double('config')
     Rails.application.config.stub :cache_classes => true
     Rails.application.config.stub :deface => ActiveSupport::OrderedOptions.new
     Rails.application.config.deface.enabled = true
@@ -61,13 +61,13 @@ shared_context "mock Rails" do
 
     Rails.stub :root => Pathname.new('spec/dummy')
 
-    Rails.stub :logger => mock('logger')
+    Rails.stub :logger => double('logger')
     Rails.logger.stub(:error)
     Rails.logger.stub(:warning)
     Rails.logger.stub(:info)
     Rails.logger.stub(:debug)
 
-    Time.stub :zone => mock('zone')
+    Time.stub :zone => double('zone')
     Time.zone.stub(:now).and_return Time.parse('1979-05-25')
 
     require "haml/template/plugin"
