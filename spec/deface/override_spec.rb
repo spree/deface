@@ -38,9 +38,9 @@ module Deface
         @original.original_source.should be_an_instance_of Nokogiri::HTML::DocumentFragment
 
         if RUBY_PLATFORM == 'java'
-          @original.original_source.to_s.should == "<p><code erb-loud=\"\"> something </code></p>"
+          @original.original_source.to_s.should == "<p><erb loud=\"\"> something </erb></p>"
         else
-          @original.original_source.to_s.should == "<p><code erb-loud> something </code></p>"
+          @original.original_source.to_s.should == "<p><erb loud> something </erb></p>"
         end
       end
     end
@@ -64,11 +64,11 @@ module Deface
 
       it "should return true when input contains similar (ignoring whitespace)" do
         if RUBY_PLATFORM == 'java'
-          @original.validate_original("<p><code erb-loud=\"\"> something </code></p>").should be_true
-          @original.validate_original("<p><code erb-loud=\"\">something\n</code>  </p>").should be_true
+          @original.validate_original("<p><erb loud=\"\"> something </erb></p>").should be_true
+          @original.validate_original("<p><erb loud=\"\">something\n</erb>  </p>").should be_true
         else
-          @original.validate_original("<p><code erb-loud> something </code></p>").should be_true
-          @original.validate_original("<p><code erb-loud>something\n</code>  </p>").should be_true
+          @original.validate_original("<p><erb loud> something </erb></p>").should be_true
+          @original.validate_original("<p><erb loud>something\n</erb>  </p>").should be_true
         end
       end
 
@@ -117,11 +117,11 @@ module Deface
 
       before(:each) do
         @override = Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :replace => "h1",
-                                         :haml => %q{%strong{:class => "code", :id => "message"}= 'Hello, World!'})
+                                         :haml => %q{%strong{:class => "erb", :id => "message"}= 'Hello, World!'})
       end
 
       it "should return erb converted from haml as source" do
-        @override.source.should == "<strong class='code' id='message'><%= 'Hello, World!' %>\n</strong>\n"
+        @override.source.should == "<strong class='erb' id='message'><%= 'Hello, World!' %>\n</strong>\n"
 
         @override.source_argument.should == :haml
       end
@@ -131,11 +131,11 @@ module Deface
 
       before(:each) do
         @override = Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :replace => "h1",
-                                         :slim => %q{strong class="code" id="message"= 'Hello, World!'})
+                                         :slim => %q{strong class="erb" id="message"= 'Hello, World!'})
       end
 
       it "should return erb converted from slim as source" do
-        @override.source.should == "<strong class=\"code\" id=\"message\"><%= ::Temple::Utils.escape_html_safe(('Hello, World!')) %><%\n%></strong>"
+        @override.source.should == "<strong class=\"erb\" id=\"message\"><%= ::Temple::Utils.escape_html_safe(('Hello, World!')) %><%\n%></strong>"
 
         @override.source_argument.should == :slim
       end
@@ -189,9 +189,9 @@ module Deface
         @override.source
 
         if RUBY_PLATFORM == 'java'
-          parsed.to_s.gsub(/\n/,'').should == "<div><h1>Manage Posts</h1><code erb-loud=\"\"> some_method </code></div>"
+          parsed.to_s.gsub(/\n/,'').should == "<div><h1>Manage Posts</h1><erb loud=\"\"> some_method </erb></div>"
         else
-          parsed.to_s.gsub(/\n/,'').should == "<div><h1>Manage Posts</h1><code erb-loud> some_method </code></div>"
+          parsed.to_s.gsub(/\n/,'').should == "<div><h1>Manage Posts</h1><erb loud> some_method </erb></div>"
         end
 
         @override.source_argument.should == :copy
@@ -202,7 +202,7 @@ module Deface
       end
 
       it "should return unescaped content for source document" do
-        @override = Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :insert_after => "h1", :copy => "code[erb-loud]:contains('some_method')")
+        @override = Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :insert_after => "h1", :copy => "erb[loud]:contains('some_method')")
         @override.stub(:parsed_document).and_return(parsed)
         @override.source.should == "<%= some_method %>"
       end
@@ -215,7 +215,7 @@ module Deface
 
       before(:each) do
         @override = Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :insert_after => "h1",
-                                         :copy => {:start => "code:contains('if true')", :end => "code:contains('end')"})
+                                         :copy => {:start => "erb:contains('if true')", :end => "erb:contains('end')"})
 
         @override.stub(:parsed_document).and_return(parsed)
       end
@@ -224,9 +224,9 @@ module Deface
         @override.source
 
         if RUBY_PLATFORM == 'java'
-          parsed.to_s.gsub(/\n/,'').should == "<h1>World</h1><code erb-silent=\"\"> if true </code><p>True that!</p><code erb-silent=\"\"> end </code><p>Hello</p>"
+          parsed.to_s.gsub(/\n/,'').should == "<h1>World</h1><erb silent=\"\"> if true </erb><p>True that!</p><erb silent=\"\"> end </erb><p>Hello</p>"
         else
-          parsed.to_s.gsub(/\n/,'').should == "<h1>World</h1><code erb-silent> if true </code><p>True that!</p><code erb-silent> end </code><p>Hello</p>"
+          parsed.to_s.gsub(/\n/,'').should == "<h1>World</h1><erb silent> if true </erb><p>True that!</p><erb silent> end </erb><p>Hello</p>"
         end
 
         @override.source_argument.should == :copy
@@ -247,9 +247,9 @@ module Deface
       it "should remove cut element from original parsed source" do
         @override.source
         if RUBY_PLATFORM == 'java'
-          parsed.to_s.gsub(/\n/,'').should == "<div><code erb-loud=\"\"> some_method </code></div>"
+          parsed.to_s.gsub(/\n/,'').should == "<div><erb loud=\"\"> some_method </erb></div>"
         else
-          parsed.to_s.gsub(/\n/,'').should == "<div><code erb-loud> some_method </code></div>"
+          parsed.to_s.gsub(/\n/,'').should == "<div><erb loud> some_method </erb></div>"
         end
 
         @override.source_argument.should == :cut
@@ -260,7 +260,7 @@ module Deface
       end
 
       it "should return unescaped content for source document" do
-        @override = Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :insert_after => "h1", :cut => "code[erb-loud]:contains('some_method')")
+        @override = Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :insert_after => "h1", :cut => "erb[loud]:contains('some_method')")
         @override.stub(:parsed_document).and_return(parsed)
         @override.source.should == "<%= some_method %>"
       end
@@ -274,7 +274,7 @@ module Deface
 
       before(:each) do
         @override = Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :insert_after => "h1",
-                                         :cut => {:start => "code:contains('if true')", :end => "code:contains('end')"})
+                                         :cut => {:start => "erb:contains('if true')", :end => "erb:contains('end')"})
 
         @override.stub(:parsed_document).and_return(parsed)
       end
@@ -282,9 +282,9 @@ module Deface
       it "should remove cut element from original parsed source" do
         @override.source
         if RUBY_PLATFORM == 'java'
-          parsed.to_s.gsub(/\n/,'').should == "<h1>World</h1><code erb-loud=\"\"> hello </code>"
+          parsed.to_s.gsub(/\n/,'').should == "<h1>World</h1><erb loud=\"\"> hello </erb>"
         else
-          parsed.to_s.gsub(/\n/,'').should == "<h1>World</h1><code erb-loud> hello </code>"
+          parsed.to_s.gsub(/\n/,'').should == "<h1>World</h1><erb loud> hello </erb>"
         end
 
         @override.source_argument.should == :cut
@@ -342,12 +342,12 @@ module Deface
         @override.source_element.should be_an_instance_of Nokogiri::HTML::DocumentFragment
 
         if RUBY_PLATFORM == 'java'
-          source = "<code erb-loud=\"\"> method :opt =&gt; 'x' &amp; 'y' </code>"
+          source = "<erb loud=\"\"> method :opt =&gt; 'x' &amp; 'y' </erb>"
           @override.source_element.to_s.should ==  source
           #do it twice to ensure it doesn't change as it's destructive
           @override.source_element.to_s.should == source
         else
-          source = "<code erb-loud> method :opt =&gt; 'x' &amp; 'y' </code>"
+          source = "<erb loud> method :opt =&gt; 'x' &amp; 'y' </erb>"
           @override.source_element.to_s.should == source
           #do it twice to ensure it doesn't change as it's destructive
           @override.source_element.to_s.should == source
@@ -497,7 +497,7 @@ module Deface
         Deface::Override.all.clear
 
         @override = Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :replace => "h1", :text => "<h1>Argh!</h1>")
-        @second = Deface::Override.new(:virtual_path => "posts/index", :name => "second", :insert_after => "p", :text => "<pre>this is code?</pre>")
+        @second = Deface::Override.new(:virtual_path => "posts/index", :name => "second", :insert_after => "p", :text => "<pre>this is erb?</pre>")
 
         @digest = Deface::Override.digest(:virtual_path =>  "posts/index")
       end
@@ -513,7 +513,7 @@ module Deface
         @override = Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :replace => "h1", :text => "<h1>Argh!</h1>")
         Deface::Override.digest(:virtual_path =>  "posts/index").should == @digest
 
-        @second = Deface::Override.new(:virtual_path => "posts/index", :name => "2nd", :insert_after => "p", :text => "<pre>this is code?</pre>")
+        @second = Deface::Override.new(:virtual_path => "posts/index", :name => "2nd", :insert_after => "p", :text => "<pre>this is erb?</pre>")
         Deface::Override.digest(:virtual_path =>  "posts/index").should_not == @digest
       end
 

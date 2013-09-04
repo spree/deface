@@ -31,7 +31,7 @@ module Deface
 
     describe "with a single :copy using :start and :end" do
       before { Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :insert_before => "h1", 
-                                    :copy => {:start => "code:contains('if true')", :end => "code:contains('end')"}) }
+                                    :copy => {:start => "erb:contains('if true')", :end => "erb:contains('end')"}) }
       let(:source) { "<h1>World</h1><% if true %><p>True that!</p><% end %><p>Hello</p>" }
 
 
@@ -52,7 +52,7 @@ module Deface
 
     describe "with a single :cut using :start and :end" do
       before { Deface::Override.new(:virtual_path => "posts/index", :name => "Posts#index", :replace => "h1", 
-                                    :cut => {:start => "code:contains('if true')", :end => "code:contains('end')"}) }
+                                    :cut => {:start => "erb:contains('if true')", :end => "erb:contains('end')"}) }
       let(:source) { "<h1>World</h1><% if true %><p>True that!</p><% end %><p>Hello</p>" }
 
 

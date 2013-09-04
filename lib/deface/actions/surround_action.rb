@@ -6,7 +6,7 @@ module Deface
       end
 
       def original_placeholders
-        @original_placeholders ||= source_element.css("code:contains('render_original')")
+        @original_placeholders ||= source_element.css("erb:contains('render_original')")
         raise(DefaceError, "The surround action couldn't find <%= render_original %> in your template") unless @original_placeholders.first
         @original_placeholders
       end
