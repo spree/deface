@@ -34,35 +34,25 @@ module Deface
       end
 
       def self.build_erb_context(context_name, filename, file_contents)
-        dsl_commands, the_rest = extract_dsl_commands_from_erb(file_contents)
-
-        context_name = context_name.gsub('.html.erb', '')
-        context = Context.new(context_name)
-        context.virtual_path(determine_virtual_path(filename))
-        context.instance_eval(dsl_commands)
-        context.erb(the_rest)
-        context.create_override
+        build_context_and_extract_dsl_from('erb', context_name, filename, file_contents)
       end
 
       def self.build_haml_context(context_name, filename, file_contents)
-        dsl_commands, the_rest = extract_dsl_commands_from_haml(file_contents)
-
-        context_name = context_name.gsub('.html.haml', '')
-        context = Context.new(context_name)
-        context.virtual_path(determine_virtual_path(filename))
-        context.instance_eval(dsl_commands)
-        context.haml(the_rest)
-        context.create_override
+        build_context_and_extract_dsl_from('haml', context_name, filename, file_contents)
       end
 
       def self.build_slim_context(context_name, filename, file_contents)
-        dsl_commands, the_rest = extract_dsl_commands_from_slim(file_contents)
+        build_context_and_extract_dsl_from('slim', context_name, filename, file_contents)
+      end
 
-        context_name = context_name.gsub('.html.slim', '')
+      def self.build_context_and_extract_dsl_from(type, context_name, filename, file_contents)
+        dsl_commands, the_rest = send "extract_dsl_commands_from_#{type}", (file_contents)
+
+        context_name = context_name.gsub(".html.#{type}", '')
         context = Context.new(context_name)
         context.virtual_path(determine_virtual_path(filename))
         context.instance_eval(dsl_commands)
-        context.slim(the_rest)
+        context.send type, the_rest
         context.create_override
       end
 
