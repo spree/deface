@@ -19,40 +19,58 @@ module Deface
 
           file_contents = file.read
 
-          if context_name.end_with?('.html.erb')
-            dsl_commands, the_rest = extract_dsl_commands_from_erb(file_contents)
-
-            context_name = context_name.gsub('.html.erb', '')
-            context = Context.new(context_name)
-            context.virtual_path(determine_virtual_path(filename))
-            context.instance_eval(dsl_commands)
-            context.erb(the_rest)
-            context.create_override
-          elsif context_name.end_with?('.html.haml')
-            dsl_commands, the_rest = extract_dsl_commands_from_haml(file_contents)
-
-            context_name = context_name.gsub('.html.haml', '')
-            context = Context.new(context_name)
-            context.virtual_path(determine_virtual_path(filename))
-            context.instance_eval(dsl_commands)
-            context.haml(the_rest)
-            context.create_override
-          elsif context_name.end_with?('.html.slim')
-            dsl_commands, the_rest = extract_dsl_commands_from_slim(file_contents)
-
-            context_name = context_name.gsub('.html.slim', '')
-            context = Context.new(context_name)
-            context.virtual_path(determine_virtual_path(filename))
-            context.instance_eval(dsl_commands)
-            context.slim(the_rest)
-            context.create_override
-          else
-            context = Context.new(context_name)
-            context.virtual_path(determine_virtual_path(filename))
-            context.instance_eval(file_contents)
-            context.create_override
-          end
+          build_context(context_name, filename, file_contents)
         end
+      end
+
+      def self.build_context(context_name, filename, file_contents)
+        send build_context_method_name(context_name), context_name, filename, file_contents
+      end
+
+      def self.build_context_method_name(context_name)
+        ext = File.extname(context_name).gsub(".", '')
+        ext = "other" if ext.empty?
+        "build_#{ext}_context"
+      end
+
+      def self.build_erb_context(context_name, filename, file_contents)
+        dsl_commands, the_rest = extract_dsl_commands_from_erb(file_contents)
+
+        context_name = context_name.gsub('.html.erb', '')
+        context = Context.new(context_name)
+        context.virtual_path(determine_virtual_path(filename))
+        context.instance_eval(dsl_commands)
+        context.erb(the_rest)
+        context.create_override
+      end
+
+      def self.build_haml_context(context_name, filename, file_contents)
+        dsl_commands, the_rest = extract_dsl_commands_from_haml(file_contents)
+
+        context_name = context_name.gsub('.html.haml', '')
+        context = Context.new(context_name)
+        context.virtual_path(determine_virtual_path(filename))
+        context.instance_eval(dsl_commands)
+        context.haml(the_rest)
+        context.create_override
+      end
+
+      def self.build_slim_context(context_name, filename, file_contents)
+        dsl_commands, the_rest = extract_dsl_commands_from_slim(file_contents)
+
+        context_name = context_name.gsub('.html.slim', '')
+        context = Context.new(context_name)
+        context.virtual_path(determine_virtual_path(filename))
+        context.instance_eval(dsl_commands)
+        context.slim(the_rest)
+        context.create_override
+      end
+
+      def self.build_other_context(context_name, filename, file_contents)
+        context = Context.new(context_name)
+        context.virtual_path(determine_virtual_path(filename))
+        context.instance_eval(file_contents)
+        context.create_override
       end
 
       def self.register
