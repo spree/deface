@@ -26,10 +26,10 @@ module Deface
         return
       end
 
-      raise(ArgumentError, ":name must be defined") unless args.key? :name
       raise(ArgumentError, ":virtual_path must be defined") if args[:virtual_path].blank?
 
       args[:text] = content.call if block_given?
+      args[:name] = File.basename(__FILE__).sub(/#{File.extname(__FILE__)}$/, '') unless args.key? :name
       args[:name] = "#{current_railtie.underscore}_#{args[:name]}" if Rails.application.try(:config).try(:deface).try(:namespaced) || args.delete(:namespaced)
 
       virtual_key = args[:virtual_path].to_sym
