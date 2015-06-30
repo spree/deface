@@ -86,29 +86,11 @@ module Deface
     def sequence
       return 100 unless @args.key?(:sequence)
       if @args[:sequence].is_a? Hash
-        key = @args[:virtual_path].to_sym
+        opts = @args[:sequence]
 
-        if @args[:sequence].key? :before
-          ref_name = @args[:sequence][:before]
-
-          if self.class.all[key].key? ref_name.to_s
-            return self.class.all[key][ref_name.to_s].sequence - 1
-          else
-            return 100
-          end
-        elsif @args[:sequence].key? :after
-          ref_name = @args[:sequence][:after]
-
-          if self.class.all[key].key? ref_name.to_s
-            return self.class.all[key][ref_name.to_s].sequence + 1
-          else
-            return 100
-          end
-        else
-          #should never happen.. tut tut!
-          return 100
-        end
-
+        return make_sequence(:before, :-) if opts.key? :before
+        return make_sequence(:after, :+) if opts.key? :after
+        return 100
       else
         return @args[:sequence].to_i
       end
@@ -199,6 +181,19 @@ module Deface
 
 
     private
+
+      def make_sequence(order, operator)
+        key = @args[:virtual_path].to_sym
+        ref_name = @args[:sequence][order]
+
+        if self.class.all[key].key? ref_name.to_s
+          return self.class.all[key][ref_name.to_s].sequence.send operator, 1
+        end
+
+        Rails.logger.info "\e[1;32mDeface: [WARNING]\e[0m Could not find override: '#{ref_name}' in '#{order}' sequence option in '#{self.name}'."
+        return 100
+      end
+
 
       # check if method is compiled for the current virtual path
       #
