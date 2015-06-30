@@ -85,15 +85,16 @@ module Deface
 
     def sequence
       return 100 unless @args.key?(:sequence)
+
       if @args[:sequence].is_a? Hash
         opts = @args[:sequence]
 
         return make_sequence(:before, :-) if opts.key? :before
         return make_sequence(:after, :+) if opts.key? :after
         return 100
-      else
-        return @args[:sequence].to_i
       end
+
+      @args[:sequence].to_i
     rescue SystemStackError
       if defined?(Rails)
         Rails.logger.error "\e[1;32mDeface: [WARNING]\e[0m Circular sequence dependency includes override named: '#{self.name}' on '#{@args[:virtual_path]}'."
@@ -191,7 +192,8 @@ module Deface
         end
 
         Rails.logger.info "\e[1;32mDeface: [WARNING]\e[0m Could not find override: '#{ref_name}' in '#{order}' sequence option in '#{self.name}'."
-        return 100
+
+        100
       end
 
 
