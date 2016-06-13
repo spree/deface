@@ -21,16 +21,25 @@ module Deface
         end
 
         if !valid && defined?(Rails.logger)
-          Rails.logger.error "\e[1;32mDeface: [ERROR]\e[0m The original source for '#{self.name}' has changed, this override should be reviewed to ensure it's still valid."
+          handle_deface_error
         end
 
         return valid
       else
-        Rails.logger.info "\e[1;32mDeface: [WARNING]\e[0m No :original defined for '#{self.name}', you should change its definition to include:\n :original => '#{hashed_original}' "
+        handle_deface_warning(hashed_original)
 
         return nil
       end
     end
 
+    private
+
+    def handle_deface_error
+      Rails.logger.error "\e[1;32mDeface: [ERROR]\e[0m The original source for '#{self.name}' has changed, this override should be reviewed to ensure it's still valid."
+    end
+
+    def handle_deface_warning(hashed_original)
+      Rails.logger.info "\e[1;32mDeface: [WARNING]\e[0m No :original defined for '#{self.name}', you should change its definition to include:\n :original => '#{hashed_original}' "
+    end
   end
 end
