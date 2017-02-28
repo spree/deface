@@ -1,3 +1,5 @@
+require 'rainbow'
+
 module Deface
   module Utils
     module FailureFinder
@@ -28,9 +30,9 @@ module Deface
 
         fails.each do |override|
           if override.failure.nil?
-            puts " '#{override.name}' reported no failures".green
+            puts Rainbow(" '#{override.name}' reported no failures").green
           else
-            puts " '#{override.name}' #{override.failure}".red
+            puts Rainbow(" '#{override.name}' #{override.failure}").red
           end
         end
 

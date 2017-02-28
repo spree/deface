@@ -1,6 +1,6 @@
 require 'deface'
 require 'deface/utils/failure_finder'
-require 'colorize'
+require 'rainbow'
 
 namespace :deface do
   include Deface::TemplateHelper
@@ -68,10 +68,10 @@ namespace :deface do
     end
 
     if fail_count == 0
-      puts "\nEverything's looking good!".green
+      puts Rainbow("\nEverything's looking good!").green
       exit(0)
     else
-      puts "\nYou had a total of #{fail_count} failures.".red
+      puts Rainbow("\nYou had a total of #{fail_count} failures.").red
       exit(1)
     end
   end
