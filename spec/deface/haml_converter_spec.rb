@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'spec_helper'
 
 module Deface
@@ -83,6 +85,15 @@ module Deface
   %p
     = post.name")).to eq("<% @posts.each do |post| %><p>  <%= post.name %></p><% end %>")
 
+      end
+    end
+
+    describe "convert haml thant includes multi byte string to erb" do
+      before { Encoding.default_internal = 'UTF-8' }
+      after { Encoding.default_internal = nil }
+
+      it "should handle" do
+        haml_to_erb("%%strong.code#message ハロー、ワールド！".force_encoding('ASCII-8BIT')).should == "<strong class='code' id='message'>ハロー、ワールド！</strong>"
       end
     end
   end
