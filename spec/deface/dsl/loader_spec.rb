@@ -154,6 +154,14 @@ describe Deface::DSL::Loader do
       Deface::DSL::Loader.load(filename)
     end
 
+    it "should prepend the name of the override with the name of the railtie when loaded from an engine" do
+      File.stub(:open).and_yield(mock.as_null_object)
+
+      Deface::Override.current_railtie = 'SpreeEngine'
+      Deface::DSL::Context.should_receive(:new).with('spree_engine_assets').and_return(mock.as_null_object)
+      Deface::DSL::Loader.load('app/overrides/path/to/view/assets.html.erb.deface')
+    end
+
   end
 
   context '.register' do

@@ -16,6 +16,7 @@ module Deface
 
         File.open(filename) do |file|
           context_name = File.basename(filename).gsub('.deface', '')
+          context_name = Override.current_railtie.underscore + '_' + context_name if Override.current_railtie
 
           file_contents = file.read
 
