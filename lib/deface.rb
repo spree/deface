@@ -4,6 +4,7 @@ require "deface/template_helper"
 require "deface/original_validator"
 require "deface/applicator"
 require "deface/search"
+require "deface/digest"
 require "deface/override"
 require "deface/parser"
 require "deface/dsl/loader"
@@ -40,6 +41,10 @@ require "deface/precompiler"
 module Deface
   if defined?(Rails)
     require "deface/railtie"
+  end
+
+  if defined?(ActiveSupport::Digest)
+    Deface::Digest.digest_class = ActiveSupport::Digest
   end
 
   # Exceptions

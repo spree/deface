@@ -11,7 +11,7 @@ module Deface
     def validate_original(match)
       match = match.map(&:to_s).join if match.is_a? Array
 
-      hashed_original = Digest::SHA1.hexdigest(match.to_s.gsub(/\s/, ''))
+      hashed_original = ::Digest::SHA1.hexdigest(match.to_s.gsub(/\s/, ''))
 
       if @args[:original].present?
         valid = @args[:original] == hashed_original
