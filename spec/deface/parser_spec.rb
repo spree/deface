@@ -1,5 +1,5 @@
 # encoding: UTF-8
- 
+
 require 'spec_helper'
 
 module Deface
@@ -11,6 +11,7 @@ module Deface
         expect(Deface::Parser.convert("<h1>Hello</h1>").to_s).to eq("<h1>Hello</h1>")
         expect(Deface::Parser.convert("<title>Hello</title>")).to be_an_instance_of(Nokogiri::HTML::DocumentFragment)
         expect(Deface::Parser.convert("<title>Hello</title>").to_s).to eq("<title>Hello</title>")
+        expect(Deface::Parser.convert("<title>Hello Frozen</title>".freeze).to_s).to eq("<title>Hello Frozen</title>")
       end
 
       it "should parse html document" do

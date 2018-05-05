@@ -90,7 +90,11 @@ module Deface
 
       # Tag the source with the default external encoding
       # or the encoding specified in the file
-      source.force_encoding(encoding)
+      if source.frozen?
+        source = source.dup.force_encoding(encoding)
+      else
+        source.force_encoding(encoding)
+      end
 
       unless source.valid_encoding?
         raise ActionView::WrongEncodingError.new(source, encoding)
