@@ -52,7 +52,7 @@ ActionView::Template.class_eval do
       deface_hash = Deface::Override.digest(:virtual_path => @virtual_path)
 
       #we digest the whole method name as if it gets too long there's problems
-      "_#{Digest::MD5.new.update("#{deface_hash}_#{method_name_without_deface}").hexdigest}"
+      "_#{Deface::Digest.hexdigest("#{deface_hash}_#{method_name_without_deface}")}"
     end
 
   private
