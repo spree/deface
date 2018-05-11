@@ -10,16 +10,8 @@ module Deface
       end
 
       def hexdigest(arg)
-        new.hexdigest(arg)
+        digest_class.hexdigest(arg)[0...32]
       end
-    end
-
-    def initialize(klass = nil)
-      @digest_class = klass || self.class.digest_class
-    end
-
-    def hexdigest(arg)
-      @digest_class.hexdigest(arg).truncate(32)
     end
   end
 end
