@@ -203,12 +203,13 @@ Deface scopes overrides by virtual_path (or partial / template file), that means
 
 ### Redefining Overrides
 
-You can redefine an existing override by simply declaring a new override with the same <tt>:virtual_path</tt> and <tt>:name</tt> that was originally used.
+You can redefine an existing override by simply declaring a new override with the same <tt>:virtual_path</tt>, <tt>:name</tt> and [action](#action) that was originally used.
 You do not need to resupply all the values originally used, just the ones you want to change:
 
 ```ruby
 Deface::Override.new(:virtual_path => 'posts/index',
                      :name => 'add_attrs_to_a_link',
+                     :set_attributes => 'a#link',
                      :disabled => true)
 ```
 
