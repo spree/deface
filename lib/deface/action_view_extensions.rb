@@ -28,8 +28,8 @@ ActionView::Template.class_eval do
   #
   def render(view, locals, buffer=nil, &block)
 
-    if view.is_a?(ActionView::CompiledTemplates)
-      mod = ActionView::CompiledTemplates
+    if view.is_a?(ActionView::Base)
+      mod = ActionView::Base
     else
       mod = view.singleton_class
     end

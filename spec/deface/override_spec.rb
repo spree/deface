@@ -561,15 +561,15 @@ module Deface
 
     describe "#expire_compiled_template" do
       before do
-        @compiled_templates = ActionView::CompiledTemplates
+        @compiled_templates = ActionView::Base
 
-        ActionView::CompiledTemplates.instance_methods.each do |method_name|
-          ActionView::CompiledTemplates.send :remove_method, method_name
+        ActionView::Base.instance_methods.each do |method_name|
+          ActionView::Base.send :remove_method, method_name
         end
       end
 
       it "should remove compiled method when method name matches virtual path but not digest" do
-        module ActionView::CompiledTemplates
+        ActionView::Base.class_eval do
           def _e235fa404c3c2281d4f6791162b1c638_posts_index_123123123
             true #not a real method
           end
@@ -577,17 +577,16 @@ module Deface
           def _f34556de606cec51d4f6791163fab456_posts_edit_123123123
             true #not a real method
           end
-
         end
 
-        expect(ActionView::CompiledTemplates.instance_methods.size).to eq(2)
+        expect(ActionView::Base.instance_methods.size).to eq(2)
         @override.send(:expire_compiled_template)
-        expect(ActionView::CompiledTemplates.instance_methods.size).to eq(1)
+        expect(ActionView::Base.instance_methods.size).to eq(1)
       end
 
       it "should not remove compiled method when virtual path and digest matach" do
 
-        module ActionView::CompiledTemplates
+        ActionView::Base.class_eval do
           def _e235fa404c3c2281d4f6791162b1c638_posts_index_123123123
             true #not a real method
           end
@@ -595,9 +594,9 @@ module Deface
 
         expect(Deface::Override).to receive(:digest).and_return('e235fa404c3c2281d4f6791162b1c638')
 
-        expect(ActionView::CompiledTemplates.instance_methods.size).to eq(1)
+        expect(ActionView::Base.instance_methods.size).to eq(1)
         @override.send(:expire_compiled_template)
-        expect(ActionView::CompiledTemplates.instance_methods.size).to eq(1)
+        expect(ActionView::Base.instance_methods.size).to eq(1)
       end
     end
 
