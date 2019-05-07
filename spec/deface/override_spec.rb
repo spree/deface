@@ -560,9 +560,9 @@ module Deface
     end
 
     describe "#expire_compiled_template" do
-      it "should remove compiled method when method name matches virtual path but not digest" do
-        instance_methods_count = ActionView::Base.instance_methods.size
+      let(:instance_methods_count) { ActionView::Base.instance_methods.size }
 
+      it "should remove compiled method when method name matches virtual path but not digest" do
         ActionView::Base.class_eval do
           def _e235fa404c3c2281d4f6791162b1c638_posts_index_123123123
             true #not a real method
@@ -579,8 +579,6 @@ module Deface
       end
 
       it "should not remove compiled method when virtual path and digest matach" do
-        instance_methods_count = ActionView::Base.instance_methods.size
-
         ActionView::Base.class_eval do
           def _e235fa404c3c2281d4f6791162b1c638_posts_index_123123123
             true #not a real method
