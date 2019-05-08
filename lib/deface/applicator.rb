@@ -14,9 +14,9 @@ module Deface
           case syntax
           when :haml
             #convert haml to erb before parsing before
-            source = Deface::HamlConverter.new(source.to_param).result
+            source = Deface::HamlConverter.new(source).result
           when :slim
-            source = Deface::SlimConverter.new(source.to_param).result
+            source = Deface::SlimConverter.new(source).result
           end
 
           doc = Deface::Parser.convert(source)

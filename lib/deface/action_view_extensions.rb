@@ -6,16 +6,16 @@ ActionView::Template.class_eval do
 
     if Rails.application.config.deface.enabled && should_be_defaced?(syntax)
 
-      processed_source = Deface::Override.apply(source.to_param, details, true, syntax)
+      processed_source = Deface::Override.apply(source, details, true, syntax)
 
       # force change in handler before continuing to original Rails method
       # as we've just converted some other template language into ERB!
       #
-      if [:slim, :haml].include?(syntax) && processed_source != source.to_param
+      if [:slim, :haml].include?(syntax) && processed_source != source
         handler = ActionView::Template::Handlers::ERB
       end
     else
-      processed_source = source.to_param
+      processed_source = source
     end
 
     initialize_without_deface(processed_source, identifier, handler, details)

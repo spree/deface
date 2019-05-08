@@ -560,9 +560,15 @@ module Deface
     end
 
     describe "#expire_compiled_template" do
-      it "should remove compiled method when method name matches virtual path but not digest" do
-        instance_methods_count = ActionView::Base.instance_methods.size
+      before do
+        @compiled_templates = ActionView::CompiledTemplates
 
+        ActionView::CompiledTemplates.instance_methods.each do |method_name|
+          ActionView::CompiledTemplates.send :remove_method, method_name
+        end
+      end
+
+      it "should remove compiled method when method name matches virtual path but not digest" do
         ActionView::Base.class_eval do
           def _e235fa404c3c2281d4f6791162b1c638_posts_index_123123123
             true #not a real method
@@ -573,14 +579,12 @@ module Deface
           end
         end
 
-        expect(ActionView::Base.instance_methods.size).to eq(instance_methods_count + 2)
+        expect(ActionView::CompiledTemplates.instance_methods.size).to eq(2)
         @override.send(:expire_compiled_template)
-        expect(ActionView::Base.instance_methods.size).to eq(instance_methods_count + 1)
+        expect(ActionView::CompiledTemplates.instance_methods.size).to eq(1)
       end
 
       it "should not remove compiled method when virtual path and digest matach" do
-        instance_methods_count = ActionView::Base.instance_methods.size
-
         ActionView::Base.class_eval do
           def _e235fa404c3c2281d4f6791162b1c638_posts_index_123123123
             true #not a real method
@@ -589,9 +593,9 @@ module Deface
 
         expect(Deface::Override).to receive(:digest).and_return('e235fa404c3c2281d4f6791162b1c638')
 
-        expect(ActionView::Base.instance_methods.size).to eq(instance_methods_count + 1)
+        expect(ActionView::CompiledTemplates.instance_methods.size).to eq(1)
         @override.send(:expire_compiled_template)
-        expect(ActionView::Base.instance_methods.size).to eq(instance_methods_count + 1)
+        expect(ActionView::CompiledTemplates.instance_methods.size).to eq(1)
       end
     end
 
