@@ -20,5 +20,8 @@ notifications:
     - ryan@spreecommerce.com
 
 matrix:
-  allow_failures:
-    - gemfile: gemfiles/rails_6.0.gemfile
+  exclude:
+  - rvm: 2.3.7
+    gemfile: gemfiles/rails_6.0.gemfile
+  - rvm: 2.4.4
+    gemfile: gemfiles/rails_6.0.gemfile
