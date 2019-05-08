@@ -18,3 +18,7 @@ notifications:
   email:
     - brian@spreecommerce.com
     - ryan@spreecommerce.com
+
+matrix:
+  allow_failures:
+    - gemfile: gemfiles/rails_6.0.gemfile
