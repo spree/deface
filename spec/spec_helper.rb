@@ -42,10 +42,6 @@ RSpec.configure do |config|
   config.mock_framework = :rspec
 end
 
-module ActionView::CompiledTemplates
-  #empty module for testing purposes
-end
-
 shared_context "mock Rails" do
   before(:each) do
     rails_version = Rails::VERSION::STRING
