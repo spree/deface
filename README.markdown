@@ -1,6 +1,6 @@
 <p style="float:right;">
   <a href="http://secure.travis-ci.org/spree/deface">
-    <img src="https://secure.travis-ci.org/spree/deface.png?branch=master">
+    <img src="https://secure.travis-ci.org/spree/deface.svg?branch=master">
   </a>
 </p>
 
