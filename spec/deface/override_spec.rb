@@ -563,25 +563,34 @@ module Deface
       it "should remove compiled method when method name matches virtual path but not digest" do
         if Rails.version < "6.0.0.beta1"
           instance_methods_count = ActionView::CompiledTemplates.instance_methods.size
-        else
-          instance_methods_count = ActionDispatch::DebugView.instance_methods.size
-        end
 
-        Rails.version < "6.0.0.beta1" ? module ActionView::CompiledTemplates : module ActionDispatch::DebugView
-          def _e235fa404c3c2281d4f6791162b1c638_posts_index_123123123
-            true #not a real method
+          module ActionView::CompiledTemplates
+            def _e235fa404c3c2281d4f6791162b1c638_posts_index_123123123
+              true #not a real method
+            end
+
+            def _f34556de606cec51d4f6791163fab456_posts_edit_123123123
+              true #not a real method
+            end
           end
 
-          def _f34556de606cec51d4f6791163fab456_posts_edit_123123123
-            true #not a real method
-          end
-        end
-
-        if Rails.version < "6.0.0.beta1"
           expect(ActionView::CompiledTemplates.instance_methods.size).to eq(instance_methods_count + 2)
           @override.send(:expire_compiled_template)
           expect(ActionView::CompiledTemplates.instance_methods.size).to eq(instance_methods_count + 1)
+
         else
+          instance_methods_count = ActionDispatch::DebugView.instance_methods.size
+
+          module ActionDispatch::DebugView
+            def _e235fa404c3c2281d4f6791162b1c638_posts_index_123123123
+              true #not a real method
+            end
+
+            def _f34556de606cec51d4f6791163fab456_posts_edit_123123123
+              true #not a real method
+            end
+          end
+
           expect(ActionDispatch::DebugView.instance_methods.size).to eq(instance_methods_count + 2)
           @override.send(:expire_compiled_template)
           expect(ActionDispatch::DebugView.instance_methods.size).to eq(instance_methods_count + 1)
