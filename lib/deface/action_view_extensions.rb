@@ -29,6 +29,7 @@ ActionView::Template.class_eval do
   def render(view, locals, buffer=nil, &block)
 
     if Rails.version < "6.0.0.beta1" && view.is_a?(ActionView::CompiledTemplates)
+      mod = ActionView::CompiledTemplates
     elsif Rails.version >= "6.0.0.beta1" && view.is_a?(ActionDispatch::DebugView)
       mod = ActionDispatch::DebugView
     else
