@@ -561,9 +561,13 @@ module Deface
 
     describe "#expire_compiled_template" do
       it "should remove compiled method when method name matches virtual path but not digest" do
-        instance_methods_count = ActionView::Base.instance_methods.size
+        if Rails.version < "6.0.0.beta1"
+          instance_methods_count = ActionView::CompiledTemplates.instance_methods.size
+        else
+          instance_methods_count = ActionDispatch::DebugView.instance_methods.size
+        end
 
-        ActionView::Base.class_eval do
+        Rails.version < "6.0.0.beta1" ? module ActionView::CompiledTemplates : module ActionDispatch::DebugView
           def _e235fa404c3c2281d4f6791162b1c638_posts_index_123123123
             true #not a real method
           end
@@ -573,15 +577,25 @@ module Deface
           end
         end
 
-        expect(ActionView::Base.instance_methods.size).to eq(instance_methods_count + 2)
-        @override.send(:expire_compiled_template)
-        expect(ActionView::Base.instance_methods.size).to eq(instance_methods_count + 1)
+        if Rails.version < "6.0.0.beta1"
+          expect(ActionView::CompiledTemplates.instance_methods.size).to eq(instance_methods_count + 2)
+          @override.send(:expire_compiled_template)
+          expect(ActionView::CompiledTemplates.instance_methods.size).to eq(instance_methods_count + 1)
+        else
+          expect(ActionDispatch::DebugView.instance_methods.size).to eq(instance_methods_count + 2)
+          @override.send(:expire_compiled_template)
+          expect(ActionDispatch::DebugView.instance_methods.size).to eq(instance_methods_count + 1)
+        end
       end
 
       it "should not remove compiled method when virtual path and digest matach" do
-        instance_methods_count = ActionView::Base.instance_methods.size
+        if Rails.version < "6.0.0.beta1"
+          instance_methods_count = ActionView::CompiledTemplates.instance_methods.size
+        else
+          instance_methods_count = ActionDispatch::DebugView.instance_methods.size
+        end
 
-        ActionView::Base.class_eval do
+        Rails.version < "6.0.0.beta1" ? module ActionView::CompiledTemplates : module ActionDispatch::DebugView
           def _e235fa404c3c2281d4f6791162b1c638_posts_index_123123123
             true #not a real method
           end
@@ -589,9 +603,15 @@ module Deface
 
         expect(Deface::Override).to receive(:digest).and_return('e235fa404c3c2281d4f6791162b1c638')
 
-        expect(ActionView::Base.instance_methods.size).to eq(instance_methods_count + 1)
-        @override.send(:expire_compiled_template)
-        expect(ActionView::Base.instance_methods.size).to eq(instance_methods_count + 1)
+        if Rails.version < "6.0.0.beta1"
+          expect(ActionView::CompiledTemplates.instance_methods.size).to eq(instance_methods_count + 2)
+          @override.send(:expire_compiled_template)
+          expect(ActionView::CompiledTemplates.instance_methods.size).to eq(instance_methods_count + 1)
+        else
+          expect(ActionDispatch::DebugView.instance_methods.size).to eq(instance_methods_count + 2)
+          @override.send(:expire_compiled_template)
+          expect(ActionDispatch::DebugView.instance_methods.size).to eq(instance_methods_count + 1)
+        end
       end
     end
 
