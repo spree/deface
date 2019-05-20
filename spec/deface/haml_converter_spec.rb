@@ -31,8 +31,8 @@ module Deface
       it "should handle haml attributes with commas" do
         expect(haml_to_erb("%meta{'http-equiv' => 'X-UA-Compatible', :content => 'IE=edge,chrome=1'}")).to eq("<meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible' />")
         expect(haml_to_erb("%meta(http-equiv='X-UA-Compatible' content='IE=edge,chrome=1')")).to eq("<meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible' />")
-        expect(haml_to_erb('%meta{:name => "author", :content => "Example, Inc."}')).to eq("<meta content='Example, Inc.' name='author' />")
-        expect(haml_to_erb('%meta(name="author" content="Example, Inc.")')).to eq("<meta content='Example, Inc.' name='author' />")
+        expect(haml_to_erb('%meta{:name => "author", :content => "Example, Inc."}')).to eq("<meta content='Example, Inc.' name='author'>")
+        expect(haml_to_erb('%meta(name="author" content="Example, Inc.")')).to eq("<meta content='Example, Inc.' name='author'>")
 
         if RUBY_VERSION > "1.9"
           expect(haml_to_erb('%meta{name: "author", content: "Example, Inc."}')).to eq("<meta content='Example, Inc.' name='author' />")

@@ -609,7 +609,7 @@ module Deface
 
           expect(Deface::Override).to receive(:digest).and_return('e235fa404c3c2281d4f6791162b1c638')
 
-          expect(ActionView::CompiledTemplates.instance_methods.size).to eq(instance_methods_count + 2)
+          expect(ActionView::CompiledTemplates.instance_methods.size).to eq(instance_methods_count + 1)
           @override.send(:expire_compiled_template)
           expect(ActionView::CompiledTemplates.instance_methods.size).to eq(instance_methods_count + 1)
 
@@ -624,7 +624,7 @@ module Deface
 
           expect(Deface::Override).to receive(:digest).and_return('e235fa404c3c2281d4f6791162b1c638')
 
-          expect(ActionDispatch::DebugView.instance_methods.size).to eq(instance_methods_count + 2)
+          expect(ActionDispatch::DebugView.instance_methods.size).to eq(instance_methods_count + 1)
           @override.send(:expire_compiled_template)
           expect(ActionDispatch::DebugView.instance_methods.size).to eq(instance_methods_count + 1)
         end
