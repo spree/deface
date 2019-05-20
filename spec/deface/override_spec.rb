@@ -581,12 +581,12 @@ module Deface
         else
           instance_methods_count = ActionDispatch::DebugView.instance_methods.size
 
-          module ActionDispatch::DebugView
-            def _e235fa404c3c2281d4f6791162b1c638_posts_index_123123123
+          class ActionDispatch::DebugView
+            def self._e235fa404c3c2281d4f6791162b1c638_posts_index_123123123
               true #not a real method
             end
 
-            def _f34556de606cec51d4f6791163fab456_posts_edit_123123123
+            def self._f34556de606cec51d4f6791163fab456_posts_edit_123123123
               true #not a real method
             end
           end
@@ -616,8 +616,8 @@ module Deface
         else
           instance_methods_count = ActionDispatch::DebugView.instance_methods.size
 
-          module ActionDispatch::DebugView
-            def _e235fa404c3c2281d4f6791162b1c638_posts_index_123123123
+          class ActionDispatch::DebugView
+            def self._e235fa404c3c2281d4f6791162b1c638_posts_index_123123123
               true #not a real method
             end
           end

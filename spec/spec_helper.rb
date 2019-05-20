@@ -47,7 +47,7 @@ if Rails.version < "6.0.0.beta1"
     #empty module for testing purposes
   end
 else
-  module ActionDispatch::DebugView
+  class ActionDispatch::DebugView
     #empty module for testing purposes
   end
 end
