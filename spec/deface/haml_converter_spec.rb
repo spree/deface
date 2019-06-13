@@ -24,27 +24,15 @@ module Deface
       end
 
       it "should handle simple haml attributes" do
-        if Rails::VERSION::STRING >= "5.2"
-          expect(haml_to_erb("%meta{:charset => 'utf-8'}")).to eq("<meta charset='utf-8'>")
-        else
-          expect(haml_to_erb("%meta{:charset => 'utf-8'}")).to eq("<meta charset='utf-8' />")
-        end
-
+        expect(haml_to_erb("%meta{:charset => 'utf-8'}")).to eq("<meta charset='utf-8' />")
         expect(haml_to_erb("%p(alt='hello world')Hello World!")).to eq("<p alt='hello world'>Hello World!</p>")
       end
 
       it "should handle haml attributes with commas" do
-        if Rails::VERSION::STRING >= "5.2"
-          expect(haml_to_erb("%meta{'http-equiv' => 'X-UA-Compatible', :content => 'IE=edge,chrome=1'}")).to eq("<meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible'>")
-          expect(haml_to_erb("%meta(http-equiv='X-UA-Compatible' content='IE=edge,chrome=1')")).to eq("<meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible'>")
-          expect(haml_to_erb('%meta{:name => "author", :content => "Example, Inc."}')).to eq("<meta content='Example, Inc.' name='author'>")
-          expect(haml_to_erb('%meta(name="author" content="Example, Inc.")')).to eq("<meta content='Example, Inc.' name='author'>")
-        else
-          expect(haml_to_erb("%meta{'http-equiv' => 'X-UA-Compatible', :content => 'IE=edge,chrome=1'}")).to eq("<meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible' />")
-          expect(haml_to_erb("%meta(http-equiv='X-UA-Compatible' content='IE=edge,chrome=1')")).to eq("<meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible' />")
-          expect(haml_to_erb('%meta{:name => "author", :content => "Example, Inc."}')).to eq("<meta content='Example, Inc.' name='author' />")
-          expect(haml_to_erb('%meta(name="author" content="Example, Inc.")')).to eq("<meta content='Example, Inc.' name='author' />")
-        end
+        expect(haml_to_erb("%meta{'http-equiv' => 'X-UA-Compatible', :content => 'IE=edge,chrome=1'}")).to eq("<meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible' />")
+        expect(haml_to_erb("%meta(http-equiv='X-UA-Compatible' content='IE=edge,chrome=1')")).to eq("<meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible' />")
+        expect(haml_to_erb('%meta{:name => "author", :content => "Example, Inc."}')).to eq("<meta content='Example, Inc.' name='author' />")
+        expect(haml_to_erb('%meta(name="author" content="Example, Inc.")')).to eq("<meta content='Example, Inc.' name='author' />")
       end
 
       it "should handle haml attributes with evaluated values" do
