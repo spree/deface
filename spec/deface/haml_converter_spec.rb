@@ -28,6 +28,16 @@ module Deface
         expect(haml_to_erb("%p(alt='hello world')Hello World!")).to eq("<p alt='hello world'>Hello World!</p>")
       end
 
+      it "should handle recursive attributes" do
+        expect(haml_to_erb("%div{:data => {:foo => 'bar'}}")).to eq("<div data-foo='bar'></div>")
+        expect(haml_to_erb("%div{:data => {:foo => { :bar => 'baz' }, :qux => 'corge'}}")).to eq("<div data-foo-bar='baz' data-qux='corge'></div>")
+
+        if RUBY_VERSION > "1.9"
+          expect(haml_to_erb("%div{data: {foo: 'bar'}}")).to eq("<div data-foo='bar'></div>")
+          expect(haml_to_erb("%div{data: {foo: { bar: 'baz' }, qux: 'corge'}}")).to eq("<div data-foo-bar='baz' data-qux='corge'></div>")
+        end
+      end
+
       it "should handle haml attributes with commas" do
         expect(haml_to_erb("%meta{'http-equiv' => 'X-UA-Compatible', :content => 'IE=edge,chrome=1'}")).to eq("<meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible' />")
         expect(haml_to_erb("%meta(http-equiv='X-UA-Compatible' content='IE=edge,chrome=1')")).to eq("<meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible' />")
