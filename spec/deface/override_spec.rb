@@ -561,37 +561,73 @@ module Deface
 
     describe "#expire_compiled_template" do
       it "should remove compiled method when method name matches virtual path but not digest" do
-        instance_methods_count = ActionView::Base.instance_methods.size
+        if Rails.version < "6.0.0.beta1"
+          instance_methods_count = ActionView::CompiledTemplates.instance_methods.size
 
-        ActionView::Base.class_eval do
-          def _e235fa404c3c2281d4f6791162b1c638_posts_index_123123123
-            true #not a real method
+          module ActionView::CompiledTemplates
+            def _e235fa404c3c2281d4f6791162b1c638_posts_index_123123123
+              true #not a real method
+            end
+
+            def _f34556de606cec51d4f6791163fab456_posts_edit_123123123
+              true #not a real method
+            end
           end
 
-          def _f34556de606cec51d4f6791163fab456_posts_edit_123123123
-            true #not a real method
+          expect(ActionView::CompiledTemplates.instance_methods.size).to eq(instance_methods_count + 2)
+          @override.send(:expire_compiled_template)
+          expect(ActionView::CompiledTemplates.instance_methods.size).to eq(instance_methods_count + 1)
+
+        else
+          instance_methods_count = ActionDispatch::DebugView.instance_methods.size
+
+          class ActionDispatch::DebugView
+            def _e235fa404c3c2281d4f6791162b1c638_posts_index_123123123
+              true #not a real method
+            end
+
+            def _f34556de606cec51d4f6791163fab456_posts_edit_123123123
+              true #not a real method
+            end
           end
+
+          expect(ActionDispatch::DebugView.instance_methods.size).to eq(instance_methods_count + 2)
+          @override.send(:expire_compiled_template)
+          expect(ActionDispatch::DebugView.instance_methods.size).to eq(instance_methods_count + 1)
         end
-
-        expect(ActionView::Base.instance_methods.size).to eq(instance_methods_count + 2)
-        @override.send(:expire_compiled_template)
-        expect(ActionView::Base.instance_methods.size).to eq(instance_methods_count + 1)
       end
 
       it "should not remove compiled method when virtual path and digest matach" do
-        instance_methods_count = ActionView::Base.instance_methods.size
+        if Rails.version < "6.0.0.beta1"
+          instance_methods_count = ActionView::CompiledTemplates.instance_methods.size
 
-        ActionView::Base.class_eval do
-          def _e235fa404c3c2281d4f6791162b1c638_posts_index_123123123
-            true #not a real method
+          module ActionView::CompiledTemplates
+            def _e235fa404c3c2281d4f6791162b1c638_posts_index_123123123
+              true #not a real method
+            end
           end
+
+          expect(Deface::Override).to receive(:digest).and_return('e235fa404c3c2281d4f6791162b1c638')
+
+          expect(ActionView::CompiledTemplates.instance_methods.size).to eq(instance_methods_count + 1)
+          @override.send(:expire_compiled_template)
+          expect(ActionView::CompiledTemplates.instance_methods.size).to eq(instance_methods_count + 1)
+
+        else
+          instance_methods_count = ActionDispatch::DebugView.instance_methods.size
+
+          class ActionDispatch::DebugView
+            def _e235fa404c3c2281d4f6791162b1c638_posts_index_123123123
+              true #not a real method
+            end
+          end
+
+          expect(Deface::Override).to receive(:digest).and_return('e235fa404c3c2281d4f6791162b1c638')
+
+          expect(ActionDispatch::DebugView.instance_methods.size).to eq(instance_methods_count + 1)
+          @override.send(:expire_compiled_template)
+          expect(ActionDispatch::DebugView.instance_methods.size).to eq(instance_methods_count + 1)
         end
-
-        expect(Deface::Override).to receive(:digest).and_return('e235fa404c3c2281d4f6791162b1c638')
-
-        expect(ActionView::Base.instance_methods.size).to eq(instance_methods_count + 1)
-        @override.send(:expire_compiled_template)
-        expect(ActionView::Base.instance_methods.size).to eq(instance_methods_count + 1)
       end
     end
 

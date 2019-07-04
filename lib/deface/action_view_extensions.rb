@@ -28,8 +28,10 @@ ActionView::Template.class_eval do
   #
   def render(view, locals, buffer=nil, &block)
 
-    if view.is_a?(ActionView::Base)
-      mod = ActionView::Base
+    if Rails.version < "6.0.0.beta1" && view.is_a?(ActionView::CompiledTemplates)
+      mod = ActionView::CompiledTemplates
+    elsif Rails.version >= "6.0.0.beta1" && view.is_a?(ActionDispatch::DebugView)
+      mod = ActionDispatch::DebugView
     else
       mod = view.singleton_class
     end
@@ -72,6 +74,26 @@ ActionView::Template.class_eval do
         :unknown
       end
     end
+end
+
+# Rails 6 fix
+# https://github.com/rails/rails/commit/ec5c946138f63dc975341d6521587adc74f6b441
+# https://github.com/rails/rails/commit/ccfa01c36e79013881ffdb7ebe397cec733d15b2#diff-dfb6e0314ad9639bab460ea64871aa47R27
+if defined?( ActionView::Template::Handlers::ERB::Erubi)
+  ActionView::Template::Handlers::ERB::Erubi.class_eval do
+    def initialize(input, properties = {})
+      @newline_pending = 0
+
+      # Dup properties so that we don't modify argument
+      properties = Hash[properties]
+      properties[:preamble]   = "@output_buffer = output_buffer || ActionView::OutputBuffer.new;"
+      properties[:postamble]  = "@output_buffer.to_s"
+      properties[:bufvar]     = "@output_buffer"
+      properties[:escapefunc] = ""
+
+      super
+    end
+  end
 end
 
 #fix for Rails 3.1 not setting virutal_path anymore (BOO!)

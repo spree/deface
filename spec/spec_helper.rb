@@ -42,6 +42,16 @@ RSpec.configure do |config|
   config.mock_framework = :rspec
 end
 
+if Rails.version < "6.0.0.beta1"
+  module ActionView::CompiledTemplates
+    #empty module for testing purposes
+  end
+else
+  class ActionDispatch::DebugView
+    #empty module for testing purposes
+  end
+end
+
 shared_context "mock Rails" do
   before(:each) do
     rails_version = Rails::VERSION::STRING
