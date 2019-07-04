@@ -76,6 +76,26 @@ ActionView::Template.class_eval do
     end
 end
 
+# Rails 6 fix
+# https://github.com/rails/rails/commit/ec5c946138f63dc975341d6521587adc74f6b441
+# https://github.com/rails/rails/commit/ccfa01c36e79013881ffdb7ebe397cec733d15b2#diff-dfb6e0314ad9639bab460ea64871aa47R27
+if defined?( ActionView::Template::Handlers::ERB::Erubi)
+  ActionView::Template::Handlers::ERB::Erubi.class_eval do
+    def initialize(input, properties = {})
+      @newline_pending = 0
+
+      # Dup properties so that we don't modify argument
+      properties = Hash[properties]
+      properties[:preamble]   = "@output_buffer = output_buffer || ActionView::OutputBuffer.new;"
+      properties[:postamble]  = "@output_buffer.to_s"
+      properties[:bufvar]     = "@output_buffer"
+      properties[:escapefunc] = ""
+
+      super
+    end
+  end
+end
+
 #fix for Rails 3.1 not setting virutal_path anymore (BOO!)
 if defined?(ActionView::Resolver::Path)
   ActionView::Resolver::Path.class_eval { alias_method :virtual, :to_s }
