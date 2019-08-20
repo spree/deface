@@ -214,18 +214,18 @@ module Deface
       # check if method is compiled for the current virtual path
       #
       def expire_compiled_template
-        if Rails.version < "6.0.0.beta1"
+        if Gem.loaded_specs["rails"].version < Gem::Version.new("6.0.0.beta1")
           if compiled_method_name = ActionView::CompiledTemplates.instance_methods.detect { |name| name =~ /#{args[:virtual_path].gsub(/[^a-z_]/, '_')}/ }
             #if the compiled method does not contain the current deface digest
             #then remove the old method - this will allow the template to be
             #recompiled the next time it is rendered (showing the latest changes)
-  
+
             unless compiled_method_name =~ /\A_#{self.class.digest(:virtual_path => @args[:virtual_path])}_/
               ActionView::CompiledTemplates.send :remove_method, compiled_method_name
             end
           end
         else
-          if compiled_method_name = ActionDispatch::DebugView.instance_methods.detect { |name| name =~ /#{args[:virtual_path].gsub(/[^a-z_]/, '_')}/ }  
+          if compiled_method_name = ActionDispatch::DebugView.instance_methods.detect { |name| name =~ /#{args[:virtual_path].gsub(/[^a-z_]/, '_')}/ }
             unless compiled_method_name =~ /\A_#{self.class.digest(:virtual_path => @args[:virtual_path])}_/
               ActionDispatch::DebugView.send :remove_method, compiled_method_name
             end
