@@ -42,7 +42,7 @@ RSpec.configure do |config|
   config.mock_framework = :rspec
 end
 
-if Rails.version < "6.0.0.beta1"
+if Gem.loaded_specs["rails"].version < Gem::Version.new("6.0.0.beta1")
   module ActionView::CompiledTemplates
     #empty module for testing purposes
   end

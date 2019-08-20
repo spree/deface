@@ -28,9 +28,9 @@ ActionView::Template.class_eval do
   #
   def render(view, locals, buffer=nil, &block)
 
-    if Rails.version < "6.0.0.beta1" && view.is_a?(ActionView::CompiledTemplates)
+    if Gem.loaded_specs["rails"].version < Gem::Version.new("6.0.0.beta1") && view.is_a?(ActionView::CompiledTemplates)
       mod = ActionView::CompiledTemplates
-    elsif Rails.version >= "6.0.0.beta1" && view.is_a?(ActionDispatch::DebugView)
+    elsif Gem.loaded_specs["rails"].version >= Gem::Version.new("6.0.0.beta1")  && view.is_a?(ActionDispatch::DebugView)
       mod = ActionDispatch::DebugView
     else
       mod = view.singleton_class
