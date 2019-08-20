@@ -37,6 +37,7 @@ module Deface
       # coverts { attributes into deface compatibily attributes
       def deface_attributes(attrs)
         return if attrs.nil?
+        return attrs if attrs.scan(/\{/).count > 1
 
         attrs.gsub! /\{|\}/, ''
 
