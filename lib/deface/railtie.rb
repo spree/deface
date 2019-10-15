@@ -36,7 +36,7 @@ module Deface
     initializer "deface.tweak_eager_loading", :before => :set_load_path do |app|
 
       # application
-      app.config.eager_load_paths = app.config.eager_load_paths.reject { |path| path.to_s  =~ /app\/overrides\z/ }
+      tweak_eager_loading(app)
 
       # railites / engines / extensions
       railties = if Rails.version >= "4.0"
@@ -47,8 +47,10 @@ module Deface
 
       railties.each do |railtie|
         next unless railtie.respond_to?(:root) && railtie.config.respond_to?(:eager_load_paths)
-        railtie.config.eager_load_paths = railtie.config.eager_load_paths.reject { |path| path.to_s  =~ /app\/overrides\z/ }
+
+        tweak_eager_loading(railtie)
       end
+
     end
 
     # sets up deface environment and requires / loads all
@@ -87,5 +89,15 @@ module Deface
       end
     end
 
+    private
+
+    def tweak_eager_loading(railtie)
+      paths_to_reject = railtie.config.eager_load_paths.select { |path| path.to_s  =~ /app\/overrides\z/ }
+      railtie.config.eager_load_paths = railtie.config.eager_load_paths.reject { |path| path.in?(paths_to_reject) }
+
+      if Rails.version >= "6.0" && Rails.configuration.autoloader == :zeitwerk
+        Rails.autoloaders.each { |autoloader| autoloader.ignore(*paths_to_reject) }
+      end
+    end
   end
 end
