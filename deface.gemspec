@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency('erubis')
   s.add_development_dependency('rspec', '>= 3.1.0')
   s.add_development_dependency('haml', ['>= 4.0', '< 6'])
-  s.add_development_dependency('slim', '~> 3.0')
+  s.add_development_dependency('slim', '~> 4.0')
   s.add_development_dependency('simplecov', '>= 0.6.4')
   s.add_development_dependency('generator_spec', '~> 0.8')
 end
