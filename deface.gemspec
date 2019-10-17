@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "deface"
-  s.version = "1.5.2"
+  s.version = "1.5.3"
 
   s.authors = ["Brian D Quinn"]
   s.description = "Deface is a library that allows you to customize ERB, Haml and Slim views in a Rails application without editing the underlying view."
