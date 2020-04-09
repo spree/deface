@@ -467,6 +467,13 @@ module Deface
         expect(@first.sequence).to eq(100)
       end
 
+      it 'should log a warning if before/after override is nonexistent' do
+        expect(Rails.logger).to receive(:info).twice
+
+        Deface::Override.new(:virtual_path => "posts/index", :name => "second", :insert_after => "li", :text => "<li>second</li>", :sequence => {:after => "nonexistent1"}).sequence
+        Deface::Override.new(:virtual_path => "posts/index", :name => "second", :insert_after => "li", :text => "<li>second</li>", :sequence => {:before => "nonexistent2"}).sequence
+      end
+
     end
 
     describe "#end_selector" do
