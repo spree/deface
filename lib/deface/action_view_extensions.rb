@@ -97,8 +97,3 @@ if defined?( ActionView::Template::Handlers::ERB::Erubi)
     end
   end
 end
-
-#fix for Rails 3.1 not setting virutal_path anymore (BOO!)
-if defined?(ActionView::Resolver::Path)
-  ActionView::Resolver::Path.class_eval { alias_method :virtual, :to_s }
-end

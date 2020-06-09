@@ -7,11 +7,15 @@ module ActionView
     describe "with no overrides defined" do
       before(:each) do
         @updated_at = Time.now - 600
-        @template = ActionView::Template.new("<p>test</p>", "/some/path/to/file.erb", ActionView::Template::Handlers::ERB, {:virtual_path=>"posts/index", :format=>:html, :updated_at => @updated_at})
-        #stub for Rails < 3.1
-        unless defined?(@template.updated_at)
-          allow(@template).to receive(:updated_at).and_return(@updated_at)
-        end
+
+        @template = ActionView::Template.new(
+          "<p>test</p>",
+          "/some/path/to/file.erb",
+          ActionView::Template::Handlers::ERB,
+          virtual_path: "posts/index",
+          format: :html,
+          updated_at: @updated_at
+        )
       end
 
       it "should initialize new template object" do
