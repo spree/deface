@@ -15,6 +15,8 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.summary = "Deface is a library that allows you to customize ERB, Haml and Slim views in Rails"
 
+  s.required_ruby_version = Gem::Requirement.new('~> 2.3')
+
   s.add_dependency('nokogiri', '>= 1.6')
   s.add_dependency('rails', '>= 4.1')
   s.add_dependency('rainbow', '>= 2.1.0')
