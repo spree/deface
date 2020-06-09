@@ -6,14 +6,20 @@ Gem::Specification.new do |s|
   s.description = "Deface is a library that allows you to customize ERB, Haml and Slim views in a Rails application without editing the underlying view."
   s.email = "brian@spreecommerce.com"
   s.extra_rdoc_files = [
-    "README.markdown", "CHANGELOG.markdown"
+    "README.markdown"
   ]
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.homepage = "https://github.com/spree/deface"
+  s.homepage = "https://github.com/spree/deface#readme"
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.summary = "Deface is a library that allows you to customize ERB, Haml and Slim views in Rails"
+
+  s.metadata['homepage_uri'] = s.homepage
+  s.metadata['source_code_uri'] = 'https://github.com/spree/deface'
+  s.metadata['changelog_uri'] = 'https://github.com/spree/deface/releases'
+
+  s.required_ruby_version = Gem::Requirement.new('~> 2.3')
 
   s.add_dependency('nokogiri', '>= 1.6')
   s.add_dependency('rails', '>= 4.1')
