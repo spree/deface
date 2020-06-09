@@ -27,10 +27,11 @@ ActionView::Template.class_eval do
   # view needs to be recompiled
   #
   def render(view, locals, buffer=nil, &block)
+    rails_6_or_above = Rails.gem_version >= Gem::Version.new("6.0.0.beta1")
 
-    if Gem.loaded_specs["rails"].version < Gem::Version.new("6.0.0.beta1") && view.is_a?(ActionView::CompiledTemplates)
+    if !rails_6_or_above && view.is_a?(ActionView::CompiledTemplates)
       mod = ActionView::CompiledTemplates
-    elsif Gem.loaded_specs["rails"].version >= Gem::Version.new("6.0.0.beta1")  && view.is_a?(ActionDispatch::DebugView)
+    elsif rails_6_or_above && view.is_a?(ActionDispatch::DebugView)
       mod = ActionDispatch::DebugView
     else
       mod = view.singleton_class
@@ -40,6 +41,7 @@ ActionView::Template.class_eval do
       @compiled = false
       @source = refresh(view).source
     end
+
     render_without_deface(view, locals, buffer, &block)
   end
 
