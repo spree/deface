@@ -34,7 +34,7 @@ ActionView::Template.class_eval do
     end
     mod ||= view.singleton_class
 
-    if @compiled && !mod.instance_methods.map(&:to_s).include?(method_name)
+    if @compiled && !mod.instance_methods.include?(method_name.to_sym)
       @compiled = false
       @source = refresh(view).source
     end
