@@ -47,13 +47,13 @@ module ActionView
         expect(@template.source).to eq("<%= raw(text) %>")
       end
 
-      if Rails.gem_version >= Gem::Version.new('6.0.0')
-        it "should not change updated_at" do
-          expect(@template.updated_at).to eq(@updated_at)
-        end
-      else
+      if Deface.before_rails_6?
         it "should change updated_at" do
           expect(@template.updated_at).to be > @updated_at
+        end
+      else
+        it "should not change updated_at" do
+          expect(@template.updated_at).to eq(@updated_at)
         end
       end
     end

@@ -38,10 +38,15 @@ require "deface/matchers/range"
 require "deface/environment"
 require "deface/precompiler"
 
+require "deface/railtie" if defined?(Rails)
+
 module Deface
-  if defined?(Rails)
-    require "deface/railtie"
+  @before_rails_6 = ActionView.gem_version < Gem::Version.new('6.0.0')
+
+  def self.before_rails_6?
+    @before_rails_6
   end
+
 
   if defined?(ActiveSupport::Digest)
     Deface::Digest.digest_class = ActiveSupport::Digest

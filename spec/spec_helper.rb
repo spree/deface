@@ -2,8 +2,6 @@ require 'simplecov'
 SimpleCov.start 'rails'
 require 'rspec'
 require 'active_support'
-require 'action_view'
-require 'action_controller'
 require 'deface'
 require 'rails/generators'
 # have to manually require following for testing purposes
@@ -42,7 +40,7 @@ RSpec.configure do |config|
   config.mock_framework = :rspec
 end
 
-if Gem.loaded_specs["rails"].version < Gem::Version.new("6.0.0.beta1")
+if Deface.before_rails_6?
   module ActionView::CompiledTemplates
     #empty module for testing purposes
   end
