@@ -34,7 +34,7 @@ module Deface::ActionViewExtensions
     super(view, locals, buffer, &block)
   end
 
-  private
+  protected # Required by Rails 4.2, that calls `self.method_name`.
 
     # inject deface hash into compiled view method name
     # used to determine if recompilation is needed
