@@ -1,5 +1,6 @@
 require "action_view"
 require "action_controller"
+require "deface/errors"
 require "deface/template_helper"
 require "deface/original_validator"
 require "deface/applicator"
@@ -47,14 +48,7 @@ module Deface
     @before_rails_6
   end
 
-
   if defined?(ActiveSupport::Digest)
     Deface::Digest.digest_class = ActiveSupport::Digest
   end
-
-  # Exceptions
-  class DefaceError < StandardError; end
-
-  class NotSupportedError < DefaceError; end
-
 end
