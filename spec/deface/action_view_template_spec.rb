@@ -103,4 +103,29 @@ describe ActionView::Template do
       end
     end
   end
+
+  describe '#render' do
+    let(:source) { "<p>test</p><%= raw(text) %>".inspect }
+    let(:local_assigns) { {text: "some <br> text"} }
+    let(:lookup_context) { ActionView::LookupContext.new(["#{__dir__}/views"]) }
+    let(:view) { ActionView::Base.new(lookup_context) }
+    let(:options) { {
+      virtual_path: virtual_path,
+      format: format,
+      locals: local_assigns.keys
+    } }
+
+    let!(:deface) {
+      Deface::Override.new(
+        virtual_path: virtual_path,
+        name: "Posts#index",
+        replace: "p",
+        text: "<h1>Argh!</h1>"
+      )
+    }
+
+    it 'renders the template modified by deface' do
+      expect(template.render(view, local_assigns)).to eq(%{"<h1>Argh!</h1>some <br> text"})
+    end
+  end
 end
