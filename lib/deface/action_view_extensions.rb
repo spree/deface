@@ -27,12 +27,9 @@ ActionView::Template.class_eval do
   # view needs to be recompiled
   #
   def render(view, locals, buffer=nil, &block)
-    if Deface.before_rails_6?
-      mod = ActionView::CompiledTemplates if view.is_a?(ActionView::CompiledTemplates)
-    else
-      mod = ActionDispatch::DebugView if view.is_a?(ActionDispatch::DebugView)
-    end
-    mod ||= view.singleton_class
+    template_class = Deface.before_rails_6? ? ActionView::CompiledTemplates : ActionDispatch::DebugView
+
+    mod = view.is_a?(template_class) ? template_class : view.singleton_class
 
     if @compiled && !mod.instance_methods.include?(method_name.to_sym)
       @compiled = false
