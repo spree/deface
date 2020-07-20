@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ActionView::Template do
+describe Deface::ActionViewExtensions do
   include_context "mock Rails.application"
 
   let(:template) { ActionView::Template.new(
@@ -84,22 +84,21 @@ describe ActionView::Template do
     end
   end
 
-  describe "#should_be_defaced?(handler)" do
+  describe ".determine_syntax(handler)" do
     let(:source) { "xml.post => :blah" }
     let(:format) { :xml }
 
     # Not so BDD, but it keeps us from making mistakes in the future for instance,
     # we test ActionView::Template here with a handler == ....::Handlers::ERB,
     # while in rails it seems it's an instance of ...::Handlers::ERB.
-    it "should be truthy only for haml/erb handlers and their instances" do
-      expectations = { Haml::Plugin => true,
-                       ActionView::Template::Handlers::ERB => true,
-                       ActionView::Template::Handlers::ERB.new => true,
-                       ActionView::Template::Handlers::Builder => false }
+    it "recognizes supported syntaxes" do
+      expectations = { Haml::Plugin => :haml,
+                       ActionView::Template::Handlers::ERB => :erb,
+                       ActionView::Template::Handlers::ERB.new => :erb,
+                       ActionView::Template::Handlers::Builder => nil }
       expectations.each do |handler, expected|
         expect(template.is_a?(ActionView::Template)).to eq(true)
-        syntax = template.send(:determine_syntax, handler)
-        expect(template.send(:should_be_defaced?, syntax)).to eq(expected), "unexpected result for handler "+handler.to_s
+        expect(described_class.determine_syntax(handler)).to eq(expected), "unexpected result for handler #{handler}"
       end
     end
   end

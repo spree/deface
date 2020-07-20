@@ -2,10 +2,9 @@ ActionView::Template.class_eval do
   alias_method :initialize_without_deface, :initialize
 
   def initialize(source, identifier, handler, details)
-    syntax = determine_syntax(handler)
+    syntax = Deface::ActionViewExtensions.determine_syntax(handler)
 
-    if Rails.application.config.deface.enabled && should_be_defaced?(syntax)
-
+    if syntax
       processed_source = Deface::Override.apply(source.to_param, details, true, syntax)
 
       # force change in handler before continuing to original Rails method
@@ -53,23 +52,6 @@ ActionView::Template.class_eval do
       "_#{Deface::Digest.hexdigest("#{deface_hash}_#{method_name_without_deface}")}"
     end
 
-  private
-
-    def should_be_defaced?(syntax)
-      syntax != :unknown
-    end
-
-    def determine_syntax(handler)
-      if handler.to_s == "Haml::Plugin"
-        :haml
-      elsif handler.class.to_s == "Slim::RailsTemplate"
-        :slim
-      elsif handler.to_s.demodulize == "ERB" || handler.class.to_s.demodulize == "ERB"
-        :erb
-      else
-        :unknown
-      end
-    end
 end
 
 # Rails 6 fix
@@ -88,6 +70,22 @@ if defined?( ActionView::Template::Handlers::ERB::Erubi)
       properties[:escapefunc] = ""
 
       super
+    end
+  end
+end
+
+module Deface::ActionViewExtensions
+  def self.determine_syntax(handler)
+    return unless Rails.application.config.deface.enabled
+
+    if handler.to_s == "Haml::Plugin"
+      :haml
+    elsif handler.class.to_s == "Slim::RailsTemplate"
+      :slim
+    elsif handler.to_s.demodulize == "ERB" || handler.class.to_s.demodulize == "ERB"
+      :erb
+    else
+      nil
     end
   end
 end
