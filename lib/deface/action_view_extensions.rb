@@ -34,17 +34,15 @@ module Deface::ActionViewExtensions
     super(view, locals, buffer, &block)
   end
 
-  protected # Required by Rails 4.2, that calls `self.method_name`.
+  # inject deface hash into compiled view method name
+  # used to determine if recompilation is needed
+  #
+  def method_name
+    deface_hash = Deface::Override.digest(:virtual_path => @virtual_path)
 
-    # inject deface hash into compiled view method name
-    # used to determine if recompilation is needed
-    #
-    def method_name
-      deface_hash = Deface::Override.digest(:virtual_path => @virtual_path)
-
-      #we digest the whole method name as if it gets too long there's problems
-      "_#{Deface::Digest.hexdigest("#{deface_hash}_#{super}")}"
-    end
+    #we digest the whole method name as if it gets too long there's problems
+    "_#{Deface::Digest.hexdigest("#{deface_hash}_#{super}")}"
+  end
 
   ActionView::Template.prepend self
 

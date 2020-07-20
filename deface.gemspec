@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.metadata['source_code_uri'] = 'https://github.com/spree/deface'
   s.metadata['changelog_uri'] = 'https://github.com/spree/deface/releases'
 
-  s.required_ruby_version = Gem::Requirement.new('~> 2.3')
+  s.required_ruby_version = Gem::Requirement.new('~> 2.5')
 
   s.add_dependency('nokogiri', '>= 1.6')
   s.add_dependency('rails', '>= 4.1')
