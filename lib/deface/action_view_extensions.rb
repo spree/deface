@@ -1,6 +1,4 @@
-ActionView::Template.class_eval do
-  alias_method :initialize_without_deface, :initialize
-
+module Deface::ActionViewExtensions
   def initialize(source, identifier, handler, details)
     syntax = Deface::ActionViewExtensions.determine_syntax(handler)
 
@@ -17,10 +15,8 @@ ActionView::Template.class_eval do
       processed_source = source.to_param
     end
 
-    initialize_without_deface(processed_source, identifier, handler, details)
+    super(processed_source, identifier, handler, details)
   end
-
-  alias_method :render_without_deface, :render
 
   # refresh view to get source again if
   # view needs to be recompiled
@@ -35,12 +31,10 @@ ActionView::Template.class_eval do
       @source = refresh(view).source
     end
 
-    render_without_deface(view, locals, buffer, &block)
+    super(view, locals, buffer, &block)
   end
 
-  protected
-
-    alias_method :method_name_without_deface, :method_name
+  private
 
     # inject deface hash into compiled view method name
     # used to determine if recompilation is needed
@@ -49,12 +43,11 @@ ActionView::Template.class_eval do
       deface_hash = Deface::Override.digest(:virtual_path => @virtual_path)
 
       #we digest the whole method name as if it gets too long there's problems
-      "_#{Deface::Digest.hexdigest("#{deface_hash}_#{method_name_without_deface}")}"
+      "_#{Deface::Digest.hexdigest("#{deface_hash}_#{super}")}"
     end
 
-end
+  ActionView::Template.prepend self
 
-module Deface::ActionViewExtensions
   # Rails 6 fix.
   #
   # https://github.com/rails/rails/commit/ec5c946138f63dc975341d6521587adc74f6b441

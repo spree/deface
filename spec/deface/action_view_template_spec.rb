@@ -55,15 +55,20 @@ describe Deface::ActionViewExtensions do
     end
   end
 
-  describe "method_name" do
-    it "should return hash of overrides plus original method_name " do
-      deface_hash = Deface::Override.digest(virtual_path: 'posts/index')
-
-      expect(template.send(:method_name)).to eq("_#{Digest::MD5.new.update("#{deface_hash}_#{template.send(:method_name_without_deface)}").hexdigest}")
+  describe "#method_name" do
+    before do
+      ActionView::Template.define_method(
+        :method_name_without_deface,
+        ActionView::Template.instance_method(:method_name)
+      )
     end
 
-    it "should alias original method_name method" do
-      expect(template.send(:method_name_without_deface)).to match(/\A__some_path_to_file_erb_+[0-9]+_+[0-9]+\z/)
+    it "returns hash of overrides plus original method_name " do
+      deface_hash = Deface::Override.digest(virtual_path: 'posts/index')
+      super_method = template.method(:method_name).super_method
+      method_name = "_#{Digest::MD5.new.update("#{deface_hash}_#{super_method.call}").hexdigest}"
+
+      expect(template.send(:method_name)).to eq(method_name)
     end
   end
 
