@@ -54,27 +54,22 @@ ActionView::Template.class_eval do
 
 end
 
-# Rails 6 fix
-# https://github.com/rails/rails/commit/ec5c946138f63dc975341d6521587adc74f6b441
-# https://github.com/rails/rails/commit/ccfa01c36e79013881ffdb7ebe397cec733d15b2#diff-dfb6e0314ad9639bab460ea64871aa47R27
-if defined?( ActionView::Template::Handlers::ERB::Erubi)
-  ActionView::Template::Handlers::ERB::Erubi.class_eval do
+module Deface::ActionViewExtensions
+  # Rails 6 fix.
+  #
+  # https://github.com/rails/rails/commit/ec5c946138f63dc975341d6521587adc74f6b441
+  # https://github.com/rails/rails/commit/ccfa01c36e79013881ffdb7ebe397cec733d15b2#diff-dfb6e0314ad9639bab460ea64871aa47R27
+  module ErubiHandlerFix
     def initialize(input, properties = {})
-      @newline_pending = 0
-
-      # Dup properties so that we don't modify argument
-      properties = Hash[properties]
-      properties[:preamble]   = "@output_buffer = output_buffer || ActionView::OutputBuffer.new;"
-      properties[:postamble]  = "@output_buffer.to_s"
-      properties[:bufvar]     = "@output_buffer"
-      properties[:escapefunc] = ""
-
+      properties[:preamble] = "@output_buffer = output_buffer || ActionView::OutputBuffer.new;"
       super
     end
-  end
-end
 
-module Deface::ActionViewExtensions
+    # We use include to place the module between the class' call to super and the
+    # actual execution within Erubi::Engine.
+    ActionView::Template::Handlers::ERB::Erubi.include self unless Deface.before_rails_6?
+  end
+
   def self.determine_syntax(handler)
     return unless Rails.application.config.deface.enabled
 
