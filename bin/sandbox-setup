@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+bin/rails g scaffold Post title body
+bin/rails db:migrate
+
+mkdir sandbox/app/overrides
+
+echo <<RUBY >> sandbox/app/overrides/sparkling_title.rb
+Deface::Override.new(
+  virtual_path: "posts/show",
+  name: "sparkling_title",
+  replace: 'p:nth-child(2)',
+  text: "<h1>✨<%= @post.title %>✨</h1>"
+)
+
+Deface::Override.new(
+  virtual_path: "posts/show",
+  name: "sparkling_body",
+  replace: 'p:nth-child(3)',
+  text: "<p style='border:2px gray solid; padding: 1rem;'><%= @post.body %></p>"
+)
+RUBY
+
+bin/rails run "Post.create(title: 'Foo', body: 'Bar '*10)"

@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+if %w[e engine].include? ARGV.first
+  ARGV.shift # remove the first argument
+
+  ENGINE_ROOT = File.expand_path('..', __dir__)
+  ENGINE_NAME = File.basename(Dir["#{ENGINE_ROOT}/*.gemspec"].first, '.gemspec')
+  ENGINE_PATH = File.expand_path("../lib/#{ENGINE_NAME}/engine", __dir__)
+
+  # Set up gems listed in the Gemfile.
+  ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../Gemfile', __dir__)
+  require 'bundler/setup' if File.exist?(ENV['BUNDLE_GEMFILE'])
+
+  require 'rails/all'
+  require 'rails/engine/commands'
+else
+  APP_ROOT = File.expand_path('../sandbox', __dir__)
+
+  unless File.exist? APP_ROOT
+    warn 'Creating the sandbox app...'
+    Dir.chdir "#{APP_ROOT}/.." do
+      system "bin/sandbox" or begin
+        warn 'Automatic creation of the sandbox app failed'
+        exit 1
+      end
+    end
+  end
+
+  Dir.chdir APP_ROOT
+  exec 'bin/rails', *ARGV
+end
