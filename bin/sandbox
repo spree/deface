@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+gem_name="$(ruby -rpathname -e"puts Pathname(ARGV.first).join('../..').expand_path.glob('*.gemspec').first.basename('.gemspec')" -- $0)"
+
+# Stay away from the bundler env of the containing extension.
+function unbundled {
+  ruby -rbundler -e'b = proc {system *ARGV}; Bundler.respond_to?(:with_unbundled_env) ? Bundler.with_unbundled_env(&b) : Bundler.with_clean_env(&b)' -- $@
+}
+
+rm -rf ./sandbox
+unbundled bundle exec rails new sandbox \
+  --skip-bundle \
+  --skip-spring \
+  --skip-git \
+  $@
+
+if [ ! -d "sandbox" ]; then
+  echo 'sandbox rails application failed'
+  exit 1
+fi
+
+cd ./sandbox
+cat <<RUBY >> Gemfile
+gem '$gem_name', path: '..'
+RUBY
+
+unbundled bundle install --gemfile Gemfile
+
+unbundled bundle exec rake db:drop db:create
+
+cd .. # Back to the project root.
+bin/sandbox-setup # Run any custom setup.
+
+echo
+echo "🚀 Sandbox app successfully created for $gem_name!"
+

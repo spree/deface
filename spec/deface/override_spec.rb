@@ -561,7 +561,7 @@ module Deface
 
     describe "#expire_compiled_template" do
       it "should remove compiled method when method name matches virtual path but not digest" do
-        if Gem.loaded_specs["rails"].version < Gem::Version.new("6.0.0.beta1")
+        if Deface.before_rails_6?
           instance_methods_count = ActionView::CompiledTemplates.instance_methods.size
 
           module ActionView::CompiledTemplates
@@ -598,7 +598,7 @@ module Deface
       end
 
       it "should not remove compiled method when virtual path and digest matach" do
-        if Gem.loaded_specs["rails"].version < Gem::Version.new("6.0.0.beta1")
+        if Deface.before_rails_6?
           instance_methods_count = ActionView::CompiledTemplates.instance_methods.size
 
           module ActionView::CompiledTemplates

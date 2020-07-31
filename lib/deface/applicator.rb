@@ -48,10 +48,8 @@ module Deface
             end
           end
 
-          if Rails.gem_version < Gem::Version.new('6.0.0')
-            #prevents any caching by rails in development mode
-            details[:updated_at] = Time.now
-          end
+          # Prevents any caching by rails in development mode.
+          details[:updated_at] = Time.now if Deface.before_rails_6?
 
           source = doc.to_s
 

@@ -1,5 +1,6 @@
 require "action_view"
 require "action_controller"
+require "deface/errors"
 require "deface/template_helper"
 require "deface/original_validator"
 require "deface/applicator"
@@ -38,18 +39,21 @@ require "deface/matchers/range"
 require "deface/environment"
 require "deface/precompiler"
 
+require "deface/railtie" if defined?(Rails)
+
 module Deface
-  if defined?(Rails)
-    require "deface/railtie"
+  @before_rails_6 = ActionView.gem_version < Gem::Version.new('6.0.0')
+  @template_class = @before_rails_6 ? ActionView::CompiledTemplates : ActionDispatch::DebugView
+
+  def self.before_rails_6?
+    @before_rails_6
+  end
+
+  def self.template_class
+    @template_class
   end
 
   if defined?(ActiveSupport::Digest)
     Deface::Digest.digest_class = ActiveSupport::Digest
   end
-
-  # Exceptions
-  class DefaceError < StandardError; end
-
-  class NotSupportedError < DefaceError; end
-
 end

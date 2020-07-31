@@ -6,3 +6,4 @@ coverage/
 .bundle/
 gemfiles/*.lock
 /.idea
+/sandbox
