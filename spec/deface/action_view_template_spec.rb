@@ -3,6 +3,10 @@ require 'spec_helper'
 describe Deface::ActionViewExtensions do
   include_context "mock Rails.application"
 
+  before supports_updated_at: true do
+    skip "Current Rails doesn't support the updated_at attribute on ActionView" unless supports_updated_at?
+  end
+
   let(:template) { ActionView::Template.new(
     source,
     path,
@@ -33,8 +37,8 @@ describe Deface::ActionViewExtensions do
       expect(template.source).to eq("<p>test</p>")
     end
 
-    it "should not change updated_at" do
-      expect(template.updated_at).to eq(updated_at) if supports_updated_at?
+    it "should not change updated_at", :supports_updated_at do
+      expect(template.updated_at).to eq(updated_at)
     end
   end
 
@@ -50,8 +54,8 @@ describe Deface::ActionViewExtensions do
       expect(template.source).to eq("<%= raw(text) %>")
     end
 
-    it "should change updated_at" do
-      expect(template.updated_at).to be > updated_at if supports_updated_at?
+    it "should change updated_at", :supports_updated_at do
+      expect(template.updated_at).to be > updated_at
     end
   end
 
