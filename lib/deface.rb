@@ -43,9 +43,14 @@ require "deface/railtie" if defined?(Rails)
 
 module Deface
   @before_rails_6 = ActionView.gem_version < Gem::Version.new('6.0.0')
+  @template_class = @before_rails_6 ? ActionView::CompiledTemplates : ActionDispatch::DebugView
 
   def self.before_rails_6?
     @before_rails_6
+  end
+
+  def self.template_class
+    @template_class
   end
 
   if defined?(ActiveSupport::Digest)

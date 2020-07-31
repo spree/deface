@@ -217,15 +217,14 @@ module Deface
     # then remove the old method - this will allow the template to be
     # recompiled the next time it is rendered (showing the latest changes).
     def expire_compiled_template
-      template_class = Deface.before_rails_6? ? ActionView::CompiledTemplates : ActionDispatch::DebugView
       virtual_path = args[:virtual_path]
 
-      method_name = template_class.instance_methods.detect do |name|
+      method_name = Deface.template_class.instance_methods.detect do |name|
         name =~ /#{virtual_path.gsub(/[^a-z_]/, '_')}/
       end
 
       if method_name && method_name !~ /\A_#{self.class.digest(virtual_path: virtual_path)}_/
-        template_class.send :remove_method, method_name
+        Deface.template_class.send :remove_method, method_name
       end
     end
   end

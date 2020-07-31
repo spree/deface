@@ -37,9 +37,7 @@ module Deface::ActionViewExtensions
     # view needs to be recompiled
     #
     def render(view, locals, buffer=nil, &block)
-      template_class = Deface.before_rails_6? ? ActionView::CompiledTemplates : ActionDispatch::DebugView
-
-      mod = view.is_a?(template_class) ? template_class : view.singleton_class
+      mod = view.is_a?(Deface.template_class) ? Deface.template_class : view.singleton_class
 
       if @compiled && !mod.instance_methods.include?(method_name.to_sym)
         @compiled = false
