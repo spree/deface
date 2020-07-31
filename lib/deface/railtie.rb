@@ -95,7 +95,7 @@ module Deface
       paths_to_reject = railtie.config.eager_load_paths.select { |path| path.to_s  =~ /app\/overrides\z/ }
       railtie.config.eager_load_paths = railtie.config.eager_load_paths.reject { |path| path.in?(paths_to_reject) }
 
-      if !Deface.before_rails_6? && Rails.configuration.autoloader == :zeitwerk
+      if Rails.configuration.respond_to?(:autoloader) && Rails.configuration.autoloader == :zeitwerk
         Rails.autoloaders.each { |autoloader| autoloader.ignore(*paths_to_reject) }
       end
     end
