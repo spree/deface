@@ -19,8 +19,6 @@ module Deface
       Deface::Override.new(:virtual_path => "posts/new", :name => "Posts#new", :replace => "h1", :text => "<h1>argh!</h1>")
     end
 
-    let(:railties_collection_accessor) { Rails.version >= "4.0" ? :_all : :all }
-
     describe ".overrides" do
 
       it "should return all overrides" do
@@ -37,7 +35,7 @@ module Deface
         before do
           allow(Rails.application).to receive_messages :root => Pathname.new(File.join(File.dirname(__FILE__), '..', "assets"))
           allow(Rails.application).to receive_messages :paths => {}
-          allow(Rails.application).to receive_message_chain :railties, railties_collection_accessor => []
+          allow(Rails.application).to receive_message_chain :railties, :_all => []
 
           expect(Deface::DSL::Loader).to receive(:register)
         end
@@ -54,7 +52,7 @@ module Deface
         end
 
         it "should enumerate_and_load nil when railtie has no app/overrides path set" do
-          allow(Rails.application).to receive_message_chain :railties, railties_collection_accessor => [double('railtie', :root => "/some/path")]
+          allow(Rails.application).to receive_message_chain :railties, :_all => [double('railtie', :root => "/some/path")]
 
           expect(Rails.application.config.deface.overrides).to receive(:enumerate_and_load).with(nil, Rails.application.root)
           expect(Rails.application.config.deface.overrides).to receive(:enumerate_and_load).with(nil, "/some/path")
@@ -62,7 +60,7 @@ module Deface
         end
 
         it "should enumerate_and_load path when railtie has app/overrides path set" do
-          allow(Rails.application).to receive_message_chain :railties, railties_collection_accessor => [ double('railtie', :root => "/some/path", :paths => {"app/overrides" => ["app/some_path"] } )]
+          allow(Rails.application).to receive_message_chain :railties, :_all => [ double('railtie', :root => "/some/path", :paths => {"app/overrides" => ["app/some_path"] } )]
 
           expect(Rails.application.config.deface.overrides).to receive(:enumerate_and_load).with(nil, Rails.application.root)
           expect(Rails.application.config.deface.overrides).to receive(:enumerate_and_load).with(["app/some_path"] , "/some/path")
@@ -70,7 +68,7 @@ module Deface
         end
 
         it "should enumerate_and_load railties first, followed by the application iteslf" do
-          allow(Rails.application).to receive_message_chain :railties, railties_collection_accessor => [ double('railtie', :root => "/some/path", :paths => {"app/overrides" => ["app/some_path"] } )]
+          allow(Rails.application).to receive_message_chain :railties, :_all => [ double('railtie', :root => "/some/path", :paths => {"app/overrides" => ["app/some_path"] } )]
 
           expect(Rails.application.config.deface.overrides).to receive(:enumerate_and_load).with(["app/some_path"] , "/some/path").ordered
           expect(Rails.application.config.deface.overrides).to receive(:enumerate_and_load).with(nil, Rails.application.root).ordered
@@ -79,7 +77,7 @@ module Deface
 
         it "should ignore railtie with no root" do
           railtie = double('railtie')
-          allow(Rails.application).to receive_message_chain :railties, railties_collection_accessor => [railtie]
+          allow(Rails.application).to receive_message_chain :railties, :_all => [railtie]
 
           expect(railtie).to receive(:respond_to?).with(:root)
           expect(railtie).not_to receive(:respond_to?).with(:paths)
@@ -101,7 +99,7 @@ module Deface
 
         it "should keep a reference to which railtie/app defined the override" do
           allow(Rails.application).to receive_messages :root => assets_path, :paths => {"app/overrides" => ["dummy_app"] }
-          allow(Rails.application).to receive_message_chain :railties, railties_collection_accessor => [ engine ]
+          allow(Rails.application).to receive_message_chain :railties, :_all => [ engine ]
 
           Rails.application.config.deface.overrides.load_all(Rails.application)
 
@@ -127,10 +125,8 @@ module Deface
         end
 
         it "should add paths to watchable_dir when running Rails 3.2" do
-          if Rails.version[0..2] >= '3.2'
-            Rails.application.config.deface.overrides.send(:enumerate_and_load, ["app/gold"], root)
-            expect(Rails.application.config.watchable_dirs).to eq({"/some/path/app/gold" => [:rb, :deface] })
-          end
+          Rails.application.config.deface.overrides.send(:enumerate_and_load, ["app/gold"], root)
+          expect(Rails.application.config.watchable_dirs).to eq({"/some/path/app/gold" => [:rb, :deface] })
         end
 
       end
