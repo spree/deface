@@ -67,9 +67,7 @@ shared_context "mock Rails" do
     allow(Rails.application.config).to receive(:deface).and_return ActiveSupport::OrderedOptions.new
     Rails.application.config.deface.enabled = true
 
-    if Rails.version[0..2] >= '3.2'
-      allow(Rails.application.config).to receive(:watchable_dirs).and_return({})
-    end
+    allow(Rails.application.config).to receive(:watchable_dirs).and_return({})
 
     allow(Rails).to receive(:root).and_return Pathname.new('spec/dummy')
 
