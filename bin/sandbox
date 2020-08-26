@@ -10,8 +10,12 @@ function unbundled {
 rm -rf ./sandbox
 unbundled bundle exec rails new sandbox \
   --skip-bundle \
-  --skip-spring \
   --skip-git \
+  --skip-javascript \
+  --skip-keeps \
+  --skip-rc \
+  --skip-spring \
+  --skip-test \
   $@
 
 if [ ! -d "sandbox" ]; then

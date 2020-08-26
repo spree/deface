@@ -21,4 +21,4 @@ Deface::Override.new(
 )
 RUBY
 
-bin/rails run "Post.create(title: 'Foo', body: 'Bar '*10)"
+bin/rails runner "Post.create(title: 'Foo', body: 'Bar '*10)"
