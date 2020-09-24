@@ -295,7 +295,7 @@ When using the DSL, overrides automatically take their name from the filename of
 even if they are defined in separate engines. If you want to avoid this, you can use the `namespaced` option :
 
 ```erb
-<!-- insert_bottom 'head' namespaced-->
+<!-- insert_bottom 'head' namespaced -->
 ```
 or activate it globally for all DSL overrides in your app's `application.rb` file:
 
