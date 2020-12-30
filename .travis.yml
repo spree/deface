@@ -11,11 +11,7 @@ rvm:
 gemfile:
   - gemfiles/rails_5.2.gemfile
   - gemfiles/rails_6.0.gemfile
-
-notifications:
-  email:
-    - brian@spreecommerce.com
-    - ryan@spreecommerce.com
+  - gemfiles/rails_6_1.gemfile
 
 matrix:
   exclude:
