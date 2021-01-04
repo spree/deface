@@ -41,4 +41,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency('slim', '~> 3.0')
   spec.add_development_dependency('simplecov', '>= 0.6.4')
   spec.add_development_dependency('generator_spec', '~> 0.8')
+  spec.add_development_dependency('pry')
 end
