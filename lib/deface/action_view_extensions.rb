@@ -30,7 +30,7 @@ module Deface::ActionViewExtensions
         processed_source = source.to_param
       end
 
-      super(processed_source, identifier, handler, details)
+      super(processed_source, identifier, handler, **details)
     end
 
     # refresh view to get source again if
@@ -43,7 +43,6 @@ module Deface::ActionViewExtensions
         @compiled = false
         @source = refresh(view).source
       end
-
       super(view, locals, buffer, &block)
     end
 
