@@ -21,6 +21,7 @@ describe Deface::ActionViewExtensions do
   let(:options) {{
     virtual_path: virtual_path,
     format: format,
+    locals: {}
   }}
   let(:format) { :html }
   let(:virtual_path) { "posts/index" }
@@ -116,7 +117,13 @@ describe Deface::ActionViewExtensions do
     let(:source) { "<p>test</p><%= raw(text) %>".inspect }
     let(:local_assigns) { {text: "some <br> text"} }
     let(:lookup_context) { ActionView::LookupContext.new(["#{__dir__}/views"]) }
-    let(:view) { ActionView::Base.new(lookup_context) }
+    let(:view) do
+      if Rails::VERSION::STRING >= '6.1'
+        ActionView::Base.with_empty_template_cache.new(lookup_context, {}, nil)
+      else
+        ActionView::Base.new(lookup_context)
+      end
+    end
     let(:options) { {
       virtual_path: virtual_path,
       format: format,

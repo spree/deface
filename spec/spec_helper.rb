@@ -7,6 +7,7 @@ require 'rails/generators'
 # have to manually require following for testing purposes
 require 'deface/action_view_extensions'
 require 'rails/version'
+require 'pry'
 
 #adding fake class as it's needed by haml 4.0, don't
 #want to have to require the entire rails stack in specs.
