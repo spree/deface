@@ -43,7 +43,7 @@ module Deface::ActionViewExtensions
         @compiled = false
         @source = refresh(view).source
       end
-      super(view, locals, buffer, &block)
+      buffer.nil? ? super(view, locals, buffer, &block) : super(view, locals, **buffer, &block)
     end
 
     # inject deface hash into compiled view method name
