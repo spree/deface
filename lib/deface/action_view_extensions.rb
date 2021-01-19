@@ -36,14 +36,14 @@ module Deface::ActionViewExtensions
     # refresh view to get source again if
     # view needs to be recompiled
     #
-    def render(view, locals, **buffer, &block)
+    def render(view, locals, buffer=nil, &block)
       mod = view.is_a?(Deface.template_class) ? Deface.template_class : view.singleton_class
 
       if @compiled && !mod.instance_methods.include?(method_name.to_sym)
         @compiled = false
         @source = refresh(view).source
       end
-      super(view, locals, **buffer, &block)
+      buffer.nil? ? super(view, locals, buffer, &block) : super(view, locals, **buffer, &block)
     end
 
     # inject deface hash into compiled view method name
