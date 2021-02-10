@@ -36,6 +36,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency('appraisal')
   spec.add_development_dependency('erubis')
+  spec.add_development_dependency('gem-release')
   spec.add_development_dependency('rspec', '>= 3.1.0')
   spec.add_development_dependency('haml', ['>= 4.0', '< 6'])
   spec.add_development_dependency('slim', '~> 3.0')
