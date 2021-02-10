@@ -41,7 +41,7 @@ module Deface::ActionViewExtensions
 
       if @compiled && !mod.instance_methods.include?(method_name.to_sym)
         @compiled = false
-        @source = refresh(view).source
+        @source = refresh(view).source if respond_to?(:refresh)
       end
       buffer.nil? ? super(view, locals, buffer, &block) : super(view, locals, **buffer, &block)
     end
