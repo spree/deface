@@ -3,8 +3,12 @@ require 'spec_helper'
 describe Deface::ActionViewExtensions do
   include_context "mock Rails.application"
 
-  before supports_updated_at: true do
-    skip "Current Rails doesn't support the updated_at attribute on ActionView" unless supports_updated_at?
+  before after_rails_6: true do
+    skip "This spec is targeted at Rails v6+" if Deface.before_rails_6?
+  end
+
+  before before_rails_6: true do
+    skip "This spec is targeted at Rails before v6+" unless Deface.before_rails_6?
   end
 
   let(:template) { ActionView::Template.new(
@@ -12,7 +16,7 @@ describe Deface::ActionViewExtensions do
     path,
     handler,
     **options,
-    **(supports_updated_at? ? {updated_at: updated_at} : {})
+    **(Deface.before_rails_6? ? {updated_at: updated_at} : {})
   ) }
 
   let(:source) { "<p>test</p>" }
@@ -26,7 +30,6 @@ describe Deface::ActionViewExtensions do
   let(:format) { :html }
   let(:virtual_path) { "posts/index" }
 
-  let(:supports_updated_at?) { Deface.before_rails_6? }
   let(:updated_at) { Time.now - 600 }
 
   describe "with no overrides defined" do
@@ -38,7 +41,7 @@ describe Deface::ActionViewExtensions do
       expect(template.source).to eq("<p>test</p>")
     end
 
-    it "should not change updated_at", :supports_updated_at do
+    it "should not change updated_at", :before_rails_6 do
       expect(template.updated_at).to eq(updated_at)
     end
   end
