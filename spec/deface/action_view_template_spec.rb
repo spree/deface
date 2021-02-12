@@ -133,16 +133,14 @@ describe Deface::ActionViewExtensions do
       locals: local_assigns.keys
     } }
 
-    let!(:deface) {
+    it 'renders the template modified by deface using :replace' do
       Deface::Override.new(
         virtual_path: virtual_path,
         name: "Posts#index",
         replace: "p",
         text: "<h1>Argh!</h1>"
       )
-    }
 
-    it 'renders the template modified by deface' do
       expect(template.render(view, local_assigns)).to eq(%{"<h1>Argh!</h1>some <br> text"})
     end
   end
