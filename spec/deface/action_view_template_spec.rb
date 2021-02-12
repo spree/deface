@@ -46,40 +46,6 @@ describe Deface::ActionViewExtensions do
     end
   end
 
-  describe "with a single remove override defined" do
-    let(:updated_at) { Time.now - 300 }
-    let(:source) { "<p>test</p><%= raw(text) %>" }
-
-    before do
-      Deface::Override.new(virtual_path: "posts/index", name: "Posts#index", remove: "p", text: "<h1>Argh!</h1>")
-    end
-
-    it "should return modified source" do
-      expect(template.source).to eq("<%= raw(text) %>")
-    end
-
-    it "should change updated_at", :supports_updated_at do
-      expect(template.updated_at).to be > updated_at
-    end
-  end
-
-  describe "#method_name" do
-    before do
-      ActionView::Template.define_method(
-        :method_name_without_deface,
-        ActionView::Template.instance_method(:method_name)
-      )
-    end
-
-    it "returns hash of overrides plus original method_name " do
-      deface_hash = Deface::Override.digest(virtual_path: 'posts/index')
-      super_method = template.method(:method_name).super_method
-      method_name = "_#{Digest::MD5.new.update("#{deface_hash}_#{super_method.call}").hexdigest}"
-
-      expect(template.send(:method_name)).to eq(method_name)
-    end
-  end
-
   describe "non erb or haml template" do
     let(:source) { "xml.post => :blah" }
     let(:path) { "/some/path/to/file.erb" }
@@ -142,6 +108,16 @@ describe Deface::ActionViewExtensions do
       )
 
       expect(template.render(view, local_assigns)).to eq(%{"<h1>Argh!</h1>some <br> text"})
+    end
+
+    it 'renders the template modified by deface using :remove' do
+      Deface::Override.new(
+        virtual_path: virtual_path,
+        name: "Posts#index",
+        remove: "p",
+      )
+
+      expect(template.render(view, local_assigns)).to eq(%{"some <br> text"})
     end
   end
 end

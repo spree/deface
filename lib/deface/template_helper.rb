@@ -18,17 +18,38 @@ module Deface
         name = parts.join("/")
       end
 
-      #this needs to be reviewed for production mode, overrides not present
-      Rails.application.config.deface.enabled = apply_overrides
       view = lookup_context.disable_cache { lookup_context.find(name, [prefix], partial) }
 
-      if view.handler.to_s == "Haml::Plugin"
-        Deface::HamlConverter.new(view.source).result
-      elsif view.handler.class.to_s == "Slim::RailsTemplate"
-        Deface::SlimConverter.new(view.source).result
-      else
-        view.source
+      source =
+        if view.handler.to_s == "Haml::Plugin"
+          Deface::HamlConverter.new(view.source).result
+        elsif view.handler.class.to_s == "Slim::RailsTemplate"
+          Deface::SlimConverter.new(view.source).result
+        else
+          view.source
+        end
+
+      if apply_overrides
+        begin
+          # This needs to be reviewed for production mode, overrides not present
+          original_enabled = Rails.application.config.deface.enabled
+          Rails.application.config.deface.enabled = apply_overrides
+
+          if (syntax = Deface::ActionViewExtensions.determine_syntax(view.handler))
+            details = {
+              locals: view.instance_variable_get(:@locals),
+              format: view.instance_variable_get(:@format),
+              variant: view.instance_variable_get(:@variant),
+              virtual_path: view.instance_variable_get(:@virtual_path),
+            }
+            source = Deface::Override.apply(source, details, true, syntax)
+          end
+        ensure
+          Rails.application.config.deface.enabled = original_enabled
+        end
       end
+
+      source
     end
 
     #gets source erb for an element
