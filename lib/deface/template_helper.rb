@@ -9,18 +9,18 @@ module Deface
     # used to find source for a partial or template using virtual_path
     def load_template_source(virtual_path, partial, apply_overrides=true, lookup_context: Deface::TemplateHelper.lookup_context)
       parts = virtual_path.split("/")
-      prefix = []
+
       if parts.size == 2
-        prefix << ""
+        prefix = ""
         name = virtual_path
       else
-        prefix << parts.shift
+        prefix = parts.shift
         name = parts.join("/")
       end
 
       #this needs to be reviewed for production mode, overrides not present
       Rails.application.config.deface.enabled = apply_overrides
-      view = lookup_context.disable_cache { lookup_context.find(name, prefix, partial) }
+      view = lookup_context.disable_cache { lookup_context.find(name, [prefix], partial) }
 
       if view.handler.to_s == "Haml::Plugin"
         Deface::HamlConverter.new(view.source).result
