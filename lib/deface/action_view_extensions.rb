@@ -14,46 +14,46 @@ module Deface::ActionViewExtensions
   end
 
   module DefacedTemplate
-    def initialize(source, identifier, handler, details)
-      syntax = Deface::ActionViewExtensions.determine_syntax(handler)
+    def encode!
+      return super unless Rails.application.config.deface.enabled
 
-      if syntax
-        processed_source = Deface::Override.apply(source.to_param, details, true, syntax)
+      # Before Rails 6 encode! returns nil
+      source = Deface.before_rails_6? ? (super; @source) : super
 
-        # force change in handler before continuing to original Rails method
-        # as we've just converted some other template language into ERB!
-        #
-        if [:slim, :haml].include?(syntax) && processed_source != source.to_param
-          handler = ActionView::Template::Handlers::ERB
+      if (syntax = Deface::ActionViewExtensions.determine_syntax(@handler))
+        # Modify the existing string instead of returning a copy
+        source.replace Deface::Override.apply(
+          source, {
+            locals: @locals,
+            format: @format,
+            variant: @variant,
+            virtual_path: @virtual_path,
+          },
+          true,
+          syntax
+        )
+        @handler = ActionView::Template::Handlers::ERB
+      end
+
+      source
+    end
+
+    private
+
+    def compile!(view)
+      return super unless Rails.application.config.deface.enabled
+
+      @compile_mutex.synchronize do
+        current_deface_hash = Deface::Override.digest(virtual_path: @virtual_path)
+        @deface_hash = current_deface_hash if @deface_hash.nil?
+
+        if @deface_hash != current_deface_hash
+          @compiled = nil
+          @deface_hash = current_deface_hash
         end
-      else
-        processed_source = source.to_param
       end
 
-      super(processed_source, identifier, handler, **details)
-    end
-
-    # refresh view to get source again if
-    # view needs to be recompiled
-    #
-    def render(view, locals, buffer=nil, &block)
-      mod = view.is_a?(Deface.template_class) ? Deface.template_class : view.singleton_class
-
-      if @compiled && !mod.instance_methods.include?(method_name.to_sym)
-        @compiled = false
-        @source = refresh(view).source if respond_to?(:refresh)
-      end
-      buffer.nil? ? super(view, locals, buffer, &block) : super(view, locals, **buffer, &block)
-    end
-
-    # inject deface hash into compiled view method name
-    # used to determine if recompilation is needed
-    #
-    def method_name
-      deface_hash = Deface::Override.digest(:virtual_path => @virtual_path)
-
-      #we digest the whole method name as if it gets too long there's problems
-      "_#{Deface::Digest.hexdigest("#{deface_hash}_#{super}")}"
+      super
     end
 
     ActionView::Template.prepend self
