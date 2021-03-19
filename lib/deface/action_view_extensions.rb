@@ -21,6 +21,9 @@ module Deface::ActionViewExtensions
       source = Deface.before_rails_6? ? (super; @source) : super
 
       if (syntax = Deface::ActionViewExtensions.determine_syntax(@handler))
+        # Prevents any caching by rails in development mode.
+        @updated_at = Time.now if Deface.before_rails_6?
+
         # Modify the existing string instead of returning a copy
         source.replace Deface::Override.apply(
           source, {

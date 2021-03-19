@@ -48,9 +48,6 @@ module Deface
             end
           end
 
-          # Prevents any caching by rails in development mode.
-          details[:updated_at] = Time.now if Deface.before_rails_6?
-
           source = doc.to_s
 
           Deface::Parser.undo_erb_markup!(source)
