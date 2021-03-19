@@ -11,13 +11,7 @@ module Deface
         end
 
         unless overrides.empty?
-          case syntax
-          when :haml
-            #convert haml to erb before parsing before
-            source = Deface::HamlConverter.new(source.to_param).result
-          when :slim
-            source = Deface::SlimConverter.new(source.to_param).result
-          end
+          source = convert_source(source, syntax: syntax)
 
           doc = Deface::Parser.convert(source)
 
@@ -54,6 +48,21 @@ module Deface
         end
 
         source
+      end
+
+      # converts the source to a supported syntax (ERB)
+      def convert_source(source, syntax:)
+        # convert haml/slim to erb before parsing before
+        case syntax
+        when :erb
+          source
+        when :haml
+          Deface::HamlConverter.new(source.to_s).result
+        when :slim
+          Deface::SlimConverter.new(source.to_s).result
+        else
+          raise "unsupported syntax: #{syntax}"
+        end
       end
     end
 
