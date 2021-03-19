@@ -46,7 +46,7 @@ describe Deface::ActionViewExtensions do
     end
   end
 
-  describe "non erb or haml template" do
+  describe "unsupported template" do
     let(:source) { "xml.post => :blah" }
     let(:path) { "/some/path/to/file.erb" }
     let(:handler) { ActionView::Template::Handlers::Builder }
@@ -118,6 +118,36 @@ describe Deface::ActionViewExtensions do
       )
 
       expect(template.render(view, local_assigns)).to eq(%{"some <br> text"})
+    end
+
+    context 'with a haml template' do
+      let(:source) { "%p test\n= raw(text)\n" }
+      let(:handler) { Haml::Plugin }
+
+      it 'renders the template modified by deface using :remove' do
+        Deface::Override.new(
+          virtual_path: virtual_path,
+          name: "Posts#index",
+          remove: "p",
+        )
+
+        expect(template.render(view, local_assigns)).to eq(%{\nsome <br> text})
+      end
+    end
+
+    context 'with a slim template' do
+      let(:source) { "p test\n= raw(text)\n" }
+      let(:handler) { Slim::RailsTemplate.new }
+
+      it 'renders the template modified by deface using :remove' do
+        Deface::Override.new(
+          virtual_path: virtual_path,
+          name: "Posts#index",
+          remove: "p",
+        )
+
+        expect(template.render(view, local_assigns)).to eq(%{\nsome <br> text\n})
+      end
     end
   end
 end
