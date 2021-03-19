@@ -19,23 +19,24 @@ module Deface::ActionViewExtensions
 
       # Before Rails 6 encode! returns nil
       source = Deface.before_rails_6? ? (super; @source) : super
+      syntax = Deface::ActionViewExtensions.determine_syntax(@handler)
+      overrides = Deface::Override.find(
+        locals: @locals,
+        format: @format,
+        variant: @variant,
+        virtual_path: @virtual_path,
+      )
 
-      if (syntax = Deface::ActionViewExtensions.determine_syntax(@handler))
+      if syntax && overrides.any?
         # Prevents any caching by rails in development mode.
         @updated_at = Time.now if Deface.before_rails_6?
+        @handler = ActionView::Template::Handlers::ERB
 
         # Modify the existing string instead of returning a copy
-        source.replace Deface::Override.apply(
-          source, {
-            locals: @locals,
-            format: @format,
-            variant: @variant,
-            virtual_path: @virtual_path,
-          },
-          true,
-          syntax
+        source.replace Deface::Override.apply_overrides(
+          Deface::Override.convert_source(source, syntax: syntax),
+          overrides: overrides
         )
-        @handler = ActionView::Template::Handlers::ERB
       end
 
       source
