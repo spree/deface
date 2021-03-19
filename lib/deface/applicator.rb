@@ -10,7 +10,15 @@ module Deface
 
         Rails.logger.debug "\e[1;32mDeface:\e[0m #{overrides.size} overrides found for '#{details[:virtual_path]}'" if log
 
-        source = convert_source(source, syntax: syntax)
+        apply_overrides(
+          convert_source(source, syntax: syntax),
+          overrides: overrides,
+          log: log
+        )
+      end
+
+      # applies specified overrides to given source
+      def apply_overrides(source, overrides:, log: true)
 
         doc = Deface::Parser.convert(source)
 
