@@ -6,46 +6,44 @@ module Deface
       def apply(source, details, log=true, syntax=:erb)
         overrides = find(details)
 
-        if log && overrides.size > 0
-          Rails.logger.debug "\e[1;32mDeface:\e[0m #{overrides.size} overrides found for '#{details[:virtual_path]}'"
-        end
+        return source if overrides.empty?
 
-        unless overrides.empty?
-          source = convert_source(source, syntax: syntax)
+        Rails.logger.debug "\e[1;32mDeface:\e[0m #{overrides.size} overrides found for '#{details[:virtual_path]}'" if log
 
-          doc = Deface::Parser.convert(source)
+        source = convert_source(source, syntax: syntax)
 
-          overrides.each do |override|
-            if override.disabled?
-              Rails.logger.debug("\e[1;32mDeface:\e[0m '#{override.name}' is disabled") if log
-              next
-            end
+        doc = Deface::Parser.convert(source)
 
-            override.parsed_document = doc
-            matches = override.matcher.matches(doc, log)
+        overrides.each do |override|
+          if override.disabled?
+            Rails.logger.debug("\e[1;32mDeface:\e[0m '#{override.name}' is disabled") if log
+            next
+          end
 
-            if log
-              Rails.logger.send(matches.size == 0 ? :error : :debug, "\e[1;32mDeface:\e[0m '#{override.name}' matched #{matches.size} times with '#{override.selector}'")
+          override.parsed_document = doc
+          matches = override.matcher.matches(doc, log)
 
-              # temporarily check and notify on use of old selector styles.
-              #
-              if matches.empty? && override.selector.match(/code|erb-loud|erb-silent/)
-                Rails.logger.error "\e[1;32mDeface: [WARNING]\e[0m Override '#{override.name}' may be using an invalid selector of '#{override.selector}', <code erb-loud|silent> tags are now <erb loud|silent>"
-              end
-            end
+          if log
+            Rails.logger.send(matches.size == 0 ? :error : :debug, "\e[1;32mDeface:\e[0m '#{override.name}' matched #{matches.size} times with '#{override.selector}'")
 
-            if matches.empty?
-              override.failure = "failed to match :#{override.action} selector '#{override.selector}'"
-            else
-              override.failure = nil
-              matches.each {|match| override.execute_action match }
+            # temporarily check and notify on use of old selector styles.
+            #
+            if matches.empty? && override.selector.match(/code|erb-loud|erb-silent/)
+              Rails.logger.error "\e[1;32mDeface: [WARNING]\e[0m Override '#{override.name}' may be using an invalid selector of '#{override.selector}', <code erb-loud|silent> tags are now <erb loud|silent>"
             end
           end
 
-          source = doc.to_s
-
-          Deface::Parser.undo_erb_markup!(source)
+          if matches.empty?
+            override.failure = "failed to match :#{override.action} selector '#{override.selector}'"
+          else
+            override.failure = nil
+            matches.each {|match| override.execute_action match }
+          end
         end
+
+        source = doc.to_s
+
+        Deface::Parser.undo_erb_markup!(source)
 
         source
       end
