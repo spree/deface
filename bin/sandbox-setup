@@ -8,6 +8,22 @@ system 'bin/rails db:migrate'
 
 mkdir_p 'sandbox/app/overrides'
 
+File.write 'sandbox/app/views/posts/_haml_partial.html.haml', <<~HAML
+  %h2 hello from haml
+HAML
+
+File.write 'sandbox/app/views/posts/_slim_partial.html.slim', <<~SLIM
+  h2 hello from slim
+SLIM
+
+File.write 'sandbox/app/views/posts/_haml_defaced_partial.html.haml', <<~HAML
+  %h3 hello from defaced haml
+HAML
+
+File.write 'sandbox/app/views/posts/_slim_defaced_partial.html.slim', <<~SLIM
+  h3 hello from defaced slim
+SLIM
+
 File.write 'sandbox/app/overrides/improved_posts.rb', <<~RUBY
   Deface::Override.new(
     virtual_path: "posts/show",
@@ -35,6 +51,30 @@ File.write 'sandbox/app/overrides/improved_posts.rb', <<~RUBY
     name: "modern_style_post_body",
     replace: 'tr td:nth-child(2)',
     text: "<td style='border:2px gray solid; padding: 1rem;'><%= post.body %></d>"
+  )
+
+  Deface::Override.new(
+    virtual_path: "posts/index",
+    name: "haml_and_slim_partials",
+    insert_before: 'table',
+    text: "
+      <header><%= render 'haml_partial' %><%= render 'slim_partial' %></header>
+      <section><%= render 'haml_defaced_partial' %><%= render 'slim_defaced_partial' %></section>
+    "
+  )
+
+  Deface::Override.new(
+    virtual_path: "posts/_haml_defaced_partial",
+    name: "haml_deface",
+    insert_before: 'h3',
+    text: "<h4>HAML subtitle</h4>"
+  )
+
+  Deface::Override.new(
+    virtual_path: "posts/_slim_defaced_partial",
+    name: "slim_deface",
+    insert_before: 'h3',
+    text: "<h4>SLIM subtitle</h4>"
   )
 RUBY
 
