@@ -26,6 +26,8 @@ fi
 cd ./sandbox
 cat <<RUBY >> Gemfile
 gem '$gem_name', path: '..'
+gem 'haml'
+gem 'slim'
 RUBY
 
 unbundled bundle install --gemfile Gemfile

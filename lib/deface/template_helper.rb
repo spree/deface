@@ -35,14 +35,17 @@ module Deface
           original_enabled = Rails.application.config.deface.enabled
           Rails.application.config.deface.enabled = apply_overrides
 
-          if (syntax = Deface::ActionViewExtensions.determine_syntax(view.handler))
-            details = {
-              locals: view.instance_variable_get(:@locals),
-              format: view.instance_variable_get(:@format),
-              variant: view.instance_variable_get(:@variant),
-              virtual_path: view.instance_variable_get(:@virtual_path),
-            }
-            source = Deface::Override.apply(source, details, true, syntax)
+          syntax = Deface::ActionViewExtensions.determine_syntax(view.handler)
+          overrides = Deface::Override.find(
+            locals: view.instance_variable_get(:@locals),
+            format: view.instance_variable_get(:@format),
+            variant: view.instance_variable_get(:@variant),
+            virtual_path: view.instance_variable_get(:@virtual_path),
+          )
+
+          if syntax && overrides.any?
+            source = Deface::Override.convert_source(source, syntax: syntax)
+            source = Deface::Override.apply_overrides(source, overrides: overrides)
           end
         ensure
           Rails.application.config.deface.enabled = original_enabled
