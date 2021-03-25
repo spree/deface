@@ -1,11 +1,26 @@
 appraise 'rails-5.2' do
-  gem 'rails', '~> 5.2.0'
+  %w[
+    actionview
+    railties
+  ].each do |rails_gem|
+    gem rails_gem, '~> 5.2.0'
+  end
 end
 
 appraise 'rails-6.0' do
-  gem 'rails', '~> 6.0.0'
+  %w[
+    actionview
+    railties
+  ].each do |rails_gem|
+    gem rails_gem, '~> 6.0.0'
+  end
 end
 
 appraise 'rails-6.1' do
-  gem 'rails', '~> 6.1.0'
+  %w[
+    actionview
+    railties
+  ].each do |rails_gem|
+    gem rails_gem, '~> 6.1.0'
+  end
 end
