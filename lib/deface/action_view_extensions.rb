@@ -33,13 +33,19 @@ module Deface::ActionViewExtensions
         @handler = ActionView::Template::Handlers::ERB
 
         # Modify the existing string instead of returning a copy
-        @source.replace Deface::Override.apply_overrides(
+        new_source = Deface::Override.apply_overrides(
           Deface::Override.convert_source(source, syntax: syntax),
           overrides: overrides
         )
+
+        if Deface.before_rails_6?
+          @source.replace new_source
+        else
+          source.replace new_source
+        end
       end
 
-      @source
+      source
     end
 
     private
