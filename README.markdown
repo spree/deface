@@ -1,19 +1,13 @@
-<p style="float:right;">
-  <a href="http://secure.travis-ci.org/spree/deface">
-    <img src="https://secure.travis-ci.org/spree/deface.svg?branch=master">
-  </a>
-</p>
+# Deface
 
-Deface
-======
+[![Travis build](https://secure.travis-ci.org/spree/deface.svg?branch=master)](https://travis-ci.com/github/spree/deface)
 
 Deface is a library that allows you to customize HTML (ERB, Haml and Slim) views in a Rails application without editing the underlying view.
 
 It allows you to easily target html & erb elements as the hooks for customization using CSS selectors as supported by Nokogiri.
 
 
-Upgrading from 0.9 to 1.0
--------------------------
+## Upgrading from 0.9 to 1.0
 
 If you are updating from 0.9.x to 1.0.0 or higher, there's a major internal change you should be aware of.
 
@@ -34,8 +28,7 @@ Note: HAML & SLIM are preconverted to ERB before Deface parsers them, so the sam
 
 See the [Implementation](#implementation) section below for more details.
 
-Usage
------
+## Usage
 
 There are two ways of using Deface:
 
@@ -46,8 +39,7 @@ Both methods are interoperable, so you can use a mix, and redefine overrides def
 
 
 
-Using Deface::Override
-----------------------
+## Using Deface::Override
 
 A new instance of the Deface::Override class is initialized for each customization you wish to define. When initializing a new override you must supply only one Target, Action & Source parameter and any number of Optional parameters. 
 
@@ -59,68 +51,68 @@ You should save your overrides in the ````app/overrides````, normally one overri
 
 ### Target
 
-* <tt>:virtual_path</tt> - The template / partial / layout where the override should take effect eg: *"shared/_person"*, *"admin/posts/new"* this will apply to all controller actions that use the specified template.
+* `:virtual_path` - The template / partial / layout where the override should take effect eg: *"shared/_person"*, *"admin/posts/new"* this will apply to all controller actions that use the specified template.
 
 ### Action
 
-* <tt>:remove</tt> - Removes all elements that match the supplied selector
+* `:remove` - Removes all elements that match the supplied selector
 
-* <tt>:replace</tt> - Replaces all elements that match the supplied selector
+* `:replace` - Replaces all elements that match the supplied selector
 
-* <tt>:replace_contents</tt> - Replaces the contents of all elements that match the supplied selector
+* `:replace_contents` - Replaces the contents of all elements that match the supplied selector
 
-* <tt>:surround</tt> - Surrounds all elements that match the supplied selector, expects replacement markup to contain <%= render_original %> placeholder
+* `:surround` - Surrounds all elements that match the supplied selector, expects replacement markup to contain <%= render_original %> placeholder
 
-* <tt>:surround_contents</tt> - Surrounds the contents of all elements that match the supplied selector, expects replacement markup to contain <%= render_original %> placeholder
+* `:surround_contents` - Surrounds the contents of all elements that match the supplied selector, expects replacement markup to contain <%= render_original %> placeholder
 
-* <tt>:insert_after</tt> - Inserts after all elements that match the supplied selector
+* `:insert_after` - Inserts after all elements that match the supplied selector
 
-* <tt>:insert_before</tt> - Inserts before all elements that match the supplied selector
+* `:insert_before` - Inserts before all elements that match the supplied selector
 
-* <tt>:insert_top</tt> - Inserts inside all elements that match the supplied selector, as the first child.
+* `:insert_top` - Inserts inside all elements that match the supplied selector, as the first child.
 
-* <tt>:insert_bottom</tt> - Inserts inside all elements that match the supplied selector, as the last child.
+* `:insert_bottom` - Inserts inside all elements that match the supplied selector, as the last child.
 
-* <tt>:set_attributes</tt> - Sets attributes on all elements that match the supplied selector, replacing existing attribute value if present or adding if not. Expects :attributes option to be passed.
+* `:set_attributes` - Sets attributes on all elements that match the supplied selector, replacing existing attribute value if present or adding if not. Expects :attributes option to be passed.
 
-* <tt>:add_to_attributes</tt> - Appends value to attributes on all elements that match the supplied selector, adds attribute if not present. Expects :attributes option to be passed.
+* `:add_to_attributes` - Appends value to attributes on all elements that match the supplied selector, adds attribute if not present. Expects :attributes option to be passed.
 
-* <tt>:remove_from_attributes</tt> - Removes value from attributes on all elements that match the supplied selector. Expects :attributes option to be passed.
+* `:remove_from_attributes` - Removes value from attributes on all elements that match the supplied selector. Expects :attributes option to be passed.
 
 ### Source
 
-* <tt>:text</tt> - String containing markup
+* `:text` - String containing markup
 
-* <tt>:partial</tt> - Relative path to a partial
+* `:partial` - Relative path to a partial
 
-* <tt>:template</tt> - Relative path to a template
+* `:template` - Relative path to a template
 
-* <tt>:cut</tt> - Cuts (i.e. copies and removes) an element or a range of elements from the current template as the source, using css selector(s). Supports two versions:
-  * <tt>selector</tt> -  A single string css selector (first match is used).
-  * <tt>{:start => 'selector_a', :end => 'selector_b'}</tt> - select a range of elements using :start and :end css selectors. The end element must be a sibling of the first/starting element.
+* `:cut` - Cuts (i.e. copies and removes) an element or a range of elements from the current template as the source, using css selector(s). Supports two versions:
+  * `selector` -  A single string css selector (first match is used).
+  * `{:start => 'selector_a', :end => 'selector_b'}` - select a range of elements using :start and :end css selectors. The end element must be a sibling of the first/starting element.
 
-* <tt>:copy</tt> - Copies an element or a range of elements from the current template as the source, using css selector(s). Supports two versions:
-  * <tt>selector</tt> -  A single string css selector (first match is used).
-  * <tt>{:start => 'selector_a', :end => 'selector_b'}</tt> - select a range of elements using :start and :end css selectors. The end element must be a sibling of the first/starting element.
+* `:copy` - Copies an element or a range of elements from the current template as the source, using css selector(s). Supports two versions:
+  * `selector` -  A single string css selector (first match is used).
+  * `{:start => 'selector_a', :end => 'selector_b'}` - select a range of elements using :start and :end css selectors. The end element must be a sibling of the first/starting element.
 
 ### Optional
 
-* <tt>:name</tt> - Unique name for override so it can be identified and modified later. This needs to be unique within the same `:virtual_path`
+* `:name` - Unique name for override so it can be identified and modified later. This needs to be unique within the same `:virtual_path`
 
-* <tt>:disabled</tt> - When set to true the override will not be applied.
+* `:disabled` - When set to true the override will not be applied.
 
-* <tt>:original</tt> - Either a string containing the original markup that is being overridden, or a string that is the SHA1 digest of the original markup. If supplied Deface will log when the original markup changes, which helps highlight overrides that need attention when upgrading versions of the source application. Only really warranted for :replace overrides. NB: All whitespace is stripped before comparison. To generate the SHA1 digest do: `Digest::SHA1.hexdigest(original_markup_string.gsub(/\s/, ''))`
+* `:original` - Either a string containing the original markup that is being overridden, or a string that is the SHA1 digest of the original markup. If supplied Deface will log when the original markup changes, which helps highlight overrides that need attention when upgrading versions of the source application. Only really warranted for :replace overrides. NB: All whitespace is stripped before comparison. To generate the SHA1 digest do: `Digest::SHA1.hexdigest(original_markup_string.gsub(/\s/, ''))`
 
-* <tt>:closing_selector</tt> - A second css selector targeting an end element, allowing you to select a range of elements to apply an action against. The :closing_selector only supports the :replace, :remove and :replace_contents actions, and the end element must be a sibling of the first/starting element. Note the CSS general sibling selector (~) is used to match the first element after the opening selector (see below for an example).
+* `:closing_selector` - A second css selector targeting an end element, allowing you to select a range of elements to apply an action against. The :closing_selector only supports the :replace, :remove and :replace_contents actions, and the end element must be a sibling of the first/starting element. Note the CSS general sibling selector (~) is used to match the first element after the opening selector (see below for an example).
 
-* <tt>:sequence</tt> - Used to order the application of an override for a specific virtual path, helpful when an override depends on another override being applied first, supports:
-  * <tt>:sequence => n</tt> - where n is a positive or negative integer (lower numbers get applied first, default 100).
-  * <tt>:sequence => {:before => "*override_name*"}</tt> - where "*override_name*" is the name of an override defined for the 
+* `:sequence` - Used to order the application of an override for a specific virtual path, helpful when an override depends on another override being applied first, supports:
+  * `:sequence => n` - where n is a positive or negative integer (lower numbers get applied first, default 100).
+  * `:sequence => {:before => "*override_name*"}` - where "*override_name*" is the name of an override defined for the 
                                               same virtual_path, the current override will be appplied before 
                                               the named override passed.
-  * <tt>:sequence => {:after => "*override_name*"}</tt> - the current override will be applied after the named override passed.
+  * `:sequence => {:after => "*override_name*"}` - the current override will be applied after the named override passed.
 
-* <tt>:attributes</tt> - A hash containing all the attributes to be set on the matched elements, eg: :attributes => {:class => "green", :title => "some string"}
+* `:attributes` - A hash containing all the attributes to be set on the matched elements, eg: :attributes => {:class => "green", :title => "some string"}
 
 ### Examples
 
@@ -203,7 +195,7 @@ Deface scopes overrides by virtual_path (or partial / template file), that means
 
 ### Redefining Overrides
 
-You can redefine an existing override by simply declaring a new override with the same <tt>:virtual_path</tt>, <tt>:name</tt> and [action](#action) that was originally used.
+You can redefine an existing override by simply declaring a new override with the same `:virtual_path`, `:name` and [action](#action) that was originally used.
 You do not need to resupply all the values originally used, just the ones you want to change:
 
 ```ruby
@@ -231,8 +223,7 @@ This can also be activated globally for all DSL overrides in your app's `applica
 config.deface.namespaced = true # default is false
 ```
 
-Using the Deface DSL (.deface files)
-------------------------------------
+## Using the Deface DSL (.deface files)
 
 Instead of defining Deface::Override instances directly, you can alternatively add `.deface` files to the `app/overrides` folder and Deface will automatically pick them up.
 The path of each override should match the path of the view template you want to modify, say for example if you have a template at:
@@ -297,6 +288,7 @@ even if they are defined in separate engines. If you want to avoid this, you can
 ```erb
 <!-- insert_bottom 'head' namespaced -->
 ```
+
 or activate it globally for all DSL overrides in your app's `application.rb` file:
 
 ```ruby
@@ -323,29 +315,27 @@ attributes :alt => 'Click here to search'
 ```
 
 
-Rake Tasks
-----------
+## Rake Tasks
 
 Deface includes a couple of rake tasks that can be helpful when defining or debugging overrides.
 
-**deface:get_result** - Will list the original contents of a partial or template, the overrides that have been defined for a that file, and the resulting markup. *get_result* takes a single argument which is the virtual path of the template / partial:
+`rake deface:get_result` - Will list the original contents of a partial or template, the overrides that have been defined for a that file, and the resulting markup. *get_result* takes a single argument which is the virtual path of the template / partial:
 
     rake deface:get_result[shared/_head]
 
     rake deface:get_result['admin/products/index']
 
-**deface:test_selector** - Applies a given CSS selector against a partial or template and outputs the markup for each match (if any). *test_selector* requires two arguments, the first is the virtual_path for the partial / template, the second is the CSS selector to apply:
+`rake deface:test_selector` - Applies a given CSS selector against a partial or template and outputs the markup for each match (if any). *test_selector* requires two arguments, the first is the virtual_path for the partial / template, the second is the CSS selector to apply:
 
     rake deface:test_selector[shared/_head,title]
 
     rake deface:test_selector['admin/products/index','div.toolbar']
 
-**deface:precompile** - Generates compiled views that contain all overrides applied. See `Production & Precompiling` section below for more.
+`rake deface:precompile` - Generates compiled views that contain all overrides applied. See `Production & Precompiling` section below for more.
 
     rake deface:precompile
 
-Production & Precompiling
--------------------------
+## Production & Precompiling
 
 Deface now supports precompiling where all overrides are loaded and applied to the original views and the resulting templates are then saved to your application's `app/compiled_views` directory. To precompile run:
 
@@ -381,15 +371,9 @@ after 'deploy:updated', 'deface:precompile'
 ```
 
 
-Demo & Testing
---------------
-You can play with Deface and see its parsing in action at [deface.heroku.com](http://deface.heroku.com)
+# Implementation
 
-
-Implementation
-==============
-
-Deface temporarily converts ERB files into a pseudo HTML markup that can be parsed and queired by Nokogiri, using the following approach:
+Deface temporarily converts ERB files into a pseudo HTML markup that can be parsed and queried by Nokogiri, using the following approach:
 
 ```erb
 <%= some ruby code %> 
@@ -428,8 +412,8 @@ becomes:
 Deface overrides have full access to all variables accessible to the view being customized.
 
 
-Caveats
-======
+# Caveats
+
 Deface uses the amazing Nokogiri library (and in turn libxml) for parsing HTML / view files, in some circumstances either Deface's own pre-parser or libxml's will fail to correctly parse a template. You can avoid such issues by ensuring your templates contain valid HTML. Some other caveats include:
 
 1. Ensure that your layout views include doctype, html, head and body tags in a single file, as Nokogiri will create such elements if it detects any of these tags have been incorrectly nested.
