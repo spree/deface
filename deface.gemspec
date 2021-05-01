@@ -30,7 +30,13 @@ Gem::Specification.new do |spec|
   spec.extra_rdoc_files = ["README.markdown"]
 
   spec.add_dependency('nokogiri', '>= 1.6')
-  spec.add_dependency('rails', '>= 5.2')
+
+  %w[
+    actionview
+    railties
+  ].each do |rails_gem|
+    spec.add_dependency(rails_gem, '>= 5.2')
+  end
   spec.add_dependency('rainbow', '>= 2.1.0')
   spec.add_dependency('polyglot')
 
