@@ -2,12 +2,8 @@
 
 source "https://rubygems.org"
 
-%w[
-  actionview
-  railties
-].each do |rails_gem|
-  gem rails_gem, "~> 6.0.0"
-end
+gem "actionview", "~> 6.0.0"
+gem "railties", "~> 6.0.0"
 
 group :test do
   gem "test-unit"
