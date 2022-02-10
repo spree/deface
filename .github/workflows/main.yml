@@ -1,0 +1,43 @@
+on:
+  - push
+  - pull_request
+
+jobs:
+  build:
+    name: "ruby ${{ matrix.combo.ruby }} / ${{ matrix.combo.gemfile }}"
+    strategy:
+      matrix:
+        combo:
+          - ruby: "3.0"
+            gemfile: "rails_6_1"
+          - ruby: "2.7"
+            gemfile: "rails_6_1"
+          - ruby: "2.6"
+            gemfile: "rails_6_1"
+          - ruby: "2.5"
+            gemfile: "rails_6_1"
+
+          - ruby: "2.7"
+            gemfile: "rails_6_0"
+          - ruby: "2.6"
+            gemfile: "rails_6_0"
+          - ruby: "2.5"
+            gemfile: "rails_6_0"
+
+          - ruby: "2.5"
+            gemfile: "rails_5_2"
+
+    runs-on: ubuntu-latest
+
+    env:
+      GEMFILE_PATH: gemfiles/${{ matrix.combo.gemfile }}.gemfile
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.combo.ruby }}
+      - name: Setup project
+        run: bin/setup
+      - name: Run test
+        run: "bundle exec rake"
