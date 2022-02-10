@@ -8,17 +8,19 @@ jobs:
     strategy:
       matrix:
         combo:
-          - ruby: "3.0"
-            gemfile: "rails_6_1"
-          - ruby: "2.7"
-            gemfile: "rails_6_1"
+          # TODO: re-enable commented combos and expand the matrix to Ruby 3.1 and Rails 7+
+
+          # - ruby: "3.0"
+          #   gemfile: "rails_6_1"
+          # - ruby: "2.7"
+          #   gemfile: "rails_6_1"
           - ruby: "2.6"
             gemfile: "rails_6_1"
           - ruby: "2.5"
             gemfile: "rails_6_1"
 
-          - ruby: "2.7"
-            gemfile: "rails_6_0"
+          # - ruby: "2.7"
+          #   gemfile: "rails_6_0"
           - ruby: "2.6"
             gemfile: "rails_6_0"
           - ruby: "2.5"
