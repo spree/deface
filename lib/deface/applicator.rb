@@ -51,13 +51,13 @@ module Deface
 =begin
         replace this line of (gem deface)
         source = doc.to_s
-        by source =  doc.to_s.gsub('&lt;', '<').gsub('&gt;', '>').gsub('&amp;', '&')
+        by source =  source = CGI.unescapeHTML doc.to_s
         because
         doc.class = Nokogiri::HTML::DocumentFragment
         and the methode to_s(of nokogiri) use escape_text.
 =end
         #source = doc.to_s
-        source = doc.to_s.gsub('&lt;', '<').gsub('&gt;', '>').gsub('&amp;', '&')
+        source = CGI.unescapeHTML doc.to_s
 
         Deface::Parser.undo_erb_markup!(source)
 
