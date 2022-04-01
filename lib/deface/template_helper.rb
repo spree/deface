@@ -11,14 +11,14 @@ module Deface
       parts = virtual_path.split("/")
 
       if parts.size == 2
-        prefix = ""
+        prefix = nil
         name = virtual_path
       else
-        prefix = parts.shift
+        prefix = [parts.shift]
         name = parts.join("/")
       end
 
-      view = lookup_context.disable_cache { lookup_context.find(name, [prefix], partial) }
+      view = lookup_context.disable_cache { lookup_context.find(name, prefix, partial) }
 
       source =
         if view.handler.to_s == "Haml::Plugin"
