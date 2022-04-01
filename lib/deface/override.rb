@@ -70,8 +70,8 @@ module Deface
         raise(ArgumentError, ":action is invalid") if self.action.nil?
       end
 
-      #set loaded time (if not already present) for hash invalidation
-      @args[:updated_at] ||= Time.zone.now.to_f
+      # Set loaded time (if not already present) for hash invalidation
+      @args[:updated_at] ||= Time.current.to_f
       @args[:railtie_class] = self.class.current_railtie
 
       self.class.all[virtual_key][name_key] = self

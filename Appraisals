@@ -24,3 +24,12 @@ appraise 'rails-6.1' do
     gem rails_gem, '~> 6.1.0'
   end
 end
+
+appraise 'rails-7.0' do
+  %w[
+    actionview
+    railties
+  ].each do |rails_gem|
+    gem rails_gem, '~> 7.0.0'
+  end
+end
