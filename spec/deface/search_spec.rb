@@ -20,6 +20,12 @@ module Deface
       it "should return empty array when no details hash passed" do
         expect(Deface::Override.find({})).to eq([])
       end
+
+      context 'with a frozen string as virtual_path' do
+        it 'works' do
+          expect(Deface::Override.find({:virtual_path => "posts/index".freeze}).size).to eq(1)
+        end
+      end
     end
 
     describe "#find_using" do
