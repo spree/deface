@@ -45,7 +45,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency('gem-release')
   spec.add_development_dependency('rspec', '>= 3.1.0')
   spec.add_development_dependency('haml', ['>= 4.0', '< 6'])
-  spec.add_development_dependency('slim', '~> 4.1')
+  spec.add_development_dependency('slim', '~> 5.1')
   spec.add_development_dependency('simplecov', '>= 0.6.4')
   spec.add_development_dependency('generator_spec', '~> 0.8')
   spec.add_development_dependency('pry')
