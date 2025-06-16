@@ -79,9 +79,12 @@ module Deface
           end
 
           comment.gsub('<!--', '').gsub('-->', '').strip.scan(/[^\s"']+|"[^"]*"|'[^']*'/).each do |part|
+            ends_with_quote = dsl_commands =~ /('|")\z/
+            starts_with_non_data_char = part =~ /\A[^\d:='"%]/
 
-            dsl_commands =~ /('|")\z/ || part =~ /\A[^\d:='"%]/ ? dsl_commands << "\n" : dsl_commands << ' '
-            dsl_commands << part
+            divider = ends_with_quote || starts_with_non_data_char ? "\n" : ' '
+
+            dsl_commands = [dsl_commands, divider, part].join('')
           end
 
           html_file_contents = html_file_contents.gsub(comment, '')
