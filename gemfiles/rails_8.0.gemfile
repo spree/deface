@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-gem "actionview", "~> 7.0.0"
-gem "railties", "~> 7.0.0"
+gem "actionview", "~> 8.0.0"
+gem "railties", "~> 8.0.0"
 
 gemspec path: "../"

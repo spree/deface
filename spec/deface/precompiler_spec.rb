@@ -31,7 +31,7 @@ module Deface
 
       filename = 'spec/dummy/app/compiled_views/posts/precompileme.html.erb'
 
-      expect(File.exists?(filename)).to be_truthy
+      expect(File.exist?(filename)).to be_truthy
 
       file = File.open(filename, "rb")
       contents = file.read
