@@ -29,30 +29,30 @@ Gem::Specification.new do |spec|
   spec.rdoc_options = ["--charset=UTF-8"]
   spec.extra_rdoc_files = ["README.markdown"]
 
-  spec.add_dependency('nokogiri', '>= 1.6')
-
   %w[
     actionview
     railties
   ].each do |rails_gem|
-    spec.add_dependency(rails_gem, '>= 5.2')
+    spec.add_dependency(rails_gem, '>= 7.0')
   end
-  spec.add_dependency('rainbow', '>= 2.1.0')
-  spec.add_dependency('polyglot')
+
+  spec.add_dependency('base64')
+  spec.add_dependency('bigdecimal')
   spec.add_dependency('drb')
+  spec.add_dependency('mutex_m')
+  spec.add_dependency('nokogiri', '>= 1.6')
+  spec.add_dependency('polyglot')
+  spec.add_dependency('rainbow', '>= 2.1.0')
 
   spec.add_development_dependency('appraisal')
   spec.add_development_dependency('erubis')
   spec.add_development_dependency('gem-release')
-  spec.add_development_dependency('rspec', '>= 3.1.0')
-  spec.add_development_dependency('haml', ['>= 4.0', '< 6'])
-  spec.add_development_dependency('slim', '~> 4.1')
-  spec.add_development_dependency('simplecov', '>= 0.6.4')
   spec.add_development_dependency('generator_spec', '~> 0.8')
+  spec.add_development_dependency('haml', ['>= 4.0', '< 6'])
   spec.add_development_dependency('pry')
-
-  if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.3')
-    spec.add_dependency('base64')
-    spec.add_dependency('bigdecimal')
-  end
+  spec.add_development_dependency('pry-byebug')
+  spec.add_development_dependency('rspec', '>= 3.1.0')
+  spec.add_development_dependency('simplecov', '>= 0.6.4')
+  spec.add_development_dependency('slim', '~> 4.1')
+  spec.add_development_dependency('test-unit')
 end

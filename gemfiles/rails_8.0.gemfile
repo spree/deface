@@ -2,15 +2,7 @@
 
 source "https://rubygems.org"
 
-gem "concurrent-ruby"
-gem "mutex_m"
 gem "actionview", "~> 8.0.0"
 gem "railties", "~> 8.0.0"
-
-group :test do
-  gem "test-unit"
-  gem "pry"
-  gem "pry-byebug"
-end
 
 gemspec path: "../"
