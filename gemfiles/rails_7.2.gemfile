@@ -4,8 +4,8 @@ source "https://rubygems.org"
 
 gem "concurrent-ruby"
 gem "mutex_m"
-gem "actionview", "~> 7.0.0"
-gem "railties", "~> 7.0.0"
+gem "actionview", "~> 7.2.0"
+gem "railties", "~> 7.2.0"
 
 group :test do
   gem "test-unit"

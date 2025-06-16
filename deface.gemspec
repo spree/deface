@@ -39,6 +39,7 @@ Gem::Specification.new do |spec|
   end
   spec.add_dependency('rainbow', '>= 2.1.0')
   spec.add_dependency('polyglot')
+  spec.add_dependency('drb')
 
   spec.add_development_dependency('appraisal')
   spec.add_development_dependency('erubis')
@@ -49,4 +50,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency('simplecov', '>= 0.6.4')
   spec.add_development_dependency('generator_spec', '~> 0.8')
   spec.add_development_dependency('pry')
+
+  if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.3')
+    spec.add_dependency('base64')
+    spec.add_dependency('bigdecimal')
+  end
 end
