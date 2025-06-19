@@ -10,12 +10,15 @@ module Deface
         virtual_path = details[:virtual_path].dup
         return [] if virtual_path.nil?
 
-        [/^\//, /\.\w+\z/].each { |regex| virtual_path.gsub!(regex, '') }
+        [/^\//, /\.\w+\z/].each { |regex| virtual_path.gsub!(regex, ''.freeze) }
 
         result = []
         result << self.all[virtual_path.to_sym].try(:values)
+        
+        result = result.flatten
+        result.compact!
 
-        result.flatten.compact.sort_by &:sequence
+        result.sort_by &:sequence
       end
 
       # finds all overrides that are using a template / parital as there source
