@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Deface
   class Override
     include OriginalValidator
@@ -196,7 +198,7 @@ module Deface
     #
     def self.digest(details)
       overrides = self.find(details)
-      to_hash = overrides.inject('') { |digest, override| digest << override.digest }
+      to_hash = overrides.map(&:digest).join
       Deface::Digest.hexdigest(to_hash)
     end
 
