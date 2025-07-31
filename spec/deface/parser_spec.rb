@@ -149,8 +149,11 @@ module Deface
       end
 
       it "should convert multiple <% ... %> inside html tag" do
-        tag = Deface::Parser.convert(%q{<p <%= method_name %> alt="<% x = 'y' + 
-                               \"2\" %>" title='<% method_name %>' <%= other_method %></p>})
+        tag = Deface::Parser.convert(
+          %{<p <%= method_name %> alt="<% x = 'y' + \n} +
+          %q{                               \"2\" %>" } +
+          %{title='<% method_name %>' <%= other_method %></p>}
+        )
 
         tag = tag.css('p').first
         expect(tag.attributes['data-erb-0'].value).to eq("<%= method_name %>")
