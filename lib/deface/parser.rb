@@ -82,24 +82,24 @@ module Deface
       source
     end
 
+    # @private
+    # Not part of the public API, but used internally
+    # Look for # encoding: *. If we find one, we'll encode the
+    # String in that encoding, otherwise, we'll use the default external encoding.
+    def self.apply_encoding!(source)
+      encoding_tag = ActionView::Template::Handlers::ERB::ENCODING_TAG
+      encoding = source.scan(/#{encoding_tag}/).first.try(:last) || Encoding.default_external
+
+      source = source.force_encoding(encoding) unless source.encoding == encoding
+
+      raise ActionView::WrongEncodingError.new(source, encoding) unless source.valid_encoding?
+
+      source
+    end
+
     def self.convert(source)
-      # Look for # encoding: *. If we find one, we'll encode the
-      # String in that encoding, otherwise, we'll use the
-      # default external encoding.
-      encoding = source.scan(/#{ActionView::Template::Handlers::ERB.const_get(:ENCODING_TAG)}/).first.try(:last) || Encoding.default_external
-
-      # Tag the source with the default external encoding
-      # or the encoding specified in the file
-      if source.frozen?
-        source = source.dup.force_encoding(encoding)
-      else
-        source.force_encoding(encoding)
-      end
-
-      unless source.valid_encoding?
-        raise ActionView::WrongEncodingError.new(source, encoding)
-      end
-
+      source = source.dup
+      apply_encoding!(source)
       erb_markup!(source)
 
       if source =~ /<html.*?(?:(?!>)[\s\S])*>/
