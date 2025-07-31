@@ -4,6 +4,28 @@ require 'spec_helper'
 
 module Deface
   describe Parser do
+    describe "#apply_encoding!" do
+      it "respects a valid encoding tag" do
+        source = %q{<%# encoding: ISO-8859-1 %>Can you say ümlaut?}
+        source = Deface::Parser.apply_encoding!(source)
+        expect(source.encoding.name).to eq('ISO-8859-1')
+      end
+
+      it "forces the default encoding if the encoding tag is missing" do
+        source = %q{Can you say ümlaut?}
+        source.force_encoding('ISO-8859-1')
+
+        source = Deface::Parser.apply_encoding!(source)
+
+        expect(Encoding.default_external.name).to eq('UTF-8')
+        expect(source.encoding).to eq(Encoding.default_external)
+      end
+
+      it "raises an error if the source is not valid in the specified encoding" do
+        source = %q{<%# encoding: US-ASCII %>Can you say ümlaut?}
+        expect { Deface::Parser.apply_encoding!(source) }.to raise_error(ActionView::WrongEncodingError)
+      end
+    end
 
     describe "#convert" do
       it "should parse html fragment" do
@@ -127,8 +149,11 @@ module Deface
       end
 
       it "should convert multiple <% ... %> inside html tag" do
-        tag = Deface::Parser.convert(%q{<p <%= method_name %> alt="<% x = 'y' + 
-                               \"2\" %>" title='<% method_name %>' <%= other_method %></p>})
+        tag = Deface::Parser.convert(
+          %{<p <%= method_name %> alt="<% x = 'y' + \n} +
+          %q{                               \"2\" %>" } +
+          %{title='<% method_name %>' <%= other_method %></p>}
+        )
 
         tag = tag.css('p').first
         expect(tag.attributes['data-erb-0'].value).to eq("<%= method_name %>")
@@ -162,24 +187,6 @@ module Deface
         tag = tag.css('erb').first
         expect(tag.attributes.key?('silent')).to be_truthy
         expect(tag.text).to eq " method_name( :key => 'value' ) "
-      end
-
-      it "should respect valid encoding tag" do
-        source = %q{<%# encoding: ISO-8859-1 %>Can you say ümlaut?}
-        Deface::Parser.convert(source)
-        expect(source.encoding.name).to eq('ISO-8859-1')
-      end
-
-      it "should force default encoding" do
-        source = %q{Can you say ümlaut?}
-        source.force_encoding('ISO-8859-1')
-        Deface::Parser.convert(source)
-        expect(source.encoding).to eq(Encoding.default_external)
-      end
-
-      it "should force default encoding" do
-        source = %q{<%# encoding: US-ASCII %>Can you say ümlaut?}
-        expect { Deface::Parser.convert(source) }.to raise_error(ActionView::WrongEncodingError)
       end
     end
 
