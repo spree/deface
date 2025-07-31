@@ -48,8 +48,16 @@ module Deface
             matches.each {|match| override.execute_action match }
           end
         end
-
+=begin
+        replace this line of (gem deface)
         source = doc.to_s
+        by source =  source = CGI.unescapeHTML doc.to_s
+        because
+        doc.class = Nokogiri::HTML::DocumentFragment
+        and the methode to_s(of nokogiri) use escape_text.
+=end
+        #source = doc.to_s
+        source = CGI.unescapeHTML doc.to_s
 
         Deface::Parser.undo_erb_markup!(source)
 

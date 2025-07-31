@@ -88,5 +88,14 @@ module Deface
       end
     end
 
+   describe "source containing a javascript tag" do
+      before { Deface::Override.new(:virtual_path => "posts/index",
+                                    :name => "Posts#index",
+                                    :remove => "p") }
+      let(:source) { "<%= javascript_tag do %>if (y > 0) {y = 0;}<% end %>" }
+      it "should return unmodified source" do
+        expect(Dummy.apply(source, { :virtual_path => "posts/index" })).to eq("<%= javascript_tag do %>if (y > 0) {y = 0;}<% end %>")
+      end
+    end
   end
 end
